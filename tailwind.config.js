@@ -1,45 +1,103 @@
-// tailwind.config.js
+import daisyui from "daisyui";
 
-import daisyui from "daisyui"; 
-
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+
   theme: {
-    extend: {},
+    extend: {
+       fontFamily: {
+        cairo: ['Cairo', 'sans-serif'],
+      },
+      backdropBlur: {
+        
+        glass: '20px',
+      },
+      colors: {
+        'glass-bg': 'rgba(255, 255, 255, 0.1)', 
+      },
+      borderColor: {
+        'glass-border': 'rgba(255, 255, 255, 0.3)',
+      },
+      boxShadow: {
+        'glass-shadow': '0 4px 30px rgba(0, 0, 0, 0.1)',
+      },
+      borderRadius: {
+        'glass-radius': '16px',
+      },
+    },
   },
-  
-  plugins: [daisyui], 
+
+  plugins: [
+    daisyui,
+    function({ addUtilities }) {
+      addUtilities({
+        '.glass': {
+          'backdrop-filter': 'blur(20px)',
+          '-webkit-backdrop-filter': 'blur(20px)', 
+          'background-color': 'rgba(255, 255, 255, 0.1)',
+          'border': '1px solid rgba(255, 255, 255, 0.3)',
+          'border-radius': '16px',
+          'box-shadow': '0 4px 30px rgba(0, 0, 0, 0.1)',
+        },
+      });
+    }
+  ],
 
   daisyui: {
     themes: [
-      "light",
-      "dark",
+
       {
-        papyrus: { 
-          "primary": "#d4af37",
-          "primary-focus": "#c19e35",
+        nileheritage: {
+          "primary": "#C86A41",
+          "primary-focus": "#B85F3A",
           "primary-content": "#ffffff",
-          "secondary": "#bfa76f",
-          "secondary-focus": "#ab9561",
+          "secondary": "#2A6F7A",
+          "secondary-focus": "#245F68",
           "secondary-content": "#ffffff",
-          "accent": "#a1802d",
-          "accent-content": "#ffffff",
-          "neutral": "#3d4451",
+          "accent": "#D5B77A",
+          "accent-focus": "#C3A56C",
+          "accent-content": "#3A2D17",
+          "neutral": "#3F3F41",
           "neutral-content": "#ffffff",
-          "base-100": "#f8f5f0",        
-          "base-200": "#f0ece4",        
-          "base-300": "#e8e0d4",
-          "base-content": "#3a3a3a",
-          "info": "#3abff8",
-          "success": "#36d399",
-          "warning": "#fbbd23",
-          "error": "#f87272",
+          "base-100": "#F7F3EA",
+          "base-200": "#EFE8DB",
+          "base-300": "#E5DBC7",
+          "base-content": "#2F2F2F",
+          "info": "#3ABFF8",
+          "success": "#36B37E",
+          "warning": "#F2A540",
+          "error": "#E45858",
+        },
+      },
+
+      {
+        nileheritageDark: {
+          "primary": "#C86A41",
+          "primary-focus": "#A55733",
+          "primary-content": "#ffffff",
+          "secondary": "#1E4F56",
+          "secondary-focus": "#184046",
+          "secondary-content": "#ffffff",
+          "accent": "#D5B77A",
+          "accent-focus": "#C3A56C",
+          "accent-content": "#1E1A12",
+          "neutral": "#2F2F30",
+          "neutral-content": "#EDEDED",
+          "base-100": "#1A1A1A",
+          "base-200": "#222222",
+          "base-300": "#2A2A2A",
+          "base-content": "#EDEDED",
+          "info": "#3ABFF8",
+          "success": "#36B37E",
+          "warning": "#F2A540",
+          "error": "#E45858",
         },
       },
     ],
+
+    darkTheme: "nileheritageDark",
   },
-}
+};

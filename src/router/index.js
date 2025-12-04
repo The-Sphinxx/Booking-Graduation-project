@@ -1,167 +1,252 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/useAuthStore'
 
-// Layouts
-import PublicLayout from '@/Layouts/PublicLayout.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+// Import all view components
+import Home from '@/Views/Home.vue'
+import About from '@/Views/About.vue'
+import ContactUs from '@/Views/ContactUs.vue'
 
-// Public Views
-import HomeView from '../Views/Public/HomeView.vue'
-import AboutView from '../Views/Public/AboutView.vue'
-import BooksListView from '../Views/Public/BooksListView.vue'
-import BooksDetailsView from '../Views/Public/BooksDetailsView.vue'
-import AuthorsListView from '../Views/Public/AuthorsListView.vue'
-import AuthorDetailsView from '../Views/Public/AuthorDetailsView.vue'
-import LoginView from '../Views/Public/LoginView.vue'
+// Authentication
+import Login from '@/Views/Authentication/Login.vue'
+import SignUp from '@/Views/Authentication/SignUp.vue'
+import ForgetPassword from '@/Views/Authentication/ForgetPassword.vue'
 
+// User Account
+import Profile from '@/Views/UserAccount/Profile.vue'
+import Wishlist from '@/Views/UserAccount/Wishlist.vue'
+import Reservations from '@/Views/UserAccount/Reservations.vue'
 
-// Admin Views
-import DashboardView from '@/Views/Admin/DashboardView.vue'
-import BooksTableView from '@/Views/Admin/BooksTable.vue'
-import BookFormView from '@/Views/Admin/BookFormView.vue'
-import AuthorsFormView from '@/Views/Admin/AuthorsFormView.vue'
-import AuthorsTableView from '@/Views/Admin/AuthorsTableView.vue'
+// Dashboard
+import UsersManage from '@/Views/Dashboard/UsersManage.vue'
+import TripsManage from '@/Views/Dashboard/TripsManage.vue'
+import HotelsManage from '@/Views/Dashboard/HotelsMange.vue'
+import CarsManage from '@/Views/Dashboard/CarsManage.vue'
+import PaymentManage from '@/Views/Dashboard/PaymentManage.vue'
+
+// AI
+import AiCollectData from '@/Views/Ai/AiCollectData.vue'
+import AiPlanResults from '@/Views/Ai/AiPlanResults.vue'
+
+// Attractions
+import AttractionsList from '@/Views/Attractions/AttractionsList.vue'
+import AttractionDetails from '@/Views/Attractions/AttractionDetails.vue'
+import AttractionBooking from '@/Views/Attractions/AttractionBooking.vue'
+
+// Cars
+import CarsList from '@/Views/Cars/Carslist.vue'
+import CarDetails from '@/Views/Cars/CarDetails.vue'
+import CarBooking from '@/Views/Cars/CarBooking.vue'
+
+// Hotels
+import HotelsList from '@/Views/Hotels/HotelsList.vue'
+import HotelDetails from '@/Views/Hotels/HotelDetails.vue'
+import HotelBooking from '@/Views/Hotels/HotelBooking.vue'
+
+// Trips
+import TripsList from '@/Views/Trips/TripsList.vue'
+import TripDetails from '@/Views/Trips/TripDetails.vue'
+import TripBooking from '@/Views/Trips/TripBooking.vue'
+
 const routes = [
-  // Public Routes
+  // Home Routes
   {
     path: '/',
-    component: PublicLayout,
-    children: [
-      {
-        path: '',
-        name: 'home',
-        component: HomeView,
-        meta: { title: 'Home' }
-      },
-      {
-        path: 'about',
-        name: 'about',
-        component: AboutView,
-        meta: { title: 'About Us' }
-      },
-      {
-        path: 'books',
-        name: 'books',
-        component: BooksListView,
-        meta: { title: 'Books' }
-      },
-      {
-        path: 'books/:id',
-        name: 'book-details',
-        component: BooksDetailsView,
-        meta: { title: 'Book Details' }
-      },
-      {
-        path: 'authors',
-        name: 'authors',
-        component: AuthorsListView,
-        meta: { title: 'Authors' }
-      },
-      {
-        path: 'authors/:id',
-        name: 'author-details',
-        component: AuthorDetailsView,
-        meta: { title: 'Author Details' }
-      }
-    ]
+    name: 'Home',
+    component: Home,
+  },
+  {
+    path: '/home',
+    redirect: '/',
+  },
+  
+  // Public Pages
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
+  },
+  {
+    path: '/contact-us',
+    name: 'ContactUs',
+    component: ContactUs,
   },
 
-  // Login Route 
+  // Authentication Routes
   {
-    path: '/login',
-    name: 'login',
-    component: LoginView,
-    meta: { title: 'Login', requiresGuest: true }
+    path: '/authentication/login',
+    name: 'Login',
+    component: Login,
+  },
+  {
+    path: '/authentication/sign-up',
+    name: 'SignUp',
+    component: SignUp,
+  },
+  {
+    path: '/authentication/forget-password',
+    name: 'ForgetPassword',
+    component: ForgetPassword,
   },
 
-  // Admin Routes 
+  // User Account Routes (Protected)
   {
-    path: '/admin',
-    component: AdminLayout,
+    path: '/user-account/profile',
+    name: 'Profile',
+    component: Profile,
     meta: { requiresAuth: true },
-    children: [
-      {
-        path: '',
-        name: 'admin',
-        component: DashboardView,
-        meta: { title: 'Admin Dashboard' }
-      },
-      {
-        path: 'books',
-        name: 'admin-books',
-        component: BooksTableView,
-        meta: { title: 'Manage Books' }
-      },
-      {
-        path: 'books/new',
-        name: 'admin-books-create',
-        component: BookFormView,
-        meta: { title: 'Create Book' }
-      },
-      {
-        path: 'books/:id/edit',
-        name: 'admin-books-edit',
-        component: BookFormView,
-        meta: { title: 'Edit Book' }
-      },
-      {
-        path: 'authors',
-        name: 'admin-authors',
-        component: AuthorsTableView,
-        meta: { title: 'Manage Authors' }
-      },
-      {
-        path: 'authors/new',
-        name: 'admin-authors-create',
-        component: AuthorsFormView,
-        meta: { title: 'Create Author' }
-      },
-      {
-        path: 'authors/:id/edit',
-        name: 'admin-authors-edit',
-        component: AuthorsFormView,
-        meta: { title: 'Edit Author' }
-      }
-    ]
-  }
+  },
+  {
+    path: '/user-account/wishlist',
+    name: 'Wishlist',
+    component: Wishlist,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/user-account/reservations',
+    name: 'Reservations',
+    component: Reservations,
+    meta: { requiresAuth: true },
+  },
+
+  // Dashboard Routes (Protected)
+  {
+    path: '/dashboard/users-manage',
+    name: 'UsersManage',
+    component: UsersManage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/dashboard/trips-manage',
+    name: 'TripsManage',
+    component: TripsManage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/dashboard/hotels-manage',
+    name: 'HotelsManage',
+    component: HotelsManage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/dashboard/cars-manage',
+    name: 'CarsManage',
+    component: CarsManage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/dashboard/payment-manage',
+    name: 'PaymentManage',
+    component: PaymentManage,
+    meta: { requiresAuth: true },
+  },
+
+  // AI Routes (Protected)
+  {
+    path: '/ai/collect-data',
+    name: 'AiCollectData',
+    component: AiCollectData,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/ai/plan-results',
+    name: 'AiPlanResults',
+    component: AiPlanResults,
+    meta: { requiresAuth: true },
+  },
+
+  // Attractions Routes
+  {
+    path: '/attractions/list',
+    name: 'AttractionsList',
+    component: AttractionsList,
+  },
+  {
+    path: '/attractions/details/:id',
+    name: 'AttractionDetails',
+    component: AttractionDetails,
+  },
+  {
+    path: '/attractions/booking/:id',
+    name: 'AttractionBooking',
+    component: AttractionBooking,
+    meta: { requiresAuth: true },
+  },
+
+  // Cars Routes
+  {
+    path: '/cars/list',
+    name: 'CarsList',
+    component: CarsList,
+  },
+  {
+    path: '/cars/details/:id',
+    name: 'CarDetails',
+    component: CarDetails,
+  },
+  {
+    path: '/cars/booking/:id',
+    name: 'CarBooking',
+    component: CarBooking,
+    meta: { requiresAuth: true },
+  },
+
+  // Hotels Routes
+  {
+    path: '/hotels/list',
+    name: 'HotelsList',
+    component: HotelsList,
+  },
+  {
+    path: '/hotels/details/:id',
+    name: 'HotelDetails',
+    component: HotelDetails,
+  },
+  {
+    path: '/hotels/booking/:id',
+    name: 'HotelBooking',
+    component: HotelBooking,
+    meta: { requiresAuth: true },
+  },
+
+  // Trips Routes
+  {
+    path: '/trips/list',
+    name: 'TripsList',
+    component: TripsList,
+  },
+  {
+    path: '/trips/details/:id',
+    name: 'TripDetails',
+    component: TripDetails,
+  },
+  {
+    path: '/trips/booking/:id',
+    name: 'TripBooking',
+    component: TripBooking,
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) return savedPosition
-    return { top: 0, left: 0, behavior: 'smooth' }
-  }
 })
 
-// Navigation Guards
+// Navigation guard for protected routes
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore()
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   
-  // Check if route requires authentication
-  if (to.meta.requiresAuth) {
-    if (!authStore.isAuthenticated) {
-      // Redirect to login with return URL
-      next({
-        name: 'login',
-        query: { redirect: to.fullPath }
-      })
-    } else {
-      next()
-    }
-  }
-  // Check if route requires guest 
-  else if (to.meta.requiresGuest) {
-    if (authStore.isAuthenticated) {
-      // Redirect to admin dashboard if already logged in
-      next({ name: 'admin' })
-    } else {
-      next()
-    }
-  }
-  // No auth requirements
-  else {
+  // TODO: Replace this with your actual authentication check
+  // Example: const isAuthenticated = store.getters.isAuthenticated
+  const isAuthenticated = false // Placeholder - update with your auth logic
+  
+  if (requiresAuth && !isAuthenticated) {
+    // Redirect to login page if not authenticated
+    next({
+      name: 'Login',
+      query: { redirect: to.fullPath }, // Save the intended destination
+    })
+  } else {
     next()
   }
 })
