@@ -83,7 +83,6 @@
     <!-- Attractions Search Bar -->
     <div v-else-if="type === 'attractions'" class="flex flex-wrap items-end gap-4 p-4 bg-base-100 rounded-glass-radius shadow-lg">
       <div class="flex-1 min-w-[200px]">
-        <label class="text-sm text-base-content/70 mb-1 block font-cairo">{{ labels.city }}</label>
         <select v-model="searchData.city" class="select select-bordered w-full bg-base-200 font-cairo">
           <option disabled selected value="">{{ placeholders.city }}</option>
           <option v-for="city in cities" :key="city" :value="city">{{ city }}</option>
@@ -91,7 +90,6 @@
       </div>
 
       <div class="flex-1 min-w-[250px]">
-        <label class="text-sm text-base-content/70 mb-1 block font-cairo">{{ labels.searchActivities }}</label>
         <input 
           type="text" 
           :placeholder="placeholders.searchActivities"
