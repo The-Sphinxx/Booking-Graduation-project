@@ -1,37 +1,238 @@
 {
-  "users": [
-    
-  ],
-
-
-  "attractions": [
-    
-  ],
-
+  "users": [],
+  "attractions": [],
   "hotels": [
-   
+    {
+      "id": "h1",
+      "name": "Almasa Hotel",
+      "city": "Nasr City, Cairo",
+      "rating": 4.8,
+      "reviews": 350,
+      "price": 120,
+      "mainImage": "/images/hotels/almasa_main.jpg",
+      "gallery": [
+        "/images/hotels/almasa_1.jpg",
+        "/images/hotels/almasa_2.jpg",
+        "/images/hotels/almasa_3.jpg"
+      ],
+      "description": "Al Masah Hotel and Spa features a terrace with a swimming pool. In the green area of Nasr City, it includes 5 restaurants and a spa center. All the elegant rooms have a balcony.",
+      "facilities": [
+        "Free Wifi",
+        "Restaurant",
+        "Swimming Pool",
+        "Parking",
+        "Spa",
+        "Gym"
+      ],
+      "location": {
+        "lat": 30.0733,
+        "lng": 31.3456
+      },
+      "rooms": [
+        {
+          "type": "Standard Room",
+          "price": 120,
+          "available": 5
+        },
+        {
+          "type": "Deluxe Suite",
+          "price": 180,
+          "available": 3
+        },
+        {
+          "type": "Presidential Suite",
+          "price": 350,
+          "available": 2
+        }
+      ]
+    },
+    {
+      "id": "h2",
+      "name": "Hilton Hotel",
+      "city": "Heliopolis, Cairo",
+      "rating": 4.6,
+      "reviews": 320,
+      "price": 120,
+      "mainImage": "/images/hotels/hilton_main.jpg",
+      "gallery": [
+        "/images/hotels/hilton_1.jpg",
+        "/images/hotels/hilton_2.jpg"
+      ],
+      "description": "Enjoy a luxurious stay at the Hilton Heliopolis, featuring world-class amenities, multiple pools, and exquisite dining options in the heart of Cairo.",
+      "facilities": [
+        "Free Wifi",
+        "Restaurant",
+        "Pool",
+        "Spa",
+        "Bar"
+      ],
+      "location": {
+        "lat": 30.1123,
+        "lng": 31.3987
+      },
+      "rooms": [
+        {
+          "type": "Guest Room",
+          "price": 120,
+          "available": 10
+        },
+        {
+          "type": "Executive Room",
+          "price": 200,
+          "available": 4
+        }
+      ]
+    },
+    {
+      "id": "h3",
+      "name": "Cairo Marriott Hotel",
+      "city": "Zamalek, Cairo",
+      "rating": 4.5,
+      "reviews": 240,
+      "price": 120,
+      "mainImage": "/images/hotels/marriott_main.jpg",
+      "gallery": [
+        "/images/hotels/marriott_1.jpg"
+      ],
+      "description": "Experience Royal courtesy at the Cairo Marriott Hotel & Omar Khayyam Casino. Located in the lively Zamalek district, surrounded by 6 acres of palace gardens.",
+      "facilities": [
+        "Free Wifi",
+        "Restaurant",
+        "Casino",
+        "Pool",
+        "Gym"
+      ],
+      "location": {
+        "lat": 30.0567,
+        "lng": 31.2256
+      },
+      "rooms": [
+        {
+          "type": "Deluxe Room",
+          "price": 120,
+          "available": 8
+        },
+        {
+          "type": "Garden Wing",
+          "price": 160,
+          "available": 5
+        }
+      ]
+    },
+    {
+      "id": "h4",
+      "name": "Sheraton Cairo",
+      "city": "Dokki, Cairo",
+      "rating": 4.3,
+      "reviews": 220,
+      "price": 120,
+      "mainImage": "/images/hotels/sheraton_main.jpg",
+      "gallery": [
+        "/images/hotels/sheraton_1.jpg"
+      ],
+      "description": "Rising on the banks of the Nile, Sheraton Cairo Hotel & Casino offers effortless service and modern accommodations with stunning views of the river.",
+      "facilities": [
+        "Free Wifi",
+        "Restaurant",
+        "Pool",
+        "Spa",
+        "Gym"
+      ],
+      "location": {
+        "lat": 30.0389,
+        "lng": 31.2201
+      },
+      "rooms": [
+        {
+          "type": "Standard Room",
+          "price": 120,
+          "available": 12
+        },
+        {
+          "type": "Club Room",
+          "price": 190,
+          "available": 6
+        }
+      ]
+    },
+    {
+      "id": "h5",
+      "name": "Four Seasons at Nile Plaza",
+      "city": "Garden City, Cairo",
+      "rating": 4.9,
+      "reviews": 500,
+      "price": 350,
+      "mainImage": "/images/hotels/fourseasons_main.jpg",
+      "gallery": [
+        "/images/hotels/fourseasons_1.jpg"
+      ],
+      "description": "In the heart of Cairo on the banks of the Nile, Four Seasons Hotel Cairo at Nile Plaza opens the door to discovering Egypt’s ancient mysteries and modern excitement.",
+      "facilities": [
+        "Free Wifi",
+        "Restaurant",
+        "Pool",
+        "Spa",
+        "Gym",
+        "Business Center"
+      ],
+      "location": {
+        "lat": 30.0365,
+        "lng": 31.2312
+      },
+      "rooms": [
+        {
+          "type": "Superior Room",
+          "price": 350,
+          "available": 5
+        },
+        {
+          "type": "Nile View Suite",
+          "price": 600,
+          "available": 2
+        }
+      ]
+    },
+    {
+      "id": "h6",
+      "name": "Kempinski Nile Hotel",
+      "city": "Garden City, Cairo",
+      "rating": 4.7,
+      "reviews": 310,
+      "price": 180,
+      "mainImage": "/images/hotels/kempinski_main.jpg",
+      "gallery": [
+        "/images/hotels/kempinski_1.jpg"
+      ],
+      "description": "Kempinski Nile Hotel Garden City Cairo offers guests a boutique five-star experience on the banks of the Nile River.",
+      "facilities": [
+        "Free Wifi",
+        "Restaurant",
+        "Pool",
+        "Spa",
+        "Rooftop Bar"
+      ],
+      "location": {
+        "lat": 30.0380,
+        "lng": 31.2330
+      },
+      "rooms": [
+        {
+          "type": "Madina Room",
+          "price": 180,
+          "available": 7
+        },
+        {
+          "type": "Nile Deluxe",
+          "price": 250,
+          "available": 4
+        }
+      ]
+    }
   ],
-
-  "cars": [
-    
-  ],
-
-  "trips": [
-   
-  ],
-
-  "reviews": [
-   
-  ],
-
-  "wishlist": [
-   
-  ],
-
-  "bookings": [
-    
-  ],
-  "payments":[
-    
-  ]
+  "cars": [],
+  "trips": [],
+  "reviews": [],
+  "wishlist": [],
+  "bookings": [],
+  "payments": []
 }
