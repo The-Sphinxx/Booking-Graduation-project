@@ -1,37 +1,29 @@
 {
   "users": [
-    
+    {
+      "id": "1",
+      "firstName": "Hassan",
+      "lastName": "Sabry",
+      "email": "hassan@example.com",
+      "password": "12345678",
+      "phone": "+201234567818",
+      "dateOfBirth": "1996-05-21",
+      "nationality": "Egyptian",
+      "gender": "male",
+      "profileImage": null,
+      "isVerified": true,
+      "resetToken": null,
+      "resetTokenExpiry": null,
+      "createdAt": "2024-01-01T10:00:00.000Z",
+      "updatedAt": "2024-01-01T10:00:00.000Z"
+    }
   ],
-
-
-  "attractions": [
-    
-  ],
-
-  "hotels": [
-   
-  ],
-
-  "cars": [
-    
-  ],
-
-  "trips": [
-   
-  ],
-
-  "reviews": [
-   
-  ],
-
-  "wishlist": [
-   
-  ],
-
-  "bookings": [
-    
-  ],
-  "payments":[
-    
-  ]
+  "attractions": [],
+  "hotels": [],
+  "cars": [],
+  "trips": [],
+  "reviews": [],
+  "wishlist": [],
+  "bookings": [],
+  "payments": []
 }

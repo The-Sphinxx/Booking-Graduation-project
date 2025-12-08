@@ -1,254 +1,132 @@
-// src/router/index.js
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
 
-// Import all view components
-import Home from '@/Views/Home.vue'
-import About from '@/Views/About.vue'
-import ContactUs from '@/Views/ContactUs.vue'
-
-// Authentication
-import Login from '@/Views/Authentication/Login.vue'
-import SignUp from '@/Views/Authentication/SignUp.vue'
-import ForgetPassword from '@/Views/Authentication/ForgetPassword.vue'
-
-// User Account
-import Profile from '@/Views/UserAccount/Profile.vue'
-import Wishlist from '@/Views/UserAccount/Wishlist.vue'
-import Reservations from '@/Views/UserAccount/Reservations.vue'
-
-// Dashboard
-import UsersManage from '@/Views/Dashboard/UsersManage.vue'
-import TripsManage from '@/Views/Dashboard/TripsManage.vue'
-import HotelsManage from '@/Views/Dashboard/HotelsMange.vue'
-import CarsManage from '@/Views/Dashboard/CarsManage.vue'
-import PaymentManage from '@/Views/Dashboard/PaymentManage.vue'
-
-// AI
-import AiCollectData from '@/Views/Ai/AiCollectData.vue'
-import AiPlanResults from '@/Views/Ai/AiPlanResults.vue'
-
-// Attractions
-import AttractionsList from '@/Views/Attractions/AttractionsList.vue'
-import AttractionDetails from '@/Views/Attractions/AttractionDetails.vue'
-import AttractionBooking from '@/Views/Attractions/AttractionBooking.vue'
-
-// Cars
-import CarsList from '@/Views/Cars/Carslist.vue'
-import CarDetails from '@/Views/Cars/CarDetails.vue'
-import CarBooking from '@/Views/Cars/CarBooking.vue'
-
-// Hotels
-import HotelsList from '@/Views/Hotels/HotelsList.vue'
-import HotelDetails from '@/Views/Hotels/HotelDetails.vue'
-import HotelBooking from '@/Views/Hotels/HotelBooking.vue'
-
-// Trips
-import TripsList from '@/Views/Trips/TripsList.vue'
-import TripDetails from '@/Views/Trips/TripDetails.vue'
-import TripBooking from '@/Views/Trips/TripBooking.vue'
+// Authentication Views - استخدم dynamic imports
+const Login = () => import('@/Views/Authentication/Login.vue');
+const Signup = () => import('@/Views/Authentication/SignUp.vue');
+const ForgotPassword = () => import('@/Views/Authentication/ForgetPassword.vue');
 
 const routes = [
-  // Home Routes
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: () => import('@/Views/Home.vue'),
+    meta: { requiresAuth: true }
   },
-  {
-    path: '/home',
-    redirect: '/',
-  },
-  
-  // Public Pages
-  {
-    path: '/about',
-    name: 'About',
-    component: About,
-  },
-  {
-    path: '/contact-us',
-    name: 'ContactUs',
-    component: ContactUs,
-  },
-
-  // Authentication Routes
   {
     path: '/authentication/login',
     name: 'Login',
     component: Login,
+    meta: { guest: true }
   },
   {
-    path: '/authentication/sign-up',
-    name: 'SignUp',
-    component: SignUp,
+    path: '/login',
+    redirect: '/authentication/login'
   },
   {
-    path: '/authentication/forget-password',
-    name: 'ForgetPassword',
-    component: ForgetPassword,
+    path: '/authentication/signup',
+    name: 'Signup',
+    component: Signup,
+    meta: { guest: true }
   },
-
-  // User Account Routes (Protected)
   {
-    path: '/user-account/profile',
+    path: '/signup',
+    redirect: '/authentication/signup'
+  },
+  {
+    path: '/authentication/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPassword,
+    meta: { guest: true }
+  },
+  {
+    path: '/forgot-password',
+    redirect: '/authentication/forgot-password'
+  },
+  {
+    path: '/profile',
     name: 'Profile',
-    component: Profile,
-    meta: { requiresAuth: true },
+    component: () => import('@/Views/UserAccount/Profile.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/user-account/wishlist',
-    name: 'Wishlist',
-    component: Wishlist,
-    meta: { requiresAuth: true },
+    path: '/trips',
+    name: 'Trips',
+    component: () => import('@/Views/Trips/TripsList.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/user-account/reservations',
-    name: 'Reservations',
-    component: Reservations,
-    meta: { requiresAuth: true },
-  },
-
-  // Dashboard Routes (Protected)
-  {
-    path: '/dashboard/users-manage',
-    name: 'UsersManage',
-    component: UsersManage,
-    meta: { requiresAuth: true },
+    path: '/hotels',
+    name: 'Hotels',
+    component: () => import('@/Views/Hotels/HotelsList.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/dashboard/trips-manage',
-    name: 'TripsManage',
-    component: TripsManage,
-    meta: { requiresAuth: true },
+    path: '/cars',
+    name: 'Cars',
+    component: () => import('@/Views/Cars/Carslist.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/dashboard/hotels-manage',
-    name: 'HotelsManage',
-    component: HotelsManage,
-    meta: { requiresAuth: true },
+    path: '/attractions',
+    name: 'Attractions',
+    component: () => import('@/Views/Attractions/AttractionsList.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/dashboard/cars-manage',
-    name: 'CarsManage',
-    component: CarsManage,
-    meta: { requiresAuth: true },
+    path: '/ai-planner',
+    name: 'AiPlanner',
+    component: () => import('@/Views/Ai/AiCollectData.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/dashboard/payment-manage',
-    name: 'PaymentManage',
-    component: PaymentManage,
-    meta: { requiresAuth: true },
-  },
-
-  // AI Routes (Protected)
-  {
-    path: '/ai/collect-data',
-    name: 'AiCollectData',
-    component: AiCollectData,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/ai/plan-results',
-    name: 'AiPlanResults',
-    component: AiPlanResults,
-    meta: { requiresAuth: true },
-  },
-
-  // Attractions Routes
-  {
-    path: '/attractions/list',
-    name: 'AttractionsList',
-    component: AttractionsList,
-  },
-  {
-    path: '/attractions/details/:id',
-    name: 'AttractionDetails',
-    component: AttractionDetails,
-  },
-  {
-    path: '/attractions/booking/:id',
-    name: 'AttractionBooking',
-    component: AttractionBooking,
-    meta: { requiresAuth: true },
-  },
-
-  // Cars Routes
-  {
-    path: '/cars/list',
-    name: 'CarsList',
-    component: CarsList,
-  },
-  {
-    path: '/cars/details/:id',
-    name: 'CarDetails',
-    component: CarDetails,
-  },
-  {
-    path: '/cars/booking/:id',
-    name: 'CarBooking',
-    component: CarBooking,
-    meta: { requiresAuth: true },
-  },
-
-  // Hotels Routes
-  {
-    path: '/hotels/list',
-    name: 'HotelsList',
-    component: HotelsList,
-  },
-  {
-    path: '/hotels/details/:id',
-    name: 'HotelDetails',
-    component: HotelDetails,
-  },
-  {
-    path: '/hotels/booking/:id',
-    name: 'HotelBooking',
-    component: HotelBooking,
-    meta: { requiresAuth: true },
-  },
-
-  // Trips Routes
-  {
-    path: '/trips/list',
-    name: 'TripsList',
-    component: TripsList,
-  },
-  {
-    path: '/trips/details/:id',
-    name: 'TripDetails',
-    component: TripDetails,
-  },
-  {
-    path: '/trips/booking/:id',
-    name: 'TripBooking',
-    component: TripBooking,
-    meta: { requiresAuth: true },
-  },
-]
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/Views/NotFound.vue')
+  }
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  }
+});
 
-// Navigation guard for protected routes
+// Navigation Guards
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  
-  // TODO: Replace this with your actual authentication check
-  // Example: const isAuthenticated = store.getters.isAuthenticated
-  const isAuthenticated = false // Placeholder - update with your auth logic
-  
-  if (requiresAuth && !isAuthenticated) {
-    // Redirect to login page if not authenticated
+  const authStore = useAuthStore();
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isGuest = to.matched.some(record => record.meta.guest);
+
+  // تهيئة المصادقة من localStorage
+  if (!authStore.user && authStore.token) {
+    authStore.initAuth();
+  }
+
+  if (requiresAuth && !authStore.isAuthenticated) {
+    // الصفحة تحتاج تسجيل دخول والمستخدم غير مسجل
     next({
       name: 'Login',
-      query: { redirect: to.fullPath }, // Save the intended destination
-    })
+      query: { redirect: to.fullPath }
+    });
+  } else if (isGuest && authStore.isAuthenticated) {
+    // صفحات الضيوف والمستخدم مسجل دخول بالفعل
+    next({ name: 'Home' });
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+// After each navigation
+router.afterEach((to, from) => {
+  // يمكن إضافة تتبع analytics هنا
+  document.title = to.meta.title || 'Nile Heritage - رحلتك تبدأ من هنا';
+});
+
+export default router;
