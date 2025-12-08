@@ -23,7 +23,7 @@ export default {
         glass: '20px',
       },
       colors: {
-        'glass-bg': 'rgba(255, 255, 255, 0.1)', 
+        'glass-bg': 'rgba(255, 255, 255, 0.1)',
       },
       borderColor: {
         'glass-border': 'rgba(255, 255, 255, 0.3)',
@@ -39,11 +39,11 @@ export default {
 
   plugins: [
     daisyui,
-    function({ addUtilities }) {
+    function ({ addUtilities }) {
       addUtilities({
         '.glass': {
           'backdrop-filter': 'blur(20px)',
-          '-webkit-backdrop-filter': 'blur(20px)', 
+          '-webkit-backdrop-filter': 'blur(20px)',
           'background-color': 'rgba(255, 255, 255, 0.1)',
           'border': '1px solid rgba(255, 255, 255, 0.3)',
           'border-radius': '16px',
@@ -58,7 +58,7 @@ export default {
       });
     },
     // Plugin للـ Responsive Variants
-    function({ addComponents, theme }) {
+    function ({ addComponents, theme }) {
       addComponents({
         '.page-container': {
           width: '100%',
@@ -121,7 +121,7 @@ export default {
           "accent": "#D5B77A",
           "accent-focus": "#C3A56C",
           "accent-content": "#1E1A12",
-          "neutral": "#2F2F30",
+          "neutral": "#535353ff",
           "neutral-content": "#EDEDED",
           "base-100": "#1A1A1A",
           "base-200": "#222222",
