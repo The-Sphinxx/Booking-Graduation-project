@@ -31,22 +31,36 @@ export default {
       boxShadow: {
         'glass-shadow': '0 4px 30px rgba(0, 0, 0, 0.1)',
       },
+      // تعديل الـ borderRadius
       borderRadius: {
-        'glass-radius': '16px',
+        'none': '0',
+        'sm': '4px',           // للعناصر الصغيرة جداً
+        'DEFAULT': '8px',      // القيمة الافتراضية - للـ cards
+        'md': '6px',           // 6px - للـ buttons و inputs
+        'lg': '8px',           // 8px - للـ cards
+        'xl': '8px',           // 8px - للـ cards
+        '2xl': '8px',          // 8px - للـ cards
+        '3xl': '8px',          // 8px - للـ cards
+        'full': '9999px',      // للدوائر والعناصر المستديرة
+        'glass-radius': '8px', // للـ glass effect
+
+        // Custom values للاستخدام المباشر
+        '6': '6px',            // للـ buttons و inputs
+        '8': '8px',            // للـ cards و containers
       },
     },
   },
 
   plugins: [
     daisyui,
-    function ({ addUtilities }) {
+    function ({ addUtilities, addComponents }) {
       addUtilities({
         '.glass': {
           'backdrop-filter': 'blur(20px)',
           '-webkit-backdrop-filter': 'blur(20px)',
           'background-color': 'rgba(255, 255, 255, 0.1)',
           'border': '1px solid rgba(255, 255, 255, 0.3)',
-          'border-radius': '16px',
+          'border-radius': '8px',
           'box-shadow': '0 4px 30px rgba(0, 0, 0, 0.1)',
         },
         // Page Container Utility
@@ -54,6 +68,22 @@ export default {
           'width': '100%',
           'padding-left': '120px',
           'padding-right': '120px',
+        },
+      });
+
+      // Override DaisyUI button and input border radius
+      addComponents({
+        '.btn': {
+          'border-radius': '6px',
+        },
+        '.input': {
+          'border-radius': '6px',
+        },
+        '.select': {
+          'border-radius': '6px',
+        },
+        '.textarea': {
+          'border-radius': '6px',
         },
       });
     },
@@ -108,6 +138,11 @@ export default {
           "success": "#36B37E",
           "warning": "#F2A540",
           "error": "#E45858",
+
+          // DaisyUI Border Radius Override
+          "--rounded-box": "8px",      // للـ cards
+          "--rounded-btn": "6px",      // للـ buttons
+          "--rounded-badge": "6px",    // للـ badges
         },
       },
       {
@@ -121,7 +156,7 @@ export default {
           "accent": "#D5B77A",
           "accent-focus": "#C3A56C",
           "accent-content": "#1E1A12",
-          "neutral": "#535353ff",
+          "neutral": "#2F2F30",
           "neutral-content": "#EDEDED",
           "base-100": "#1A1A1A",
           "base-200": "#222222",
@@ -131,6 +166,11 @@ export default {
           "success": "#36B37E",
           "warning": "#F2A540",
           "error": "#E45858",
+
+          // DaisyUI Border Radius Override
+          "--rounded-box": "8px",      // للـ cards
+          "--rounded-btn": "6px",      // للـ buttons
+          "--rounded-badge": "6px",    // للـ badges
         },
       },
     ],
