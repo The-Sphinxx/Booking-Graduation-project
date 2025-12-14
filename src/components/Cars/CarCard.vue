@@ -1,11 +1,12 @@
 <template>
-  <div class="w-full sm:w-80 bg-white rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300">
+  <div class="w-full sm:w-80 bg-white rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 group">
     <!-- Image Section -->
-    <div class="relative bg-gradient-to-br from-amber-950 via-amber-900 to-amber-800 p-6 pb-8">
+    <div class="relative w-full h-64 sm:h-80 bg-gradient-to-br from-amber-950 via-amber-900 to-amber-800 overflow-hidden rounded-2xl">
       <img 
-        :src="getImage(car.mainImage)"
+        :src="getImage(car.images)"
         :alt="car.name"
-        class="w-full h-48 object-cover rounded-2xl shadow-xl"
+        class="w-full h-full object-cover object-center transition-transform duration-300 ease-in-out group-hover:scale-110"
+        @error="handleImageError"
       />
     </div>
 
@@ -42,15 +43,11 @@ defineProps({
 });
 defineEmits(['view']);
 
-// دالة لتحويل مسار الصورة من src/assets/images
-const getImage = (fileName) => {
-  try {
-    return require(`@/assets/images/${fileName}`);
-  } catch (e) {
-    console.error("Image not found:", fileName);
-    return ''; // لو الصورة مش موجودة يرجع فاضي بدل ما يكسر الكود
-  }
-}
+const getImage = (filePath) => filePath;
+
+const handleImageError = (event) => {
+  event.target.src = '/images-car/placeholder.jpg';
+};
 </script>
 
 <style scoped>

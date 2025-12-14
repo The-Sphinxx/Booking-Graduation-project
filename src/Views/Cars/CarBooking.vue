@@ -73,8 +73,9 @@
 import { onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useCarsStore } from "@/stores/carsStore.js";
-import CarHeroSection from "@/components/Cars/CarHeroSection.vue"; 
+import CarHeroSection from "@/components/Cars/CarHeroSection.vue";
 import LuxurySUVCardDynamic from "@/components/Cars/CarCard.vue";
+
 
 const store = useCarsStore();
 const router = useRouter();

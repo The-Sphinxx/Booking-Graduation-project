@@ -1092,8 +1092,398 @@
     }
   ],
   "hotels": [],
-  "cars": [],
-  "trips": [],
+   "cars": [
+    {
+      "id": 1,
+      "name": "Toyota Corolla",
+      "description": "Reliable compact sedan suitable for 4 passengers.",
+      "seats": 4,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Bluetooth", "Backup Camera"],
+      "images":[
+        "/images-car/ToyotaCorolla.avif",
+        "/images-car/ToyotaCorolla2.jpg",
+        "/images-car/ToyotaCorolla3.jpg",
+        "/images-car/ToyotaCorolla4.jpg"
+      ],
+      "price": 120,
+      "basePrice": 120,
+      "reviews": [
+        {"name": "John Doe", "rating": 5, "comment": "Perfect car for city trips. Comfortable and compact."},
+        {"name": "Sarah Ahmed", "rating": 5, "comment": "Reliable and smooth ride."}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Kia Carens",
+      "description": "Family MPV suitable for 5-6 passengers.",
+      "seats": 6,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Bluetooth", "Cruise Control"],
+      "mainImage": "/images-car/KiaCarens.avif",
+      "thumbnails": [
+        "/images-car/KiaCarens2.webp",
+        "/images-car/KiaCarens3.jpg"
+      ],
+      "price": 150,
+      "basePrice": 150,
+      "reviews": [
+        {"name": "Michael Chen", "rating": 5, "comment": "Spacious and comfortable for family trips."}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Toyota Rush",
+      "description": "Compact SUV ideal for 5-6 passengers with flexibility for city and trips.",
+      "seats": 6,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Bluetooth", "Sunroof"],
+      "mainImage": "/images-car/ToyotaRush.jpg",
+      "thumbnails": [
+        "/images-car/ToyotaRush2.webp",
+        "/images-car/ToyotaRush3.avif",
+        "/images-car/ToyotaRush4.jpg"
+      ],
+      "price": 160,
+      "basePrice": 160,
+      "reviews": [
+        {"name": "Alex Johnson", "rating": 5, "comment": "Versatile and smooth ride. Great for road trips."}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Mitsubishi Xpander",
+      "description": "Modern MPV for 5-6 passengers with comfortable interior.",
+      "seats": 6,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Bluetooth", "Entertainment System"],
+      "mainImage": "/images-car/MitsubishiXpander.jpg",
+      "thumbnails": [
+        "/images-car/MitsubishiXpander2.jpeg",
+        "/images-car/MitsubishiXpander3.webp",
+        "/images-car/MitsubishiXpander4.webp"
+      ],
+      "price": 155,
+      "basePrice": 155,
+      "reviews": [
+        {"name": "Fatima Hassan", "rating": 5, "comment": "Comfortable and roomy. Perfect for group trips."}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Toyota Land Cruiser",
+      "description": "Great for families exploring Cairo, Giza, and Alexandria.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Bluetooth", "Backup Camera"],
+      "mainImage": "/images-car/ToyotaLandCruiser.avif",
+      "thumbnails": [
+        "/images-car/ToyotaLandCruiser2.png",
+        "/images-car/ToyotaLandCruiser3.avif",
+        "/images-car/ToyotaLandCruiser4.jpg"
+      ],
+      "price": 150,
+      "basePrice": 150,
+      "reviews": [
+        {"name": "John Doe", "rating": 5, "comment": "Perfect car for family trips! Very comfortable and spacious."},
+        {"name": "Sarah Ahmed", "rating": 5, "comment": "Excellent service and the car was in pristine condition."},
+        {"name": "Michael Chen", "rating": 4, "comment": "Great vehicle, smooth ride across the desert roads."},
+        {"name": "Fatima Hassan", "rating": 5, "comment": "Highly recommend for long family journeys!"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Honda Pilot",
+      "description": "Perfect for family trips across major Egyptian cities.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Cruise Control", "USB Ports"],
+      "mainImage": "/images-car/HondaPilot.webp",
+      "thumbnails": [
+        "/images-car/HondaPilot2.avif",
+        "/images-car/HondaPilot3.avif"
+      ],
+      "price": 170,
+      "basePrice": 170,
+      "reviews": [
+        {"name": "Jane Smith", "rating": 4, "comment": "Smooth ride and comfy seats. Perfect for our Cairo tour."}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Ford Explorer",
+      "description": "Spacious and comfortable SUV for family adventures.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Leather Seats", "Sunroof"],
+      "mainImage": "/images-car/FordExplorer.jpg",
+      "thumbnails": [
+        "/images-car/FordExplorer2.png",
+        "/images-car/FordExplorer3.avif"
+      ],
+      "price": 180,
+      "basePrice": 180,
+      "reviews": [
+        {"name": "Alex Johnson", "rating": 5, "comment": "Loved it! Will rent again for our next trip."}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Chevrolet Tahoe",
+      "description": "Full-size SUV perfect for family adventures.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "4WD", "Premium Sound"],
+      "mainImage": "/images-car/ChevroletTahoe.avif",
+      "thumbnails": [
+        "/images-car/ChevroletTahoe2.jpg",
+        "/images-car/ChevroletTahoe3.jpg",
+        "/images-car/ChevroletTahoe4.webp"
+      ],
+      "price": 185,
+      "basePrice": 185,
+      "reviews": [
+        {"name": "Sarah Lee", "rating": 4, "comment": "Very spacious and comfortable for long drives."}
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Chevrolet Suburban",
+      "description": "Iconic large SUV for family adventures across Egypt.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Entertainment System", "Power Liftgate"],
+      "mainImage": "/images-car/ChevroletSuburban.avif",
+      "thumbnails": [
+        "/images-car/ChevroletSuburban2.avif",
+        "/images-car/ChevroletSuburban3.avif",
+        "/images-car/ChevroletSuburban4.avif"
+      ],
+      "price": 250,
+      "basePrice": 250,
+      "reviews": [
+        {"name": "Sophia Turner", "rating": 5, "comment": "Spacious and luxurious. Best choice for our family."}
+      ]
+    },
+    {
+      "id": 10,
+      "name": "GMC Yukon",
+      "description": "Large SUV with comfort and advanced tech.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Adaptive Cruise", "Lane Assist"],
+      "mainImage": "/images-car/GMCYukon.avif",
+      "thumbnails": [
+        "/images-car/GMCYukon2.webp",
+        "/images-car/GMCYukon3.webp",
+        "/images-car/GMCYukon4.avif"
+      ],
+      "price": 110,
+      "basePrice": 110,
+      "reviews": [
+        {"name": "Chris Martin", "rating": 5, "comment": "Very reliable and comfortable for desert trips."}
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Hyundai Palisade",
+      "description": "Comfortable family SUV with advanced features.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Wireless Charging", "Smart Trunk"],
+      "mainImage": "/images-car/HyundaiPalisade.webp",
+      "thumbnails": [
+        "/images-car/HyundaiPalisade2.avif",
+        "/images-car/HyundaiPalisade3.avif",
+        "/images-car/HyundaiPalisade4.webp"
+      ],
+      "price": 135,
+      "basePrice": 135,
+      "reviews": [
+        {"name": "Linda Green", "rating": 4, "comment": "Good car for long trips. Very comfortable."}
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Kia Telluride",
+      "description": "Family-friendly SUV with modern amenities.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Heated Seats", "Panoramic Roof"],
+      "mainImage": "/images-car/KiaTelluride.avif",
+      "thumbnails": [
+        "/images-car/KiaTelluride2.avif",
+        "/images-car/KiaTelluride3.avif",
+        "/images-car/KiaTelluride4.avif"
+      ],
+      "price": 145,
+      "basePrice": 145,
+      "reviews": [
+        {"name": "Tom White", "rating": 5, "comment": "Perfect for family trips! Highly recommended."}
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Mazda CX-9",
+      "description": "Elegant and spacious SUV for family trips.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Head-Up Display", "Bose Audio"],
+      "mainImage": "/images-car/MazdaCX-9.png",
+      "thumbnails": [
+        "/images-car/MazdaCX-92.jpg",
+        "/images-car/MazdaCX-93.jpg",
+        "/images-car/MazdaCX-94.jpg"
+      ],
+      "price": 270,
+      "basePrice": 270,
+      "reviews": [
+        {"name": "Emma Davis", "rating": 4, "comment": "Smooth ride, very spacious interior."}
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Nissan Patrol",
+      "description": "Reliable SUV with comfort and space for the whole family.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Off-Road Mode", "Tow Package"],
+      "mainImage": "/images-car/NissanPatrol.jpg",
+      "thumbnails": [
+        "/images-car/NissanPatrol2.jpg",
+        "/images-car/NissanPatrol3.jpg",
+        "/images-car/NissanPatrol4.jpg"
+      ],
+      "price": 260,
+      "basePrice": 260,
+      "reviews": [
+        {"name": "Mike Brown", "rating": 5, "comment": "Comfortable ride and powerful engine. Perfect!"}
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Subaru Ascent",
+      "description": "Family SUV with safety and comfort in mind.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "EyeSight Safety", "All-Wheel Drive"],
+      "mainImage": "/images-car/SubaruAscent.webp",
+      "thumbnails": [
+        "/images-car/SubaruAscent2.avif",
+        "/images-car/SubaruAscent3.avif",
+        "/images-car/SubaruAscent4.avif"
+      ],
+      "price": 300,
+      "basePrice": 300,
+      "reviews": [
+        {"name": "David Wilson", "rating": 5, "comment": "Comfortable for the whole family. Great safety features."}
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Volkswagen Atlas",
+      "description": "Spacious SUV perfect for family road trips.",
+      "seats": 7,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Digital Cockpit", "Ambient Lighting"],
+      "mainImage": "/images-car/VolkswagenAtlas.webp",
+      "thumbnails": [
+        "/images-car/VolkswagenAtlas2.jpg",
+        "/images-car/VolkswagenAtlas3.avif",
+        "/images-car/VolkswagenAtlas4.avif"
+      ],
+      "price": 275,
+      "basePrice": 275,
+      "reviews": [
+        {"name": "Anna Scott", "rating": 4, "comment": "Spacious and smooth ride. Family loved it!"}
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Toyota RAV4",
+      "description": "Compact SUV ideal for city and weekend trips.",
+      "seats": 4,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Bluetooth", "Rear Camera"],
+      "mainImage": "/images-car/ToyotaRAV4.avif",
+      "thumbnails": [
+        "/images-car/ToyotaRAV42.jpg",
+        "/images-car/ToyotaRAV43.jpg",
+        "/images-car/ToyotaRAV43.jpg",
+        "/images-car/ToyotaRAV43.jpg"
+      ],
+      "price": 120,
+      "basePrice": 120,
+      "reviews": [
+        {"name": "Liam Brown", "rating": 5, "comment": "Perfect for a small family. Easy to drive in Cairo."}
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Honda CR‑V",
+      "description": "Reliable SUV with excellent fuel efficiency for families.",
+      "seats": 4,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Sunroof", "Lane Assist"],
+      "mainImage": "/images-car/HondaCR‑V.webp",
+      "thumbnails": [
+        "/images-car/HondaCR‑V2.jpg",
+        "/images-car/HondaCR‑V3.jpg",
+        "/images-car/HondaCR‑V3.jpg",
+        "/images-car/HondaCR‑V3.jpg"
+      ],
+      "price": 130,
+      "basePrice": 130,
+      "reviews": [
+        {"name": "Olivia Smith", "rating": 4, "comment": "Compact and smooth ride. Great for family trips."}
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Mazda CX‑5",
+      "description": "Stylish and comfortable SUV for smaller families.",
+      "seats": 4,
+      "transmission": "Auto",
+      "features": ["GPS", "A/C", "Heated Seats", "Premium Audio"],
+      "mainImage": "/images-car/MazdaCX‑5.webp",
+      "thumbnails": [
+        "/images-car/MazdaCX‑52.jpg",
+        "/images-car/MazdaCX‑53.avif",
+        "/images-car/MazdaCX‑54.webp",
+        "/images-car/MazdaCX‑54.webp"
+      ],
+      "price": 140,
+      "basePrice": 140,
+      "reviews": [
+        {"name": "Ethan Davis", "rating": 5, "comment": "Very comfortable and smooth. Perfect for weekend trips."}
+      ]
+    },
+    {
+  "id": 20,
+  "name": "Toyota Avanza",
+  "description": "Compact MPV ideal for 5–7 passengers, perfect for city rides and family trips.",
+  "seats": 7,
+  "transmission": "Auto",
+  "features": ["GPS", "A/C", "Bluetooth", "Rear Camera"],
+  "mainImage": "/images-car/ToyotaAvanza.avif",
+  "thumbnails": [
+    "/images-car/ToyotaAvanza2.avif",
+    "/images-car/ToyotaAvanza3.avif",
+    "/images-car/ToyotaAvanza4.png"
+  ],
+  "price": 140,
+  "basePrice": 140,
+  "reviews": [
+    {
+      "name": "Mark Wilson",
+      "rating": 4,
+      "comment": "Good for families. Budget-friendly and comfortable."
+    }
+  ]
+}
+
+  ],
+    "trips": [],
   "reviews": [],
   "wishlist": [],
   "bookings": [],

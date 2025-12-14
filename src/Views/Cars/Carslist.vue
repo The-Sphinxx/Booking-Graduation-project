@@ -1,14 +1,9 @@
 <template>
-  <div class="p-6 bg-gray-100 min-h-screen">
+   <div class="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen">
     <!-- Hero Section -->
     <CarHeroSection @search="handleSearch" />
 
-```
-<!-- Title + Subtitle Between Hero and Filters -->
-<div class="my-6">
-  <h1 class="text-3xl font-bold text-black">Browse Cars</h1>
-  <p class="text-sm text-gray-500 mt-1">Find the perfect vehicle for your journey</p>
-</div>
+    
 
 <!-- Main Content: Filters + Cars Grid -->
 <div class="flex flex-col lg:flex-row gap-6 mt-4">
@@ -32,16 +27,16 @@
       <h3 class="font-semibold text-black mb-2">Car Type</h3>
       <div class="flex flex-col gap-1 text-sm text-black">
         <label class="flex items-center gap-2">
-          <input type="checkbox" value="SUV" v-model="filters.type" class="w-4 h-4 rounded-full border-2 border-[#C86A41] checked:bg-[#C86A41] appearance-none"/>
-          SUV
+          <input type="checkbox" value="Kia" v-model="filters.type" class="w-4 h-4 rounded-full border-2 border-[#C86A41] checked:bg-[#C86A41] appearance-none"/>
+          Kia
         </label>
         <label class="flex items-center gap-2">
           <input type="checkbox" value="Coupe" v-model="filters.type" class="w-4 h-4 rounded-full border-2 border-[#C86A41] checked:bg-[#C86A41] appearance-none"/>
           Coupe
         </label>
         <label class="flex items-center gap-2">
-          <input type="checkbox" value="Sedan" v-model="filters.type" class="w-4 h-4 rounded-full border-2 border-[#C86A41] checked:bg-[#C86A41] appearance-none"/>
-          Sedan
+          <input type="checkbox" value="Toyota " v-model="filters.type" class="w-4 h-4 rounded-full border-2 border-[#C86A41] checked:bg-[#C86A41] appearance-none"/>
+          Toyota 
         </label>
         <label class="flex items-center gap-2">
           <input type="checkbox" value="Hatchback" v-model="filters.type" class="w-4 h-4 rounded-full border-2 border-[#C86A41] checked:bg-[#C86A41] appearance-none"/>
@@ -197,5 +192,30 @@ function handleViewCar(car) {
 
 function handleSearch(query) {
   console.log("Search query:", query);
+}
+const loadCarData = async () => {
+  try {
+    loading.value = true
+    const response = await fetch('/db.json')
+    if (!response.ok) throw new Error('Failed to load data')
+    const data = await response.json()
+
+    allCars.value = data.cars || []
+
+    const carId = parseInt(route.params.id) || 1
+    const foundCar = allCars.value.find(c => c.id === carId)
+    
+    if (foundCar) {
+      car.value = foundCar
+      selectedImage.value = car.value.mainImage
+    } else {
+      error.value = 'Car not found'
+    }
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 }
 </script>
