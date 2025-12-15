@@ -1120,8 +1120,8 @@
       "seats": 6,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Bluetooth", "Cruise Control"],
-      "mainImage": "/images-car/KiaCarens.avif",
-      "thumbnails": [
+      "images":[
+        "/images-car/KiaCarens.avif",
         "/images-car/KiaCarens2.webp",
         "/images-car/KiaCarens3.jpg"
       ],
@@ -1138,8 +1138,8 @@
       "seats": 6,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Bluetooth", "Sunroof"],
-      "mainImage": "/images-car/ToyotaRush.jpg",
-      "thumbnails": [
+      "images":[
+        "/images-car/ToyotaRush.jpg",
         "/images-car/ToyotaRush2.webp",
         "/images-car/ToyotaRush3.avif",
         "/images-car/ToyotaRush4.jpg"
@@ -1157,8 +1157,8 @@
       "seats": 6,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Bluetooth", "Entertainment System"],
-      "mainImage": "/images-car/MitsubishiXpander.jpg",
-      "thumbnails": [
+      "images":[
+        "/images-car/MitsubishiXpander.jpg",
         "/images-car/MitsubishiXpander2.jpeg",
         "/images-car/MitsubishiXpander3.webp",
         "/images-car/MitsubishiXpander4.webp"
@@ -1176,8 +1176,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Bluetooth", "Backup Camera"],
-      "mainImage": "/images-car/ToyotaLandCruiser.avif",
-      "thumbnails": [
+      "images":[
+        "/images-car/ToyotaLandCruiser.avif",
         "/images-car/ToyotaLandCruiser2.png",
         "/images-car/ToyotaLandCruiser3.avif",
         "/images-car/ToyotaLandCruiser4.jpg"
@@ -1198,8 +1198,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Cruise Control", "USB Ports"],
-      "mainImage": "/images-car/HondaPilot.webp",
-      "thumbnails": [
+      "images":[
+        "/images-car/HondaPilot.webp",
         "/images-car/HondaPilot2.avif",
         "/images-car/HondaPilot3.avif"
       ],
@@ -1216,8 +1216,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Leather Seats", "Sunroof"],
-      "mainImage": "/images-car/FordExplorer.jpg",
-      "thumbnails": [
+      "images":[
+         "/images-car/FordExplorer.jpg",
         "/images-car/FordExplorer2.png",
         "/images-car/FordExplorer3.avif"
       ],
@@ -1234,8 +1234,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "4WD", "Premium Sound"],
-      "mainImage": "/images-car/ChevroletTahoe.avif",
-      "thumbnails": [
+      "images":[
+        "/images-car/ChevroletTahoe.avif",
         "/images-car/ChevroletTahoe2.jpg",
         "/images-car/ChevroletTahoe3.jpg",
         "/images-car/ChevroletTahoe4.webp"
@@ -1253,8 +1253,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Entertainment System", "Power Liftgate"],
-      "mainImage": "/images-car/ChevroletSuburban.avif",
-      "thumbnails": [
+      "images":[
+        "/images-car/ChevroletSuburban.avif",
         "/images-car/ChevroletSuburban2.avif",
         "/images-car/ChevroletSuburban3.avif",
         "/images-car/ChevroletSuburban4.avif"
@@ -1272,8 +1272,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Adaptive Cruise", "Lane Assist"],
-      "mainImage": "/images-car/GMCYukon.avif",
-      "thumbnails": [
+      "images":[
+         "/images-car/GMCYukon.avif",
         "/images-car/GMCYukon2.webp",
         "/images-car/GMCYukon3.webp",
         "/images-car/GMCYukon4.avif"
@@ -1291,8 +1291,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Wireless Charging", "Smart Trunk"],
-      "mainImage": "/images-car/HyundaiPalisade.webp",
-      "thumbnails": [
+      "images":[
+         "/images-car/HyundaiPalisade.webp",
         "/images-car/HyundaiPalisade2.avif",
         "/images-car/HyundaiPalisade3.avif",
         "/images-car/HyundaiPalisade4.webp"
@@ -1310,8 +1310,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Heated Seats", "Panoramic Roof"],
-      "mainImage": "/images-car/KiaTelluride.avif",
-      "thumbnails": [
+      "images":[
+        "/images-car/KiaTelluride.avif",
         "/images-car/KiaTelluride2.avif",
         "/images-car/KiaTelluride3.avif",
         "/images-car/KiaTelluride4.avif"
@@ -1329,8 +1329,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Head-Up Display", "Bose Audio"],
-      "mainImage": "/images-car/MazdaCX-9.png",
-      "thumbnails": [
+      "images":[
+      "/images-car/MazdaCX-9.png",
         "/images-car/MazdaCX-92.jpg",
         "/images-car/MazdaCX-93.jpg",
         "/images-car/MazdaCX-94.jpg"
@@ -1348,8 +1348,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Off-Road Mode", "Tow Package"],
-      "mainImage": "/images-car/NissanPatrol.jpg",
-      "thumbnails": [
+      "images":[
+        "/images-car/NissanPatrol.jpg",
         "/images-car/NissanPatrol2.jpg",
         "/images-car/NissanPatrol3.jpg",
         "/images-car/NissanPatrol4.jpg"
@@ -1367,8 +1367,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "EyeSight Safety", "All-Wheel Drive"],
-      "mainImage": "/images-car/SubaruAscent.webp",
-      "thumbnails": [
+      "images":[
+         "/images-car/SubaruAscent.webp",
         "/images-car/SubaruAscent2.avif",
         "/images-car/SubaruAscent3.avif",
         "/images-car/SubaruAscent4.avif"
@@ -1386,8 +1386,8 @@
       "seats": 7,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Digital Cockpit", "Ambient Lighting"],
-      "mainImage": "/images-car/VolkswagenAtlas.webp",
-      "thumbnails": [
+      "images":[
+         "/images-car/VolkswagenAtlas.webp",
         "/images-car/VolkswagenAtlas2.jpg",
         "/images-car/VolkswagenAtlas3.avif",
         "/images-car/VolkswagenAtlas4.avif"
@@ -1405,8 +1405,8 @@
       "seats": 4,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Bluetooth", "Rear Camera"],
-      "mainImage": "/images-car/ToyotaRAV4.avif",
-      "thumbnails": [
+      "images":[
+        "/images-car/ToyotaRAV4.avif",
         "/images-car/ToyotaRAV42.jpg",
         "/images-car/ToyotaRAV43.jpg",
         "/images-car/ToyotaRAV43.jpg",
@@ -1425,8 +1425,8 @@
       "seats": 4,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Sunroof", "Lane Assist"],
-      "mainImage": "/images-car/HondaCR‑V.webp",
-      "thumbnails": [
+      "images":[
+      "/images-car/HondaCR‑V.webp",
         "/images-car/HondaCR‑V2.jpg",
         "/images-car/HondaCR‑V3.jpg",
         "/images-car/HondaCR‑V3.jpg",
@@ -1445,8 +1445,8 @@
       "seats": 4,
       "transmission": "Auto",
       "features": ["GPS", "A/C", "Heated Seats", "Premium Audio"],
-      "mainImage": "/images-car/MazdaCX‑5.webp",
-      "thumbnails": [
+      "images":[
+      "/images-car/MazdaCX‑5.webp",
         "/images-car/MazdaCX‑52.jpg",
         "/images-car/MazdaCX‑53.avif",
         "/images-car/MazdaCX‑54.webp",
@@ -1465,8 +1465,8 @@
   "seats": 7,
   "transmission": "Auto",
   "features": ["GPS", "A/C", "Bluetooth", "Rear Camera"],
-  "mainImage": "/images-car/ToyotaAvanza.avif",
-  "thumbnails": [
+      "images":[
+    "/images-car/ToyotaAvanza.avif",
     "/images-car/ToyotaAvanza2.avif",
     "/images-car/ToyotaAvanza3.avif",
     "/images-car/ToyotaAvanza4.png"
