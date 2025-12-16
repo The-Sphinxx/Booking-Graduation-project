@@ -138,7 +138,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { CalendarIcon, MapPinIcon, MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
+//import { CalendarIcon, MapPinIcon, MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
 import heroImage from "@/assets/images/CarHeroSection.jpg";
 
 const location = ref("");

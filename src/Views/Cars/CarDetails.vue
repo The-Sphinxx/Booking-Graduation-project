@@ -134,7 +134,7 @@ import { onMounted, computed, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useCarsStore } from "@/stores/carsStore.js";
 import LuxurySUVCardDynamic from "@/components/Cars/CarCard.vue";
-import { Star } from 'lucide-vue-next';
+//import { Star } from 'lucide-vue-next';
 
 const store = useCarsStore();
 const router = useRouter();
