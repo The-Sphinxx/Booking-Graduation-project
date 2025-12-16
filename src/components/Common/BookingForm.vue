@@ -186,7 +186,7 @@ import { ref, computed, watch } from 'vue';
 import DatePicker from '@/components/Common/DatePicker.vue';
 import TimePicker from '@/components/Common/TimePicker.vue';
 import GuestSelector from '@/components/Common/GuestSelector.vue';
-import { calculateBookingCosts, validateBookingData, extractPrice, formatPrice as formatPriceUtil } from '@/utils/bookingCalculator.js';
+import { calculateBookingCosts, validateBookingData, extractPrice, formatPrice as formatPriceUtil } from '@/Utils/bookingCalculator.js';
 
 const props = defineProps({
   type: {
