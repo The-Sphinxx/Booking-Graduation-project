@@ -172,6 +172,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useBookingStore } from '@/stores/bookingStore';
 import { useAttractionStore } from '@/stores/attractionStore';
 import Carousel from '@/components/Common/Carousel.vue';
 import Rating from '@/components/Common/Rating.vue';
@@ -182,6 +183,7 @@ import AttractionCard from '@/components/Attractions/AttractionCard.vue';
 
 const route = useRoute();
 const router = useRouter();
+const bookingStore = useBookingStore();
 const attractionStore = useAttractionStore();
 
 // State
@@ -245,23 +247,34 @@ const fetchAttraction = async () => {
   }
 };
 
-const handleBooking = async (bookingDetails) => {
+const handleBooking = async (eventData) => {
   bookingLoading.value = true;
   
   try {
-    console.log('Booking details:', bookingDetails);
+    const { bookingData } = eventData;
     
-    // Here you would call your booking API
-    // await attractionStore.bookAttraction(attraction.value.id, bookingDetails);
+    // Initialize booking in store
+    bookingStore.initializeBooking('attraction', attraction.value.id, attraction.value);
     
-    // For now, just show success message
-    alert('Booking successful!');
+    // Update store with form data
+    Object.keys(bookingData).forEach(key => {
+      bookingStore.updateBookingData(key, bookingData[key]);
+    });
+
+    // Validate (double check)
+    if (!bookingStore.isBookingValid) {
+      throw new Error('Invalid booking data');
+    }
+
+    // Go to Review Page
+    router.push({ 
+      name: 'AttractionReview', 
+      params: { id: attraction.value.id } 
+    });
     
-    // Redirect to booking confirmation page
-    // router.push({ name: 'BookingConfirmation', params: { id: bookingId } });
   } catch (err) {
-    console.error('Booking error:', err);
-    alert('Booking failed. Please try again.');
+    console.error('Booking init error:', err);
+    alert('Failed to proceed to booking. Please try again.');
   } finally {
     bookingLoading.value = false;
   }
