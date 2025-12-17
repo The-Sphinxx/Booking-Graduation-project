@@ -43,7 +43,7 @@ export const useAttractionStore = defineStore('attraction', {
 
     // Get attraction by ID
     getAttractionById: (state) => (id) => {
-      return state.attractions.find(attr => attr.id === parseInt(id));
+      return state.attractions.find(attr => attr.id == id);
     },
 
     // Get unique cities
@@ -137,7 +137,7 @@ async fetchAttractionById(id) {
 
     // 2) ابحث محلياً
     let attraction = this.attractions.find(
-      (attr) => attr.id === parseInt(id)
+      (attr) => attr.id == id
     );
 
     if (attraction) {

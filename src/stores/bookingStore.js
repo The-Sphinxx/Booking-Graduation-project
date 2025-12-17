@@ -6,8 +6,8 @@ import { calculateBookingCosts, validateBookingData } from '../Utils/bookingCalc
 export const useBookingStore = defineStore('booking', {
     state: () => ({
         bookings: [],
-        currentBooking: null,
-        bookingInProgress: null,
+        currentBooking: JSON.parse(localStorage.getItem('currentBooking')) || null,
+        bookingInProgress: JSON.parse(localStorage.getItem('bookingInProgress')) || null,
         loading: false,
         error: null,
         validationErrors: []
@@ -77,6 +77,7 @@ export const useBookingStore = defineStore('booking', {
                 bookingData: this.getDefaultBookingData(type)
             };
             this.validationErrors = [];
+            this.persistState();
         },
 
         /**
@@ -148,9 +149,10 @@ export const useBookingStore = defineStore('booking', {
                     const days = Math.ceil(
                         (new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)
                     );
-                    this.bookingInProgress.bookingData.days = Math.max(0, days);
+                this.bookingInProgress.bookingData.days = Math.max(0, days);
                 }
             }
+            this.persistState();
         },
 
         /**
@@ -161,6 +163,7 @@ export const useBookingStore = defineStore('booking', {
 
             const currentValue = this.bookingInProgress.bookingData[field] || 0;
             this.bookingInProgress.bookingData[field] = currentValue + 1;
+            this.persistState();
         },
 
         /**
@@ -173,6 +176,7 @@ export const useBookingStore = defineStore('booking', {
             if (currentValue > 1) {
                 this.bookingInProgress.bookingData[field] = currentValue - 1;
             }
+            this.persistState();
         },
 
         /**
@@ -221,6 +225,7 @@ export const useBookingStore = defineStore('booking', {
                     type: this.bookingInProgress.type,
                     itemId: this.bookingInProgress.itemId,
                     itemName: this.bookingInProgress.itemName,
+                    itemData: this.bookingInProgress.itemData, // Key fix: Preserve item details (coords, city, etc.)
                     bookingData: this.bookingInProgress.bookingData,
                     pricing: costs,
                     status: 'pending',
@@ -237,6 +242,7 @@ export const useBookingStore = defineStore('booking', {
 
                 this.bookings.push(result);
                 this.currentBooking = result;
+                this.persistState();
 
                 return result;
             } catch (error) {
@@ -344,6 +350,13 @@ export const useBookingStore = defineStore('booking', {
             } finally {
                 this.loading = false;
             }
+        },
+        /**
+         * Persist state to localStorage
+         */
+        persistState() {
+            localStorage.setItem('bookingInProgress', JSON.stringify(this.bookingInProgress));
+            localStorage.setItem('currentBooking', JSON.stringify(this.currentBooking));
         }
     }
 });

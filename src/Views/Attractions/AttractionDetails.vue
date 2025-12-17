@@ -13,7 +13,7 @@
       </button>
     </div>
 
-    <div v-else-if="attraction" class="bg-base-200 pb-16">
+    <div v-else-if="attraction" class="bg-base-200 pb-16 !overflow-visible">
       <div class="page-container py-4">
         <div class="flex items-center gap-2 text-sm text-base-content/70">
           <router-link to="/" class="hover:text-primary">Home</router-link>
@@ -32,7 +32,7 @@
         />
       </div>
 
-      <div class="page-container">
+      <div class="page-container !overflow-visible">
         <div class="mb-8">
           <h1 class="text-3xl lg:text-4xl font-bold text-primary font-cairo mb-4">
             {{ attraction.name }}
@@ -56,7 +56,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          <div class="lg:col-span-2 space-y-8">
+          <div ref="contentColumn" class="lg:col-span-2 space-y-8">
             <div class="bg-base-100 rounded-lg shadow-lg p-8">
               <div class="flex items-center gap-3 mb-6">
                 <div class="w-1 h-8 bg-primary rounded-full"></div>
@@ -131,9 +131,16 @@
           </div>
 
 
-          <!-- Right Column: Booking Form (Sticky) -->
-          <div class="lg:col-span-1 bg-red-500">
-            <div class="sticky top-4">
+          <!-- Right Column: Booking Form (Sticky JS) -->
+          <div ref="bookingColumn" class="lg:col-span-1 h-full min-h-[500px] relative">
+            <!-- Placeholder to prevent layout shift when fixed -->
+            <div ref="bookingWrapper" :style="{ minHeight: isSticky ? '1px' : 'auto' }"></div>
+            
+            <div 
+              ref="stickyForm"
+              :style="stickyStyle"
+              :class="{ 'fixed top-24 z-50': isSticky }"
+            >
               <BookingForm
                 type="attraction"
                 :base-price="attraction.price"
@@ -170,7 +177,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookingStore } from '@/stores/bookingStore';
 import { useAttractionStore } from '@/stores/attractionStore';
@@ -309,9 +316,73 @@ watch(() => route.params.id, () => {
   }
 });
 
+// Sticky Logic
+const bookingWrapper = ref(null);
+const stickyForm = ref(null);
+const isSticky = ref(false);
+const stickyStyle = ref({});
+const bookingColumn = ref(null);
+const contentColumn = ref(null);
+
+const handleScroll = () => {
+  if (!bookingWrapper.value || !bookingColumn.value || !contentColumn.value) return;
+
+  const rect = bookingWrapper.value.getBoundingClientRect();
+  const contentRect = contentColumn.value.getBoundingClientRect();
+  const formRect = stickyForm.value.getBoundingClientRect();
+  // Use current form height, or if hidden/fixed, assume standard or measure. 
+  // stickyForm is the moving element.
+  const formHeight = stickyForm.value.offsetHeight;
+  
+  const offsetTop = 100; // 100px from top
+
+  // Calculate the stop point (relative to viewport)
+  // When contentRect.bottom aligns with (offsetTop + formHeight)
+  // If contentRect.bottom < offsetTop + formHeight, we are past the end.
+  
+  if (contentRect.bottom <= offsetTop + formHeight) {
+    // STATE: Bottom Reached (Docked)
+    isSticky.value = false;
+    stickyStyle.value = {
+      position: 'absolute',
+      bottom: '0',
+      left: '0',
+      width: '100%', // Match parent width
+      zIndex: 40
+    };
+  } else if (rect.top <= offsetTop) {
+    // STATE: Sticky (Fixed)
+    isSticky.value = true;
+    stickyStyle.value = {
+      position: 'fixed',
+      top: `${offsetTop}px`,
+      width: `${bookingWrapper.value.getBoundingClientRect().width}px`, // Match wrapper width
+      zIndex: 50
+    };
+  } else {
+    // STATE: Top (Normal)
+    isSticky.value = false;
+    stickyStyle.value = {};
+  }
+};
+
+const handleResize = () => {
+  if (isSticky.value && bookingWrapper.value) {
+    const rect = bookingWrapper.value.getBoundingClientRect();
+    stickyStyle.value.width = `${rect.width}px`;
+  }
+};
+
 // Lifecycle
 onMounted(() => {
   fetchAttraction();
+  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('resize', handleResize);
 });
 </script>
 
