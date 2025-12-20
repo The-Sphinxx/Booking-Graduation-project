@@ -5377,7 +5377,7 @@
     },
     {
       "id": "4",
-      "title": "Hurghada Beach & Desert Safari",
+      "title": "Hurghada Beach & Safari",
       "description": "Combine beach relaxation with thrilling quad biking and Bedouin culture experience.",
       "price": 8400,
       "rating": 4.7,
@@ -5977,6 +5977,199 @@
       "paymentStatus": "pending",
       "bookingNumber": "BK1766081669982953",
       "bookingDate": "2025-12-18T18:14:29.982Z"
+    },
+    {
+      "id": "3be8",
+      "userId": null,
+      "type": "trip",
+      "itemId": "3",
+      "itemName": "Sharm El Sheikh ",
+      "itemData": {
+        "id": "3",
+        "title": "Sharm El Sheikh ",
+        "city": "Sharm El Sheikh",
+        "description": "Escape to the perfect beach getaway in Sharm El Sheikh, one of Egypt's most stunning Red Sea destinations. This all-inclusive package combines relaxation on pristine beaches, world-class snorkeling and diving, and luxurious resort amenities.",
+        "price": 12600,
+        "rating": 4.8,
+        "reviews": 15,
+        "duration": "5 Days / 4 Nights",
+        "image": "/images/4.jpg",
+        "images": [
+          "/images/4.jpg",
+          "/images/3.png",
+          "/images/8.png",
+          "/images/5.jpg"
+        ],
+        "maxPeople": 40,
+        "availableDates": [
+          "1 Dec - 5 Dec 2024",
+          "12 Dec - 16 Dec 2024",
+          "22 Dec - 26 Dec 2024"
+        ],
+        "highlights": [
+          "5 nights accommodation in 5 stars resort",
+          "Unlimited soft drinks, mineral waters, and alcoholic beverages",
+          "Snorkeling equipment",
+          "Daily entertainment program",
+          "All meals (Breakfast, Lunch, Dinner)",
+          "Round trip airport transfers",
+          "Access to resort facilities (pools, gym, spa)",
+          "Free Wi-Fi throughout resort"
+        ],
+        "itinerary": [
+          {
+            "day": 1,
+            "title": "Arrival & Beach Relaxation",
+            "activities": [
+              {
+                "time": "10:00 AM",
+                "title": "Arrival",
+                "desc": "Airport Pickup & Resort Check-in. Our representative will greet you at Sharm El Sheikh International Airport and transfer you to your luxury resort. Check-in and receive your welcome drink."
+              },
+              {
+                "time": "12:00 PM",
+                "title": "Welcome Lunch at Resort",
+                "desc": "Savor a delicious buffet lunch featuring international and local Egyptian cuisine at the resort's main restaurant."
+              },
+              {
+                "time": "02:00 PM",
+                "title": "Beach Time & Pool Relaxation",
+                "desc": "Spend the afternoon relaxing on the resort's private beach or by the pool. Take your first dip in the crystal-clear Red Sea waters."
+              },
+              {
+                "time": "07:00 PM",
+                "title": "Dinner & Evening Entertainment",
+                "desc": "Enjoy a gourmet dinner followed by live entertainment at the resort's theater. Shows include traditional folklore shows or international performances."
+              }
+            ]
+          },
+          {
+            "day": 2,
+            "title": "Snorkeling Adventure & Beach Activities",
+            "activities": [
+              {
+                "time": "09:00 AM",
+                "title": "Breakfast & Preparation",
+                "desc": "Breakfast & Preparation. Start your day with a hearty breakfast buffet. Pick up your snorkeling equipment from the water center."
+              },
+              {
+                "time": "11:00 AM",
+                "title": "Guided Snorkeling Tour",
+                "desc": "Join our experienced guide for an unforgettable snorkeling experience at Ras Mohammed National Park or nearby coral reefs. Explore vibrant marine life."
+              },
+              {
+                "time": "01:00 PM",
+                "title": "Beachside Lunch",
+                "desc": "Enjoy lunch at the beach restaurant with stunning sea views. Fresh seafood and salads are our picks."
+              },
+              {
+                "time": "03:00 PM",
+                "title": "Free Time & Water Sports",
+                "desc": "Relax on the beach or try optional activities like diving, parasailing, or banana boat rides (additional cost)."
+              },
+              {
+                "time": "08:00 PM",
+                "title": "Themed Dinner Night",
+                "desc": "Experience a special themed dinner (Italian, Asian, or Egyptian Night depending on the day). Dance the night away at the resort bar."
+              }
+            ]
+          },
+          {
+            "day": 3,
+            "title": "Leisure Morning & Departure",
+            "activities": [
+              {
+                "time": "09:00 AM",
+                "title": "Farewell Breakfast",
+                "desc": "Farewell Breakfast. Start your day with a final breakfast. Soak up remaining sun rays before check-out."
+              },
+              {
+                "time": "11:00 AM",
+                "title": "Final Beach Time",
+                "desc": "Savor the last moments on the beach."
+              },
+              {
+                "time": "12:00 PM",
+                "title": "Check-out & Airport Transfer",
+                "desc": "Check out from the resort. Our driver will transfer you to the airport for your flight home."
+              }
+            ]
+          }
+        ],
+        "hotel": {
+          "name": "Sharm Grand Plaza Resort",
+          "rating": 4.8,
+          "image": "/images/4.jpg",
+          "features": [
+            "5 Stars",
+            "Private Beach",
+            "3 Pools",
+            "Spa & Wellness",
+            "5 Restaurants",
+            "Kids Club"
+          ]
+        },
+        "reviewsList": [
+          {
+            "id": 1,
+            "user": "Ahmed Ali",
+            "rating": 5,
+            "date": "2 days ago",
+            "text": "Absolutely amazing experience! The resort was beautiful, the food was delicious, and the snorkeling was breathtaking. Highly recommend!"
+          },
+          {
+            "id": 2,
+            "user": "Monica Bellucci",
+            "rating": 5,
+            "date": "1 week ago",
+            "text": "A perfect vacation. Everything was organized perfectly, from the airport transfer to the daily activities. Will definitely come back."
+          },
+          {
+            "id": 3,
+            "user": "John Doe",
+            "rating": 4,
+            "date": "2 weeks ago",
+            "text": "Great trip overall. The hotel is fantastic. The only downside was the flight delay, but that's not the agency's fault."
+          }
+        ],
+        "amenities": {
+          "transport": true,
+          "accommodation": true,
+          "meals": 3
+        }
+      },
+      "bookingData": {
+        "date": "1 Dec - 5 Dec 2024",
+        "guests": {
+          "adults": 3,
+          "children": 1
+        }
+      },
+      "pricing": {
+        "basePrice": 12600,
+        "subtotal": 44100,
+        "serviceFee": 2205,
+        "taxes": 6174,
+        "total": 52479,
+        "duration": 4
+      },
+      "status": "pending",
+      "guestInfo": {
+        "firstName": "ahmed",
+        "lastName": "roby",
+        "email": "ahmeeed@gmail.com",
+        "phone": "01096580123",
+        "specialRequests": ""
+      },
+      "paymentInfo": {
+        "method": "arrival",
+        "cardLastFour": null,
+        "cardType": null,
+        "paidAt": null
+      },
+      "paymentStatus": "pending",
+      "bookingNumber": "BK1766226171667340",
+      "bookingDate": "2025-12-20T10:22:51.667Z"
     }
   ]
 }

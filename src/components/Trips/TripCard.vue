@@ -87,7 +87,7 @@
         <router-link :to="`/trips/details/${trip.id}`" class="btn btn-outline btn-primary btn-sm w-full font-cairo h-10 hover:!text-white">
           View Details
         </router-link>
-        <router-link :to="`/trips/booking/${trip.id}`" class="btn btn-primary btn-sm w-full font-cairo h-10 text-white shadow-lg shadow-primary/30">
+        <router-link :to="`/trips/details/${trip.id}`" class="btn btn-primary btn-sm w-full font-cairo h-10 text-white shadow-lg shadow-primary/30">
           Book Now
         </router-link>
       </div>

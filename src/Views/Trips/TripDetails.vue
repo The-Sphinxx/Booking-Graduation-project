@@ -252,8 +252,8 @@ const allTrips = computed(() => {
 });
 
 const loadTrip = () => {
-    const id = parseInt(route.params.id);
-    trip.value = allTrips.value.find(t => t.id === id);
+    const id = route.params.id;
+    trip.value = allTrips.value.find(t => t.id == id);
     
     if (trip.value) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
