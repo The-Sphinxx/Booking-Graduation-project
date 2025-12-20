@@ -150,7 +150,6 @@ const handlePlaceOrder = async () => {
   } catch (err) {
     error.value = err.message || 'Failed to place order';
     console.error('Order error:', err);
-    // alert(`❌ Failed to place order: ${error.value}`); // Basic alert
   } finally {
     submitting.value = false;
   }

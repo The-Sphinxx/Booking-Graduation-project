@@ -4987,7 +4987,6 @@
     }
   ],
   "hotels": [],
-  
   "cars": [
     {
       "id": "1",
@@ -6253,6 +6252,201 @@
       },
       "bookingNumber": "BK1766093996036559",
       "bookingDate": "2025-12-18T21:39:56.036Z",
+      "paymentStatus": "pending",
+      "paymentInfo": {
+        "method": "arrival",
+        "cardLastFour": null,
+        "cardType": null,
+        "paidAt": null
+      }
+    },
+    {
+      "id": "275a",
+      "userId": "google_1766087268401",
+      "type": "attraction",
+      "itemId": "5",
+      "itemName": "Marina Beach",
+      "itemData": {
+        "id": "5",
+        "name": "Marina Beach",
+        "city": "Alexandria",
+        "rating": 4.6,
+        "categories": [
+          "NATURE",
+          "FAMILY",
+          "BEACHES"
+        ],
+        "images": [
+          "/images/marina_beach/main.jpg",
+          "/images/marina_beach/view_2.jpg",
+          "/images/marina_beach/view_3.jpg",
+          "/images/marina_beach/view_4.jpg"
+        ],
+        "latitude": 31.2185,
+        "longitude": 29.9079,
+        "description": "Popular Alexandria seaside area and beach promenade.",
+        "overview": "Marina Beach is one of the most famous public beaches in Alexandria, located near the Qaitbay Citadel. It offers clean sands and relatively clear Mediterranean waters, making it a favorite for local families and tourists seeking a convenient beach day. The area features a long promenade lined with cafes and facilities, though access to the private sections of the beach usually requires a paid entrance ticket.",
+        "highlights": [
+          "Clean Mediterranean water",
+          "Long seaside promenade",
+          "Proximity to Qaitbay Citadel"
+        ],
+        "amenities": [
+          "Cafes and Restaurants",
+          "Restrooms (Paid)",
+          "Beach Chairs/Umbrellas (Paid)",
+          "Changing Rooms (Paid)",
+          "Parking (Limited)"
+        ],
+        "paymentId": "pay_0005",
+        "price": "Free to enter (Paid beach access varies)",
+        "reviews": {
+          "overallRating": 4.6,
+          "totalReviews": 2105,
+          "ratingCriteria": {
+            "experience": 4.5,
+            "staff": 4.4,
+            "accessibility": 4.6,
+            "facilities": 4.3,
+            "valueForMoney": 4.7
+          }
+        },
+        "userReviews": [
+          {
+            "id": 9,
+            "userName": "Rana Sherif",
+            "userImage": "/images/users/user_f_9.jpg",
+            "rating": 4.7,
+            "date": "July 2024",
+            "comment": "A clean and beautiful beach, perfect for a fun family day out by the sea."
+          },
+          {
+            "id": 10,
+            "userName": "John O'Connell",
+            "userImage": "/images/users/user_m_10.jpg",
+            "rating": 4.5,
+            "date": "August 2024",
+            "comment": "Nice beach with clear water. Gets crowded in peak summer, but generally well-maintained."
+          }
+        ]
+      },
+      "bookingData": {
+        "date": "2025-12-25",
+        "guests": 2
+      },
+      "pricing": {
+        "basePrice": 0,
+        "subtotal": 0,
+        "serviceFee": 0,
+        "taxes": 0,
+        "total": 0,
+        "duration": 1
+      },
+      "status": "pending",
+      "guestInfo": {
+        "firstName": "bb",
+        "lastName": "nn",
+        "email": "nnn@gamil.com",
+        "phone": "01147296027",
+        "specialRequests": "sss"
+      },
+      "bookingNumber": "BK1766108350956246",
+      "bookingDate": "2025-12-19T01:39:10.956Z",
+      "paymentStatus": "pending",
+      "paymentInfo": {
+        "method": "arrival",
+        "cardLastFour": null,
+        "cardType": null,
+        "paidAt": null
+      }
+    },
+    {
+      "id": "f3df",
+      "userId": "google_1766087268401",
+      "type": "car",
+      "itemId": "6",
+      "itemName": "Honda Pilot",
+      "itemData": {
+        "id": "6",
+        "name": "Honda Pilot",
+        "description": "Perfect for family trips across major Egyptian cities.",
+        "seats": 7,
+        "transmission": "Auto",
+        "features": [
+          "GPS",
+          "A/C",
+          "Cruise Control",
+          "USB Ports"
+        ],
+        "images": [
+          "/images-car/HondaPilot.webp",
+          "/images-car/HondaPilot2.avif",
+          "/images-car/HondaPilot3.avif"
+        ],
+        "price": 170,
+        "basePrice": 170,
+        "overview": "Honda Pilot is a reliable SUV with ample seating for 7 passengers, perfect for family excursions across Egypt. Modern features ensure comfort and convenience.",
+        "highlights": [
+          "Spacious seating",
+          "Comfortable ride",
+          "Family-friendly",
+          "Advanced tech features"
+        ],
+        "amenities": [
+          "Air Conditioning",
+          "GPS Navigation",
+          "Cruise Control",
+          "USB Ports",
+          "Bluetooth Connectivity",
+          "Entertainment System"
+        ],
+        "reviews": {
+          "overallRating": 4.7,
+          "totalReviews": 1023,
+          "ratingCriteria": {
+            "experience": 4.7,
+            "comfort": 4.6,
+            "reliability": 4.8,
+            "valueForMoney": 4.6,
+            "features": 4.5
+          }
+        },
+        "userReviews": [
+          {
+            "id": 1,
+            "userName": "Jane Smith",
+            "userImage": "/images/users/user_f_6.jpg",
+            "rating": 4,
+            "date": "February 2025",
+            "comment": "Smooth ride and comfy seats. Perfect for our Cairo tour."
+          }
+        ]
+      },
+      "bookingData": {
+        "pickupDate": "2025-12-23",
+        "returnDate": "2025-12-31",
+        "pickupTime": "00:00",
+        "passengers": 2,
+        "days": 8
+      },
+      "pricing": {
+        "basePrice": 170,
+        "subtotal": 1360,
+        "serviceFee": 68,
+        "taxes": 190.4,
+        "total": 1618.4,
+        "duration": 8
+      },
+      "status": "pending",
+      "guestInfo": {
+        "firstName": "sss",
+        "lastName": "aaaaaa",
+        "email": "as.@gmail.com",
+        "phone": "01147296027",
+        "specialRequests": "sss"
+      },
+      "bookingNumber": "BK1766241876331512",
+      "bookingDate": "2025-12-20T14:44:36.331Z",
       "paymentStatus": "pending",
       "paymentInfo": {
         "method": "arrival",
