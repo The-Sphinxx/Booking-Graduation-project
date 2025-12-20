@@ -91,10 +91,9 @@ const searchParams = ref({});
 
 // Load Data
 onMounted(() => {
-  // In a real app, this might be an API call
-  // Access the first array in the trips array from db.json
-  if (tripsData.trips && tripsData.trips[0]) {
-    trips.value = tripsData.trips[0];
+  // Access the trips array directly from db.json
+  if (tripsData.trips) {
+    trips.value = tripsData.trips;
   } else {
     trips.value = [];
   }

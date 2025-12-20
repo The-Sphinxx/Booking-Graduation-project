@@ -177,81 +177,20 @@
                 
                 <!-- Price Card -->
                 <div class="bg-base-100 rounded-2xl shadow-xl border border-base-200 p-6 overflow-hidden relative">
-                    <!-- Removed Dollar Icon Background -->
-                    
-                    <div class="mb-6 relative z-10">
-                        <span class="text-sm text-base-content/60 font-cairo block mb-1">Starting from</span>
-                        <div class="flex items-baseline gap-1">
-                             <h2 class="text-4xl font-bold text-primary font-cairo">{{ trip.price.toLocaleString() }} $</h2>
-                             <span class="text-sm text-base-content/50">/ person</span>
-                        </div>
-                    </div>
 
-                    <!-- Booking Form -->
-                    <div class="space-y-5 relative z-10">
-                        <!-- Date Selection -->
-                        <div v-if="trip.availableDates && trip.availableDates.length">
-                            <label class="label text-sm font-bold text-base-content/70 font-cairo pb-1">Select Date</label>
-                            <div class="flex flex-col gap-2">
-                                <div 
-                                    v-for="(date, idx) in trip.availableDates" 
-                                    :key="idx"
-                                    class="bg-base-200/50 rounded-lg p-3 flex justify-between items-center cursor-pointer border transition-all hover:border-primary/50"
-                                    :class="selectedDate === date ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-transparent'"
-                                    @click="selectedDate = date"
-                                >
-                                    <span class="font-bold text-sm">{{ date }}</span>
-                                    <div class="w-4 h-4 rounded-full border border-base-content/20 flex items-center justify-center">
-                                        <div v-if="selectedDate === date" class="w-2.5 h-2.5 rounded-full bg-primary"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Guests -->
-                        <div> 
-                            <label class="label text-sm font-bold text-base-content/70 font-cairo pb-1">Guests</label>
-                            <div class="bg-base-200/50 rounded-lg p-1 flex items-center justify-between border border-transparent hover:border-base-content/10">
-                                   <div class="p-2">
-                                     <span class="block text-xs font-bold text-base-content/80">Adults</span>
-                                     <span class="text-xs text-base-content/40">Age 13+</span>
-                                   </div>
-                                   <div class="flex items-center gap-3 pr-2">
-                                       <button class="btn btn-circle btn-xs btn-ghost bg-white shadow-sm" @click="guests.adults > 1 ? guests.adults-- : null" :disabled="guests.adults <= 1">-</button>
-                                       <span class="font-bold w-4 text-center">{{ guests.adults }}</span>
-                                       <button class="btn btn-circle btn-xs btn-ghost bg-white shadow-sm" @click="guests.adults < (trip.maxPeople || 10) ? guests.adults++ : null">+</button>
-                                   </div>
-                            </div>
-                             <div class="bg-base-200/50 rounded-lg p-1 flex items-center justify-between border border-transparent hover:border-base-content/10 mt-2">
-                                   <div class="p-2">
-                                     <span class="block text-xs font-bold text-base-content/80">Children</span>
-                                     <span class="text-xs text-base-content/40">Age 2-12</span>
-                                   </div>
-                                   <div class="flex items-center gap-3 pr-2">
-                                       <button class="btn btn-circle btn-xs btn-ghost bg-white shadow-sm" @click="guests.children > 0 ? guests.children-- : null" :disabled="guests.children <= 0">-</button>
-                                       <span class="font-bold w-4 text-center">{{ guests.children }}</span>
-                                       <button class="btn btn-circle btn-xs btn-ghost bg-white shadow-sm" @click="guests.children++">+</button>
-                                   </div>
-                            </div>
-                        </div>
-
-                        <!-- Total -->
-                        <div class="pt-4 border-t border-dashed border-base-300 flex justify-between items-center">
-                            <span class="font-bold text-base-content/80">Total</span>
-                            <span class="font-bold text-2xl text-primary">{{ totalPrice.toLocaleString() }} $</span>
-                        </div>
-
-                        <!-- Kept shadow and blur as requested -->
-                        <button class="btn btn-primary w-full text-white font-bold font-cairo h-12 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all transform hover:-translate-y-0.5">
-                            Proceed to Booking
-                        </button>
-                        
-                        <div class="flex items-center justify-center gap-2 text-[10px] text-base-content/40">
-                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                             Free cancellation up to 48 hours before
-                        </div>
-                    </div>
+                <!-- Booking Form Component -->
+                <div v-if="trip">
+                    <BookingForm 
+                        type="trip"
+                        :base-price="trip.price"
+                        :available-dates="trip.availableDates"
+                        :max-people="trip.maxPeople || 10"
+                        :loading="false"
+                        @submit="handleBooking"
+                    />
                 </div>
+            </div>
 
                 <!-- Assistance Card -->
                 <!-- <div class="bg-primary/5 rounded-xl p-4 border border-primary/10 flex items-center gap-4">
@@ -290,31 +229,26 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { useBookingStore } from '@/stores/bookingStore';
+
 // Importing directly from db.json. 
 // Note: In a real app, this should probably be an API call, but for this setup we import the file.
 import dbData from '../../../db.json';
+import BookingForm from '@/components/Common/BookingForm.vue';
 import TripCard from '@/components/Trips/TripCard.vue';
 import Carousel from '@/components/Common/Carousel.vue';
 import ReviewsCarousel from '@/components/Common/ReviewsCarousel.vue';
 
 const route = useRoute();
+const router = useRouter();
+const bookingStore = useBookingStore();
 const trip = ref(null);
-const selectedDate = ref(null);
-const guests = ref({ adults: 2, children: 0 });
 
 // Access the nested Structure: dbData.trips is [[...], ...]
 // We assume index 0 contains the trips list as seen in db.json analysis
 const allTrips = computed(() => {
-    if (dbData.trips && Array.isArray(dbData.trips) && dbData.trips.length > 0) {
-        // If it's a nested array [[t1, t2]], return data.trips[0]
-        if (Array.isArray(dbData.trips[0])) {
-            return dbData.trips[0];
-        }
-        // If it's a flat array [t1, t2], return data.trips
-        return dbData.trips;
-    }
-    return [];
+    return Array.isArray(dbData.trips) ? dbData.trips : [];
 });
 
 const loadTrip = () => {
@@ -322,11 +256,6 @@ const loadTrip = () => {
     trip.value = allTrips.value.find(t => t.id === id);
     
     if (trip.value) {
-        // Set default date
-        if (trip.value.availableDates && trip.value.availableDates.length) {
-            selectedDate.value = trip.value.availableDates[0];
-        }
-        
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 };
@@ -358,12 +287,25 @@ const relatedTrips = computed(() => {
         .slice(0, 4);
 });
 
-const totalPrice = computed(() => {
-    if (!trip.value) return 0;
-    const adultPrice = trip.value.price * guests.value.adults;
-    const childPrice = (trip.value.price * 0.5) * guests.value.children; // Assuming 50% for children
-    return adultPrice + childPrice;
-});
+const handleBooking = (payload) => {
+    // Initialize booking in store
+    bookingStore.initializeBooking('trip', trip.value.id, trip.value);
+    
+    // The payload from BookingForm is { bookingData: {...}, costs: {...} }
+    // We need to extract bookingData
+    const bookingDataVal = payload.bookingData || payload;
+
+    // Deep clone the data to ensure no reference issues or loss of reactivity
+    const clonedData = JSON.parse(JSON.stringify(bookingDataVal));
+    
+    // Update with specific form data (guests, date)
+    // We manually overwrite because initialize sets defaults
+    bookingStore.bookingInProgress.bookingData = clonedData;
+    bookingStore.persistState();
+
+    // Navigate to Review Page
+    router.push({ name: 'TripReview', params: { id: trip.value.id } });
+};
 
 onMounted(() => {
     loadTrip();
