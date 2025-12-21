@@ -342,7 +342,8 @@ const handleGoogleSignUp = async () => {
     loading.value = false;
 
     if (result.success) {
-      router.push({ path: '/auth/verify-email', query: { email: authStore.user?.email || formData.value.email } });
+      // Google users are already verified by backend, redirect to home
+      router.push({ name: 'Home' });
     } else {
       error.value = result.error;
     }
