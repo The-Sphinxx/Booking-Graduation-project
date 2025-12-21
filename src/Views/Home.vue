@@ -4,7 +4,7 @@
     <nav class="bg-base-100 shadow-md sticky top-0 z-50">
       <div class="page-container">
         <div class="flex items-center justify-between h-20">
-          <a href="/" class="text-3xl font-bold text-primary font-cairo">PYRAMIS</a>
+          <a href="/" class="text-3xl font-bold text-primary font-cairo">{{ metadata.siteName || 'PYRAMIS' }}</a>
           
           <div class="hidden md:flex items-center space-x-8">
             <a href="/" class="font-cairo font-semibold text-primary hover:text-primary/80">Home</a>
@@ -50,16 +50,14 @@
     <!-- Hero Section -->
     <div class="relative w-full h-screen overflow-hidden">
       <div class="absolute inset-0">
-        <img src="https://images.unsplash.com/photo-1568322445389-f64ac2515020?q=80&w=2070" alt="Pyramid" class="w-full h-full object-cover"/>
+        <img :src="heroSection.backgroundImage || defaultHero.backgroundImage" alt="Pyramid" class="w-full h-full object-cover"/>
         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
       </div>
       
       <div class="relative z-10 flex flex-col items-center justify-center h-full page-container text-center">
-        <h1 class="font-cairo text-5xl md:text-7xl font-bold text-white mb-4 animate-fade-in">
-          Discover Egypt —<br/>Your Journey Starts Here
-        </h1>
+        <h1 class="font-cairo text-5xl md:text-7xl font-bold text-white mb-4 animate-fade-in" v-html="heroDisplayTitle"></h1>
         <p class="font-cairo text-xl md:text-2xl text-white/90 mb-12 animate-fade-in-delay">
-          Explore ancient wonders, luxury stays, and unforgettable experiences
+          {{ heroSection.subtitle || defaultHero.subtitle }}
         </p>
 
         <div class="w-full max-w-5xl bg-base-100 rounded-lg shadow-2xl p-6 animate-slide-up">
@@ -415,11 +413,11 @@
               </div>
               <div class="flex items-center text-base-content/70">
                 <i class="fas fa-phone mr-3 text-primary"></i>
-                <span class="font-cairo text-sm">+20 (123) 456-7890</span>
+                <span class="font-cairo text-sm">{{ metadata.supportPhone || '+20 (123) 456-7890' }}</span>
               </div>
               <div class="flex items-center text-base-content/70">
                 <i class="fas fa-envelope mr-3 text-primary"></i>
-                <span class="font-cairo text-sm">Pyramis@Pyramis.Com</span>
+                <span class="font-cairo text-sm">{{ metadata.supportEmail || 'Pyramis@Pyramis.Com' }}</span>
               </div>
             </div>
           </div>
@@ -474,7 +472,7 @@
           </div>
         </div>
         <div class="border-t border-base-300 pt-6 text-center">
-          <p class="font-cairo text-sm text-base-content/70">@ 2025 PYRAMIS. All rights reserved.</p>
+          <p class="font-cairo text-sm text-base-content/70">@ 2025 {{ metadata.siteName || 'PYRAMIS' }}. All rights reserved.</p>
         </div>
       </div>
     </footer>
@@ -482,10 +480,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { getHomePageData } from '@/Services/homeService';
 
 const mobileMenuOpen = ref(false);
 const activeTab = ref('attractions');
+const isHomeLoading = ref(false);
 
 const tabs = [
   { id: 'attractions', name: 'Attractions', icon: 'fas fa-landmark' },
@@ -494,46 +494,108 @@ const tabs = [
   { id: 'car-rental', name: 'Car Rental', icon: 'fas fa-car' }
 ];
 
-const attractions = ref([
+const defaultHero = {
+  title: 'Discover Egypt — Your Journey Starts Here',
+  subtitle: 'Explore ancient wonders, luxury stays, and unforgettable experiences',
+  backgroundImage: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?q=80&w=2070'
+};
+
+const defaultMetadata = {
+  siteName: 'PYRAMIS',
+  primaryCtaText: 'View All',
+  secondaryCtaText: 'Start AI Planning',
+  supportEmail: 'Pyramis@Pyramis.Com',
+  supportPhone: '+20 (123) 456-7890',
+  country: 'Egypt'
+};
+
+const defaultAttractions = [
   { id: 1, name: 'Pyramids of Giza', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205', featured: false, image: 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800' },
   { id: 2, name: 'Abu Simbel Temples', price: 200, location: 'Aswan', rating: 4.8, reviews: '5,205', featured: false, image: 'https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=800' },
   { id: 3, name: 'The Great Pyramid', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205', featured: true, image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
   { id: 4, name: 'Valley of the Kings', price: 200, location: 'Luxor', rating: 4.8, reviews: '5,205', featured: true, image: 'https://images.unsplash.com/photo-1539768942893-daf53e448371?w=800' }
-]);
+];
 
-const hotels = ref([
+const defaultHotels = [
   { id: 1, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' },
   { id: 2, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' },
   { id: 3, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' },
   { id: 4, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' }
-]);
+];
 
-const trips = ref([
+const defaultTrips = [
   { id: 1, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
   { id: 2, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
   { id: 3, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
   { id: 4, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' }
-]);
+];
 
-const cars = ref([
+const defaultCars = [
   { id: 1, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' },
   { id: 2, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' },
   { id: 3, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' },
   { id: 4, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' }
-]);
+];
 
-const testimonials = ref([
+const defaultTestimonials = [
   { id: 1, name: 'Sarah Mitchell', country: 'United States', text: 'An unforgettable journey through ancient wonders. The pyramids exceeded every expectation, and our guide\'s knowledge brought history to life in the most magical way.' },
   { id: 2, name: 'James Thompson', country: 'United Kingdom', text: 'Luxurious accommodations, impeccable service, and breathtaking sites at every turn. Egypt\'s beauty and rich culture left us absolutely mesmerized.' },
   { id: 3, name: 'Marie Laurent', country: 'France', text: 'From the Nile cruise to the temples of Luxor, every moment was pure perfection. This trip transformed the way we see the world and ancient civilizations.' }
-]);
+];
 
-const whyChooseUs = ref([
+const defaultWhyChooseUs = [
   { id: 1, icon: 'fas fa-map', title: 'Complete Trips', description: 'Plan, book, and manage in one flow' },
   { id: 2, icon: 'fas fa-route', title: 'Built for Egypt', description: 'Local travel logic, not global templates.' },
   { id: 3, icon: 'fas fa-plane-departure', title: 'AI Trip Planning', description: 'Personalized itineraries, real data.' },
   { id: 4, icon: 'fas fa-shield-alt', title: 'Clear & Flexible', description: 'No hidden fees, full control.' }
-]);
+];
+
+const heroSection = ref({ ...defaultHero });
+const metadata = ref({ ...defaultMetadata });
+const attractions = ref([]);
+const hotels = ref([]);
+const trips = ref([]);
+const cars = ref([]);
+const testimonials = ref([]);
+const whyChooseUs = ref([]);
+
+const heroDisplayTitle = computed(() => {
+  const value = heroSection.value.title || defaultHero.title;
+  const parts = value.split('—');
+
+  if (parts.length > 1) {
+    const first = parts.shift()?.trim() ?? '';
+    const rest = parts.join('—').trim();
+    return `${first} —<br/>${rest}`;
+  }
+
+  return value;
+});
+
+const applyHomeData = (payload) => {
+  heroSection.value = { ...defaultHero, ...(payload?.heroSection ?? {}) };
+  metadata.value = { ...defaultMetadata, ...(payload?.metadata ?? {}) };
+
+  attractions.value = payload?.popularAttractions?.length ? payload.popularAttractions : defaultAttractions;
+  hotels.value = payload?.featuredHotels?.length ? payload.featuredHotels : defaultHotels;
+  trips.value = payload?.featuredTrips?.length ? payload.featuredTrips : defaultTrips;
+  cars.value = payload?.featuredCars?.length ? payload.featuredCars : defaultCars;
+  testimonials.value = payload?.testimonials?.length ? payload.testimonials : defaultTestimonials;
+  whyChooseUs.value = payload?.whyChooseUs?.length ? payload.whyChooseUs : defaultWhyChooseUs;
+};
+
+onMounted(async () => {
+  isHomeLoading.value = true;
+  try {
+    const data = await getHomePageData();
+    applyHomeData(data);
+  } catch (error) {
+    console.error('Failed to load home page data', error);
+    applyHomeData({});
+  } finally {
+    isHomeLoading.value = false;
+  }
+});
 </script>
 
 <style scoped>
