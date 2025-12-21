@@ -1,5 +1,37 @@
 <template>
+  <div class="page-container py-8 font-cairo" v-if="hotel">
+    <!-- Step Indicator -->
+    <StepIndicator :current-step="2" booking-type="hotel" class="mb-12" />
 
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column: Guest Info & Payment -->
+      <div class="lg:col-span-2 space-y-8">
+        
+        <GuestInfoForm 
+           v-model="guest"
+           :submitting="submitting"
+           @submit="handleConfirm"
+        />
+
+      </div>
+
+      <!-- Right Column: Price Summary -->
+      <div class="lg:col-span-1">
+        <PriceSummary
+          :costs="costs"
+          booking-type="hotel"
+          :booking-data="bookingDataForSummary"
+          :base-price="hotel.pricePerNight"
+          :add-ons="500"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div v-else class="page-container py-12 text-center text-base-content/70">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+    <p class="mt-4">Loading checkout details...</p>
+  </div>
 </template>
 
 <script setup>

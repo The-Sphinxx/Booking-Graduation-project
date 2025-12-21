@@ -1,4 +1,3 @@
-// Services/hotelsApi.js
 import axios from 'axios';
 
 // Base URL - adjust according to your json-server configuration
@@ -14,6 +13,11 @@ const hotelsApi = {
             console.error('Error fetching hotels:', error);
             throw new Error('Failed to fetch hotels');
         }
+    },
+
+    // Alias for getHotels (used by dev branch store)
+    async getHotels() {
+        return this.getAllHotels();
     },
 
     // Get hotel by ID
@@ -43,42 +47,70 @@ const hotelsApi = {
     // Search hotels
     async searchHotels(query) {
         try {
+            // First try API search if supported
+            /* 
             const response = await axios.get(`${API_BASE_URL}/hotels`, {
                 params: { q: query }
             });
-            return response.data;
+            return response.data; 
+            */
+            
+            // Fallback to client-side filtering to match robust dev logic
+            const hotels = await this.getHotels();
+            if (!query) return hotels;
+
+            const lowerQuery = query.toLowerCase();
+            return hotels.filter(hotel =>
+                hotel.name.toLowerCase().includes(lowerQuery) ||
+                hotel.city.toLowerCase().includes(lowerQuery) ||
+                (hotel.highlights && hotel.highlights.some(h => h.toLowerCase().includes(lowerQuery)))
+            );
         } catch (error) {
             console.error('Error searching hotels:', error);
             throw new Error('Failed to search hotels');
         }
     },
 
-    // Get filtered hotels
+    // Get filtered hotels (Combines dev logic with API fetch)
     async getFilteredHotels(filters) {
         try {
-            const params = {};
+            // Fetch all and filter client side for complex logic, or build params
+             let results = await this.getHotels();
 
-            if (filters.city && filters.city !== 'All') {
-                params.city = filters.city;
-            }
+             if (filters) { // Apply client side filtering from dev branch
+                // City filter
+                if (filters.city && filters.city !== 'All' && filters.city !== 'All Cities') {
+                    results = results.filter(h => h.city === filters.city);
+                }
 
-            if (filters.minRating) {
-                params.rating_gte = filters.minRating;
-            }
+                // Category filter
+                if (filters.category && filters.category !== 'all') {
+                    results = results.filter(h => h.category === filters.category);
+                }
 
-            if (filters.maxPrice) {
-                params.price_lte = filters.maxPrice;
-            }
-            
-            // Amenities filtering usually happens client-side with json-server 
-            // unless using q=amenity or custom middleware
+                // Price filter
+                if (filters.priceRange) {
+                    results = results.filter(h =>
+                        h.pricePerNight >= filters.priceRange.min &&
+                        h.pricePerNight <= filters.priceRange.max
+                    );
+                }
 
-            const response = await axios.get(`${API_BASE_URL}/hotels`, { params });
-            return response.data;
+                 // Rating filter
+                if (filters.rating) {
+                    results = results.filter(h => h.rating >= filters.rating);
+                }
+             }
+            return results;
         } catch (error) {
             console.error('Error fetching filtered hotels:', error);
             throw new Error('Failed to fetch filtered hotels');
         }
+    },
+
+    // Alias for filterHotels
+    async filterHotels(filters) {
+        return this.getFilteredHotels(filters);
     },
 
     // Get top rated hotels
