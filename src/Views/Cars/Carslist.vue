@@ -42,22 +42,26 @@
       </p>
     </div>
 
-    <!-- Cars Grid -->
-    <div class="page-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-      <LuxurySUVCardDynamic
-        v-for="car in cars"
-        :key="car.id"
-        :car="car"
-        @view="handleViewCar"
-      />
-    </div>
+   <!-- Cars Grid -->
+<div class="page-container">
+  <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <LuxurySUVCardDynamic
+      v-for="car in cars"
+      :key="car.id"
+      :car="car"
+      @view="handleViewCar"
+    />
+  </div>
 
-    <!-- View All -->
-    <div class="page-container mt-10 max-w-md mx-auto">
-      <button class="btn btn-primary w-full" @click="goToCarBooking">
-        View All
-      </button>
-    </div>
+<!-- View All Button -->
+<div class="mt-8 max-w-xs mx-auto">
+  <button class="btn btn-primary w-full py-2 text-sm" @click="goToCarBooking">
+    View All
+  </button>
+</div>
+
+</div>
+
 
     <!-- Car Categories -->
     <div class="page-container my-12 text-center">
@@ -95,9 +99,7 @@ import heroImage from "@/assets/images/CarHeroSection.jpg";
 const store = useCarsStore();
 const router = useRouter();
 
-/**
- * Static Categories (UI-based, not from JSON)
- */
+
 const categories = [
   { label: "Chevrolet", value: "Chevrolet" },
   { label: "Toyota", value: "Toyota" },
@@ -136,5 +138,10 @@ function handleSearch(payload) {
 <style scoped>
 .font-cairo {
   font-family: "Cairo", sans-serif;
+}
+.page-container {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
 </style>
