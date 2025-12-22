@@ -1,5 +1,7 @@
 <template>
-  <div v-if="trip" class="min-h-screen bg-base-100 pb-12 pt-4">
+  <div>
+    <Navbar />
+    <div v-if="trip" class="min-h-screen bg-base-100 pb-12 pt-4">
     <div class="container mx-auto px-4 lg:px-[120px]">
       <!-- Breadcrumbs -->
       <div class="text-sm breadcrumbs mb-4 font-cairo text-base-content/70">
@@ -222,12 +224,16 @@
     </div>
   </div>
   
-  <div v-else class="min-h-screen flex items-center justify-center">
-     <span class="loading loading-spinner loading-lg text-primary"></span>
+    <div v-else class="min-h-screen flex items-center justify-center">
+       <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+    <Footer />
   </div>
 </template>
 
 <script setup>
+import Navbar from '@/components/Common/Navbar.vue';
+import Footer from '@/components/Common/Footer.vue';
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookingStore } from '@/stores/bookingStore';

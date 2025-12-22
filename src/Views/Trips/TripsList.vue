@@ -1,83 +1,93 @@
 <template>
-    <div class="min-h-screen bg-base-100 pb-12">
-      <!-- Hero Section with Background -->
-      <div class="relative h-[585px] w-full mb-8">
-        <!-- Background Image -->
-        <div class="absolute inset-0">
-          <img 
-            src="/public/images/trip.png" 
-            alt="Discover Egypt" 
-            class="w-full h-full object-cover"
-          />
+    <div class="min-h-screen bg-base-100">
+      <Navbar />
+      
+      <main class="pb-12">
+        <!-- Hero Section with Background -->
+        <div class="relative min-h-[450px] md:h-[585px] w-full mb-8 flex items-center pt-16 md:pt-0">
+          <!-- Background Image -->
+          <div class="absolute inset-0">
+            <img 
+              src="/public/images/trip.png" 
+              alt="Discover Egypt" 
+              class="w-full h-full object-cover"
+            />
+            <!-- Dark Overlay for Readability -->
+            <div class="absolute inset-0 bg-black/30"></div>
+          </div>
+
+          <!-- Hero Content -->
+          <div class="relative w-full text-center text-white px-4 pb-20 md:pb-0 z-10">
+            <h1 class="text-2xl md:text-6xl font-bold mb-4 drop-shadow-lg font-cairo">Discover Egypt</h1>
+            <p class="text-sm md:text-xl max-w-2xl mx-auto mb-12 md:mb-20 drop-shadow-md font-cairo text-white/90">
+              From ancient pyramids to pristine beaches, find your perfect Egyptian adventure.
+            </p>
+          </div>
+
+          <!-- Search Bar Positioned over the bottom edge -->
+          <div class="absolute -bottom-12 md:bottom-[127px] inset-x-0 px-4 md:px-12 lg:px-[120px] z-20">
+            <Search 
+              type="trips"
+              :initial-data="searchParams"
+              @search="handleSearch"
+              :show-ai-planner="true"
+            />
+          </div>
         </div>
 
-        <!-- Hero Content -->
-        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-white px-4">
-          <h1 class="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg font-cairo">Discover Egypt</h1>
-          <p class="text-lg md:text-xl max-w-2xl mx-auto mb-20 drop-shadow-md font-cairo text-white/90">
-            From ancient pyramids to pristine beaches, find your perfect Egyptian adventure.
-          </p>
+        <!-- Main Content -->
+        <div class="mt-28 md:mt-12 px-4 md:px-12 lg:px-[120px]">
+          <!-- Section Header -->
+          <div class="text-center mb-10">
+            <h2 class="text-xl md:text-3xl font-bold text-primary mb-2 font-cairo">Rent Your Perfect Ride</h2>
+            <p class="text-sm md:text-base text-base-content/70 font-cairo">
+              Explore Egypt at your own pace with our diverse fleet of quality vehicles
+            </p>
+          </div>
+
+          <!-- Trips Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            <TripCard 
+              v-for="trip in paginatedTrips" 
+              :key="trip.id" 
+              :trip="trip" 
+            />
+          </div>
+
+          <!-- No Results State -->
+          <div v-if="paginatedTrips.length === 0" class="text-center py-20">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-base-200 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-base-content mb-2 font-cairo">No trips found</h3>
+            <p class="text-base-content/60 font-cairo">Try changing your search parameters or explore other destinations.</p>
+            <button @click="resetSearch" class="btn btn-primary btn-sm mt-4 font-cairo text-white">
+              Show All Trips
+            </button>
+          </div>
+
+          <!-- Pagination -->
+          <div v-if="filteredTrips.length > itemsPerPage" class="flex justify-center mt-8">
+            <Pagination 
+              :current-page="currentPage" 
+              :total="filteredTrips.length"
+              :per-page="itemsPerPage"
+              @update:current-page="handlePageChange"
+            />
+          </div>
         </div>
+      </main>
 
-        <!-- Search Bar Positioned over the bottom edge -->
-        <div class="absolute bottom-[127px] inset-x-0 mx-[120px] z-20">
-          <Search 
-            type="trips"
-            :initial-data="searchParams"
-            @search="handleSearch"
-            :show-ai-planner="true"
-          />
-        </div>
-      </div>
-
-    <!-- Main Content -->
-    <div class="mt-12 mx-[120px]">
-      <!-- Section Header -->
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold text-primary mb-2 font-cairo">Rent Your Perfect Ride</h2>
-        <p class="text-base-content/70 font-cairo">
-          Explore Egypt at your own pace with our diverse fleet of quality vehicles
-        </p>
-      </div>
-
-      <!-- Trips Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-        <TripCard 
-          v-for="trip in paginatedTrips" 
-          :key="trip.id" 
-          :trip="trip" 
-        />
-      </div>
-
-       <!-- No Results State -->
-       <div v-if="paginatedTrips.length === 0" class="text-center py-20">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-base-200 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-        <h3 class="text-lg font-bold text-base-content mb-2 font-cairo">No trips found</h3>
-        <p class="text-base-content/60 font-cairo">Try changing your search parameters or explore other destinations.</p>
-        <button @click="resetSearch" class="btn btn-primary btn-sm mt-4 font-cairo text-white">
-          Show All Trips
-        </button>
-      </div>
-
-      <!-- Pagination -->
-      <div v-if="filteredTrips.length > itemsPerPage" class="flex justify-center mt-8">
-        <Pagination 
-          :current-page="currentPage" 
-          :total="filteredTrips.length"
-          :per-page="itemsPerPage"
-          @update:current-page="handlePageChange"
-        />
-      </div>
+      <Footer />
     </div>
-  </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import Navbar from '@/components/Common/Navbar.vue';
+import Footer from '@/components/Common/Footer.vue';
 import Search from '@/components/Common/Search.vue';
 import TripCard from '@/components/Trips/TripCard.vue';
 import Pagination from '@/components/Common/Pagination.vue';

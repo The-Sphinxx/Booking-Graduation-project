@@ -1,5 +1,7 @@
 <template>
-  <div class="page-container py-12 font-cairo min-h-screen bg-base-100">
+  <div class="min-h-screen bg-base-100 font-cairo">
+    <Navbar />
+    <div class="page-container py-12">
     <div class="max-w-5xl mx-auto">
       <!-- Step Indicator -->
       <div class="mb-12">
@@ -240,11 +242,15 @@
          </div>
       </div>
 
+      </div>
     </div>
+    <Footer class="mt-12" />
   </div>
 </template>
 
 <script setup>
+import Navbar from '@/components/Common/Navbar.vue';
+import Footer from '@/components/Common/Footer.vue';
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useBookingStore } from '@/stores/bookingStore';

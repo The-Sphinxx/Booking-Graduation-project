@@ -1,51 +1,6 @@
 <template>
   <div>
-    <!-- Navbar -->
-    <nav class="bg-base-100 shadow-md sticky top-0 z-50">
-      <div class="page-container">
-        <div class="flex items-center justify-between h-20">
-          <a href="/" class="text-3xl font-bold text-primary font-cairo">PYRAMIS</a>
-          
-          <div class="hidden md:flex items-center space-x-8">
-            <a href="/" class="font-cairo font-semibold text-primary hover:text-primary/80">Home</a>
-            <a href="/attractions" class="font-cairo text-base-content hover:text-primary">Attractions</a>
-            <a href="/hotels" class="font-cairo text-base-content hover:text-primary">Hotels</a>
-            <a href="/trips" class="font-cairo text-base-content hover:text-primary">Trips</a>
-            <a href="/cars" class="font-cairo text-base-content hover:text-primary">Car Rental</a>
-            <a href="/ai-planner" class="font-cairo text-base-content hover:text-primary">Ai Trip Planner</a>
-          </div>
-
-          <div class="hidden md:flex items-center gap-3">
-            <button class="btn btn-ghost btn-sm font-cairo border border-base-300">
-              <i class="fas fa-user mr-2"></i>Login
-            </button>
-            <button class="btn btn-primary btn-sm font-cairo">Sign Up</button>
-            <button class="btn btn-circle btn-sm btn-ghost">
-              <i class="fas fa-adjust text-lg"></i>
-            </button>
-          </div>
-
-          <button class="md:hidden btn btn-ghost btn-circle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu">
-            <i class="fas fa-bars text-xl"></i>
-          </button>
-        </div>
-
-        <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-base-300">
-          <div class="flex flex-col space-y-4">
-            <a href="/" class="font-cairo font-semibold text-primary">Home</a>
-            <a href="/attractions" class="font-cairo text-base-content">Attractions</a>
-            <a href="/hotels" class="font-cairo text-base-content">Hotels</a>
-            <a href="/trips" class="font-cairo text-base-content">Trips</a>
-            <a href="/cars" class="font-cairo text-base-content">Car Rental</a>
-            <a href="/ai-planner" class="font-cairo text-base-content">Ai Trip Planner</a>
-            <div class="flex gap-2 pt-4">
-              <button class="btn btn-ghost btn-sm font-cairo flex-1">Login</button>
-              <button class="btn btn-primary btn-sm font-cairo flex-1">Sign Up</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <Navbar />
 
     <!-- Hero Section -->
     <div class="relative w-full h-screen overflow-hidden">
@@ -163,7 +118,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <div v-for="item in attractions" :key="item.id" class="group card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
             <figure class="relative h-64 overflow-hidden">
-              <img :src="item.image" :alt="item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+              <img :src="item.images?.[0] || 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800'" :alt="item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
               <div v-if="item.featured" class="absolute top-4 right-4 bg-base-100/90 backdrop-blur-sm rounded-full p-2">
                 <i class="fas fa-sparkles text-primary"></i>
               </div>
@@ -171,22 +126,22 @@
             <div class="card-body p-5">
               <div class="flex justify-between items-start mb-3">
                 <h3 class="font-cairo text-xl font-bold text-base-content">{{item.name}}</h3>
-                <span class="font-cairo text-xl font-bold text-primary">{{item.price}}$</span>
+                <span class="font-cairo text-xl font-bold text-primary">{{item.price}}</span>
               </div>
               <div class="flex items-center text-base-content/70 mb-3">
                 <i class="fas fa-map-marker-alt text-primary mr-2"></i>
-                <span class="font-cairo text-sm">{{item.location}}</span>
+                <span class="font-cairo text-sm">{{item.city}}</span>
               </div>
               <div class="flex items-center">
                 <i class="fas fa-star text-warning mr-1"></i>
                 <span class="font-cairo font-semibold text-base-content mr-1">{{item.rating}}</span>
-                <span class="font-cairo text-sm text-base-content/60">({{item.reviews}} reviews)</span>
+                <span class="font-cairo text-sm text-base-content/60">({{item.reviews?.totalReviews || 0}} reviews)</span>
               </div>
             </div>
           </div>
         </div>
         <div class="text-center">
-          <button class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</button>
+          <router-link to="/attractions/list" class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</router-link>
         </div>
       </div>
     </section>
@@ -210,7 +165,7 @@
               </div>
               <div class="flex items-center text-base-content/70 mb-3">
                 <i class="fas fa-map-marker-alt text-primary mr-2"></i>
-                <span class="font-cairo text-sm">{{item.location}}</span>
+                <span class="font-cairo text-sm">{{item.city}}</span>
               </div>
               <div class="flex items-center mb-3">
                 <i class="fas fa-star text-warning mr-1"></i>
@@ -218,13 +173,13 @@
                 <span class="font-cairo text-sm text-base-content/60">({{item.reviews}})</span>
               </div>
               <div class="flex flex-wrap gap-3 text-sm">
-                <div class="flex items-center text-accent">
+                <div v-if="item.amenities?.includes('Wifi')" class="flex items-center text-accent">
                   <i class="fas fa-wifi mr-1"></i><span class="font-cairo">Wifi</span>
                 </div>
-                <div class="flex items-center text-accent">
+                <div v-if="item.amenities?.includes('Pool')" class="flex items-center text-accent">
                   <i class="fas fa-swimming-pool mr-1"></i><span class="font-cairo">Pool</span>
                 </div>
-                <div class="flex items-center text-accent">
+                <div v-if="item.amenities?.includes('Gym')" class="flex items-center text-accent">
                   <i class="fas fa-dumbbell mr-1"></i><span class="font-cairo">Gym</span>
                 </div>
               </div>
@@ -232,7 +187,7 @@
           </div>
         </div>
         <div class="text-center">
-          <button class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</button>
+          <router-link to="/hotels/list" class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</router-link>
         </div>
       </div>
     </section>
@@ -247,17 +202,17 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <div v-for="item in trips" :key="item.id" class="group card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
             <figure class="relative h-64 overflow-hidden">
-              <img :src="item.image" :alt="item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+              <img :src="item.image" :alt="item.title" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
             </figure>
             <div class="card-body p-5">
               <div class="flex justify-between items-start mb-3">
-                <h3 class="font-cairo text-xl font-bold text-base-content">{{item.name}}</h3>
+                <h3 class="font-cairo text-xl font-bold text-base-content">{{item.title}}</h3>
                 <span class="font-cairo text-xl font-bold text-primary">${{item.price}}</span>
               </div>
-              <p class="font-cairo text-sm text-base-content/70 mb-3">{{item.description}}</p>
+              <p class="font-cairo text-sm text-base-content/70 mb-3 line-clamp-2">{{item.description}}</p>
               <div class="flex items-center text-base-content/70 mb-2">
                 <i class="fas fa-map-marker-alt text-primary mr-2"></i>
-                <span class="font-cairo text-sm">{{item.location}}</span>
+                <span class="font-cairo text-sm">{{item.city}}</span>
               </div>
               <div class="flex items-center text-base-content/70 mb-3">
                 <i class="fas fa-clock text-primary mr-2"></i>
@@ -272,7 +227,7 @@
           </div>
         </div>
         <div class="text-center">
-          <button class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</button>
+          <router-link to="/trips/list" class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</router-link>
         </div>
       </div>
     </section>
@@ -287,33 +242,27 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <div v-for="item in cars" :key="item.id" class="group card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-base-300">
             <figure class="relative h-64 overflow-hidden bg-neutral">
-              <img :src="item.image" :alt="item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+              <img :src="item.images?.[0] || 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800'" :alt="item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
             </figure>
             <div class="card-body p-5">
               <div class="flex justify-between items-start mb-3">
                 <h3 class="font-cairo text-xl font-bold text-base-content">{{item.name}}</h3>
                 <span class="font-cairo text-xl font-bold text-primary">${{item.price}}</span>
               </div>
-              <p class="font-cairo text-sm text-base-content/70 mb-3">{{item.description}}</p>
+              <p class="font-cairo text-sm text-base-content/70 mb-3 line-clamp-2">{{item.description}}</p>
               <div class="flex flex-wrap gap-3 text-sm">
                 <div class="flex items-center text-accent">
-                  <i class="fas fa-cog mr-1"></i><span class="font-cairo">Auto</span>
+                  <i class="fas fa-cog mr-1"></i><span class="font-cairo">{{item.transmission}}</span>
                 </div>
                 <div class="flex items-center text-accent">
-                  <i class="fas fa-users mr-1"></i><span class="font-cairo">7 Seats</span>
-                </div>
-                <div class="flex items-center text-accent">
-                  <i class="fas fa-compass mr-1"></i><span class="font-cairo">GPS</span>
-                </div>
-                <div class="flex items-center text-accent">
-                  <i class="fas fa-snowflake mr-1"></i><span class="font-cairo">A/C</span>
+                  <i class="fas fa-user-friends mr-1"></i><span class="font-cairo">{{item.seats}} Seats</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="text-center">
-          <button class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</button>
+          <router-link to="/cars/list" class="btn btn-primary btn-lg font-cairo font-semibold px-12">View All</router-link>
         </div>
       </div>
     </section>
@@ -401,90 +350,19 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-base-200 py-12">
-      <div class="page-container">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
-          <div class="lg:col-span-1">
-            <h3 class="text-2xl font-bold text-primary font-cairo mb-4">PYRAMIS</h3>
-            <p class="font-cairo text-base-content/70 mb-4 text-sm">Book your next adventure in Egypt with us!</p>
-            <div class="space-y-2">
-              <div class="flex items-start text-base-content/70">
-                <i class="fas fa-map-marker-alt mr-3 text-primary mt-1"></i>
-                <span class="font-cairo text-sm">456 Nile Avenue, Cairo, Egypt 12345</span>
-              </div>
-              <div class="flex items-center text-base-content/70">
-                <i class="fas fa-phone mr-3 text-primary"></i>
-                <span class="font-cairo text-sm">+20 (123) 456-7890</span>
-              </div>
-              <div class="flex items-center text-base-content/70">
-                <i class="fas fa-envelope mr-3 text-primary"></i>
-                <span class="font-cairo text-sm">Pyramis@Pyramis.Com</span>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h4 class="font-cairo font-bold text-base-content mb-4">Explore</h4>
-            <ul class="space-y-2">
-              <li><a href="/hotels" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Hotels</a></li>
-              <li><a href="/trips" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Trips</a></li>
-              <li><a href="/attractions" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Attractions</a></li>
-              <li><a href="/cars" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Cars</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-cairo font-bold text-base-content mb-4">Company</h4>
-            <ul class="space-y-2">
-              <li><a href="/about" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">About Us</a></li>
-              <li><a href="/how-it-works" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">How it Works</a></li>
-              <li><a href="/contact" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Contact</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-cairo font-bold text-base-content mb-4">Help & Trust</h4>
-            <ul class="space-y-2">
-              <li><a href="/faq" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">FAQ</a></li>
-              <li><a href="/support" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Support</a></li>
-              <li><a href="/cancellation" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Cancellation Policy</a></li>
-              <li><a href="/terms" class="font-cairo text-sm text-base-content/70 hover:text-primary transition-colors">Terms & Privacy</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-cairo font-bold text-base-content mb-4">Payment</h4>
-            <div class="flex gap-2 mb-6">
-              <div class="w-12 h-8 bg-primary rounded flex items-center justify-center">
-                <i class="fab fa-cc-mastercard text-white text-xl"></i>
-              </div>
-              <div class="w-12 h-8 bg-primary rounded flex items-center justify-center">
-                <i class="fab fa-cc-visa text-white text-xl"></i>
-              </div>
-              <div class="w-12 h-8 bg-primary rounded flex items-center justify-center">
-                <i class="fab fa-cc-mastercard text-white text-xl"></i>
-              </div>
-            </div>
-            <h4 class="font-cairo font-bold text-base-content mb-3">Follow us on:</h4>
-            <div class="flex gap-3">
-              <a href="https://instagram.com" target="_blank" class="w-10 h-10 bg-primary rounded flex items-center justify-center hover:bg-primary/80 transition-colors">
-                <i class="fab fa-instagram text-white text-lg"></i>
-              </a>
-              <a href="https://facebook.com" target="_blank" class="w-10 h-10 bg-primary rounded flex items-center justify-center hover:bg-primary/80 transition-colors">
-                <i class="fab fa-facebook-f text-white text-lg"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="border-t border-base-300 pt-6 text-center">
-          <p class="font-cairo text-sm text-base-content/70">@ 2025 PYRAMIS. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <Footer />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import Navbar from '@/components/Common/Navbar.vue';
+import Footer from '@/components/Common/Footer.vue';
+import attractionApi from '@/Services/attractionApi';
+import hotelsApi from '@/Services/hotelsApi';
+import tripsApi from '@/Services/tripsApi';
+import { getAllCars } from '@/Services/carsApi';
 
-const mobileMenuOpen = ref(false);
 const activeTab = ref('attractions');
 
 const tabs = [
@@ -494,33 +372,32 @@ const tabs = [
   { id: 'car-rental', name: 'Car Rental', icon: 'fas fa-car' }
 ];
 
-const attractions = ref([
-  { id: 1, name: 'Pyramids of Giza', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205', featured: false, image: 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800' },
-  { id: 2, name: 'Abu Simbel Temples', price: 200, location: 'Aswan', rating: 4.8, reviews: '5,205', featured: false, image: 'https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=800' },
-  { id: 3, name: 'The Great Pyramid', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205', featured: true, image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
-  { id: 4, name: 'Valley of the Kings', price: 200, location: 'Luxor', rating: 4.8, reviews: '5,205', featured: true, image: 'https://images.unsplash.com/photo-1539768942893-daf53e448371?w=800' }
-]);
+const attractions = ref([]);
+const hotels = ref([]);
+const trips = ref([]);
+const cars = ref([]);
 
-const hotels = ref([
-  { id: 1, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' },
-  { id: 2, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' },
-  { id: 3, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' },
-  { id: 4, name: 'Luxor Palace', price: 200, location: 'Cairo', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800' }
-]);
+const fetchData = async () => {
+  try {
+    const [attractionsData, hotelsData, tripsData, carsData] = await Promise.all([
+      attractionApi.getTopRatedAttractions(4),
+      hotelsApi.getTopRatedHotels(4),
+      tripsApi.getAllTrips(),
+      getAllCars()
+    ]);
+    
+    attractions.value = attractionsData;
+    hotels.value = hotelsData;
+    trips.value = tripsData.slice(0, 4);
+    cars.value = carsData.slice(0, 4);
+  } catch (error) {
+    console.error('Error fetching home page data:', error);
+  }
+};
 
-const trips = ref([
-  { id: 1, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
-  { id: 2, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
-  { id: 3, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' },
-  { id: 4, name: 'Pyramids', price: 200, description: 'A full guided tour covering the Pyramids, Sphinx, and Valley Temple.', location: 'Cairo', duration: '4 Days / 3 Nights', rating: 4.8, reviews: '5,205 reviews', image: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800' }
-]);
-
-const cars = ref([
-  { id: 1, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' },
-  { id: 2, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' },
-  { id: 3, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' },
-  { id: 4, name: 'Family SUV', price: 200, description: 'Great for families exploring Cairo, Giza, and Alexandria.', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800' }
-]);
+onMounted(() => {
+  fetchData();
+});
 
 const testimonials = ref([
   { id: 1, name: 'Sarah Mitchell', country: 'United States', text: 'An unforgettable journey through ancient wonders. The pyramids exceeded every expectation, and our guide\'s knowledge brought history to life in the most magical way.' },

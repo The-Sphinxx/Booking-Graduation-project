@@ -1,5 +1,7 @@
 <template>
-  <div class="page-container py-12 font-cairo min-h-screen bg-base-100">
+  <div class="min-h-screen bg-base-100 font-cairo">
+    <Navbar />
+    <div class="page-container py-12">
     <div class="max-w-7xl mx-auto">
       <!-- Step Indicator -->
       <div class="mb-8">
@@ -32,17 +34,9 @@
           />
         </div>
 
-        <!-- Right Side - Price Summary (Sticky JS) -->
-        <div ref="bookingColumn" class="lg:col-span-1 h-full min-h-[500px] relative hidden lg:block">
-           <!-- Placeholder -->
-           <div ref="bookingWrapper" :style="{ minHeight: isSticky ? '1px' : 'auto' }"></div>
-           
-           <div 
-            ref="stickyForm"
-            :style="stickyStyle"
-            :class="{ 'fixed top-24 z-50': isSticky }"
-            class="transition-all duration-300"
-          >
+        <!-- Right Side - Price Summary (CSS Sticky) -->
+        <div class="lg:col-span-1 hidden lg:block">
+           <div class="sticky top-24">
             <PriceSummary
                 :costs="bookingStore.bookingCosts"
                 :booking-type="bookingType"
@@ -64,12 +58,16 @@
             />
         </div>
       </div>
+      </div>
     </div>
+    <Footer class="mt-12" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import Navbar from '@/components/Common/Navbar.vue';
+import Footer from '@/components/Common/Footer.vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBookingStore } from '@/stores/bookingStore';
 import { useTripsStore } from '@/stores/tripsStore';
@@ -122,14 +120,6 @@ onMounted(() => {
     guestData.value.email = authStore.user.email || '';
     guestData.value.phone = authStore.user.phone || '';
   }
-
-  window.addEventListener('scroll', handleScroll);
-  window.addEventListener('resize', handleResize);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-  window.removeEventListener('resize', handleResize);
 });
 
 const handlePlaceOrder = async () => {
@@ -162,55 +152,5 @@ const goBack = () => {
   router.back();
 };
 
-// -- Sticky Logic --
-const bookingWrapper = ref(null);
-const stickyForm = ref(null);
-const isSticky = ref(false);
-const stickyStyle = ref({});
-const bookingColumn = ref(null);
-const contentColumn = ref(null);
-
-const handleScroll = () => {
-  if (!bookingWrapper.value || !bookingColumn.value || !contentColumn.value) return;
-
-  const rect = bookingWrapper.value.getBoundingClientRect();
-  const contentRect = contentColumn.value.getBoundingClientRect();
-  const formHeight = stickyForm.value.offsetHeight;
-  
-  const offsetTop = 100;
-
-  // Bottom Boundary Logic
-  if (contentRect.bottom <= offsetTop + formHeight) {
-    isSticky.value = false;
-    stickyStyle.value = {
-      position: 'absolute',
-      bottom: '0',
-      left: '0',
-      width: '100%',
-      zIndex: 40
-    };
-  } else if (rect.top <= offsetTop) {
-     // Sticky Logic
-    isSticky.value = true;
-    stickyStyle.value = {
-      position: 'fixed',
-      top: `${offsetTop}px`,
-      width: `${bookingWrapper.value.getBoundingClientRect().width}px`,
-      left: `${bookingWrapper.value.getBoundingClientRect().left}px`,
-      zIndex: 50
-    };
-  } else {
-    // Normal Logic
-    isSticky.value = false;
-    stickyStyle.value = {};
-  }
-};
-
-const handleResize = () => {
-  if (isSticky.value && bookingWrapper.value) {
-    const rect = bookingWrapper.value.getBoundingClientRect();
-    stickyStyle.value.width = `${rect.width}px`;
-    stickyStyle.value.left = `${rect.left}px`;
-  }
-};
+// Sticky logic removed in favor of CSS sticky
 </script>
