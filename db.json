@@ -5930,77 +5930,21 @@
   ],
   "cars": [
     {
-      "id": "1",
       "name": "Toyota Corolla",
-      "description": "Reliable compact sedan suitable for 4 passengers.",
+      "brand": "",
+      "model": "",
+      "year": 0,
+      "city": "",
+      "price": 120,
+      "type": "",
+      "transmission": "automatic",
       "seats": 4,
-      "transmission": "Auto",
-      "nextAvailability": "2025-12-26",
-      "featured": true,
-      "status": "Available",
       "total_fleet": 20,
       "available_now": 5,
-      "booked_today": 4,
-      "in_maintenance": 11,
-      "features": [
-        "GPS",
-        "A/C",
-        "Bluetooth",
-        "Backup Camera"
-      ],
-      "images": [
-        "/images-car/ToyotaCorolla.avif",
-        "/images-car/ToyotaCorolla2.jpg",
-        "/images-car/ToyotaCorolla3.jpg",
-        "/images-car/ToyotaCorolla4.jpg"
-      ],
-      "price": 120,
-      "basePrice": 120,
-      "overview": "The Toyota Corolla is a reliable compact sedan perfect for city driving and short family trips. It offers fuel efficiency, modern technology features, and smooth handling.",
-      "highlights": [
-        "Fuel-efficient engine",
-        "Smooth city driving",
-        "Advanced safety features",
-        "Comfortable seating for 4 passengers"
-      ],
-      "amenities": [
-        "Air Conditioning",
-        "GPS Navigation",
-        "Bluetooth Connectivity",
-        "Backup Camera",
-        "Cruise Control",
-        "USB Ports"
-      ],
-      "reviews": {
-        "overallRating": 4.8,
-        "totalReviews": 1523,
-        "ratingCriteria": {
-          "experience": 4.8,
-          "comfort": 4.6,
-          "reliability": 4.9,
-          "valueForMoney": 4.7,
-          "features": 4.5
-        }
-      },
-      "userReviews": [
-        {
-          "id": 1,
-          "userName": "John Doe",
-          "userImage": "/images/users/user_m_1.jpg",
-          "rating": 5,
-          "date": "January 2025",
-          "comment": "Perfect car for city trips. Comfortable and compact."
-        },
-        {
-          "id": 2,
-          "userName": "Sarah Ahmed",
-          "userImage": "/images/users/user_f_2.jpg",
-          "rating": 5,
-          "date": "February 2025",
-          "comment": "Reliable and smooth ride."
-        }
-      ],
-      "availability": "Available"
+      "fuelType": "hybrid",
+      "status": "maintenance",
+      "featured": true,
+      "id": "1"
     },
     {
       "id": "2",
@@ -6063,7 +6007,8 @@
           "date": "March 2025",
           "comment": "Spacious and comfortable for family trips."
         }
-      ]
+      ],
+      "availability": "Sold Out"
     },
     {
       "id": "3",
@@ -6353,7 +6298,7 @@
       "transmission": "Auto",
       "nextAvailability": "2025-12-28",
       "featured": true,
-      "status": "pending",
+      "status": "Available",
       "total_fleet": 20,
       "available_now": 2,
       "booked_today": 4,
@@ -6416,7 +6361,7 @@
       "transmission": "Auto",
       "nextAvailability": "2025-12-29",
       "featured": true,
-      "status": "pending",
+      "status": "Rented",
       "total_fleet": 20,
       "available_now": 0,
       "booked_today": 4,
@@ -8559,6 +8504,111 @@
       "paymentStatus": "pending",
       "bookingNumber": "BK1766272785124819",
       "bookingDate": "2025-12-20T23:19:45.124Z"
+    },
+    {
+      "id": "2b62",
+      "userId": "guest_1766415188831",
+      "type": "attraction",
+      "itemId": "1",
+      "itemName": "Great Pyramids of Giza",
+      "itemData": {
+        "id": "1",
+        "name": "Great Pyramids of Giza",
+        "city": "Giza",
+        "rating": 4.9,
+        "status": "Active",
+        "availability": "Available",
+        "isFeatured": true,
+        "capacity": "18 / 42 Ticket",
+        "categories": [
+          "TOP PICKS",
+          "HISTORICAL",
+          "CULTURE"
+        ],
+        "images": [
+          "/images/Attractions/pyramids-main.jpg",
+          "/images/Attractions/pyramids-view_2.jpg",
+          "/images/Attractions/pyramids-view_3.jpg",
+          "/images/Attractions/pyramids-view_4.jpg"
+        ],
+        "latitude": 29.9792,
+        "longitude": 31.1342,
+        "description": "The iconic pyramids of Giza, one of the Seven Wonders of the Ancient World.",
+        "overview": "The Pyramids of Giza complex includes the three major pyramids (Khufu, Khafre, and Menkaure) and the Great Sphinx. This UNESCO World Heritage site is a testament to the engineering and architectural prowess of ancient Egyptian civilization. Visitors can explore the external area, take a camel ride, and for an extra fee, enter the burial chambers of the pyramids. It is best to visit early morning to avoid the heat and crowds.",
+        "highlights": [
+          "The Great Pyramid of Khufu",
+          "The Sphinx",
+          "Panoramic desert views"
+        ],
+        "amenities": [
+          "Visitor Center",
+          "Restrooms",
+          "Gift Shops",
+          "Camel/Horse Rides (Paid)",
+          "Parking",
+          "Entrance to select Pyramids (Paid)"
+        ],
+        "paymentId": "pay_0001",
+        "price": "12$",
+        "reviews": {
+          "overallRating": 4.9,
+          "totalReviews": 9875,
+          "ratingCriteria": {
+            "experience": 4.9,
+            "staff": 4.5,
+            "accessibility": 4.2,
+            "facilities": 4,
+            "valueForMoney": 4.6
+          }
+        },
+        "userReviews": [
+          {
+            "id": 1,
+            "userName": "Mohamed Elsayed",
+            "userImage": "/images/users/user_m_1.jpg",
+            "rating": 4.9,
+            "date": "December 2024",
+            "comment": "Majestic! Seeing the pyramids in reality is an unforgettable experience. A must-visit."
+          },
+          {
+            "id": 2,
+            "userName": "Emily Carter",
+            "userImage": "/images/users/user_f_2.jpg",
+            "rating": 4.8,
+            "date": "November 2024",
+            "comment": "Absolutely breathtaking sight. Crowded, but worth every minute."
+          }
+        ]
+      },
+      "bookingData": {
+        "date": "2026-01-01",
+        "guests": 2
+      },
+      "pricing": {
+        "basePrice": 12,
+        "subtotal": 24,
+        "serviceFee": 1.2,
+        "taxes": 3.36,
+        "total": 28.56,
+        "duration": 1
+      },
+      "status": "pending",
+      "guestInfo": {
+        "firstName": "Jehan",
+        "lastName": "Usama",
+        "email": "hfhfhfh@gmai.com",
+        "phone": "01202942911",
+        "specialRequests": ""
+      },
+      "paymentInfo": {
+        "method": "arrival",
+        "cardLastFour": null,
+        "cardType": null,
+        "paidAt": null
+      },
+      "paymentStatus": "pending",
+      "bookingNumber": "BK1766415188856942",
+      "bookingDate": "2025-12-22T14:53:08.856Z"
     }
   ],
   "savedItems": [
