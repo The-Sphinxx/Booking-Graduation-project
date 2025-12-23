@@ -172,6 +172,44 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  // Change Password
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      if (!user.value || !user.value.id) {
+        throw new Error('No user logged in');
+      }
+
+      // 1. Verify old password
+      // Since we don't store the password in the state, we check against the server
+      const verifyResponse = await fetch(
+        `http://localhost:3000/users?id=${user.value.id}&password=${currentPassword}`
+      );
+      const verifiedUsers = await verifyResponse.json();
+
+      if (verifiedUsers.length === 0) {
+        return { success: false, error: 'Incorrect current password' };
+      }
+
+      // 2. Update to new password
+      const updateResponse = await fetch(`http://localhost:3000/users/${user.value.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: newPassword }),
+      });
+
+      if (updateResponse.ok) {
+        return { success: true };
+      } else {
+        return { success: false, error: 'Failed to update password' };
+      }
+    } catch (error) {
+      console.error('Change password error:', error);
+      return { success: false, error: error.message };
+    }
+  };
+
   // Logout
   const logout = () => {
     clearSession();
@@ -187,6 +225,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     loginWithGoogle,
     updateProfile,
+    changePassword,
     logout
   };
 });

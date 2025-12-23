@@ -29,7 +29,10 @@ import UsersManage from '@/Views/Dashboard/UsersManage.vue'
 import TripsManage from '@/Views/Dashboard/TripsManage.vue'
 import HotelsManage from '@/Views/Dashboard/HotelsManage.vue'
 import CarsManage from '@/Views/Dashboard/CarsManage.vue'
+
 import AttractionsManage from '@/Views/Dashboard/AttractionsManage.vue'
+import AdminsManage from '@/Views/Dashboard/AdminsManage.vue'
+import AdminSettings from '@/Views/Dashboard/AdminSettings.vue'
 
 // AI
 import AiCollectData from '@/Views/Ai/AiCollectData.vue'
@@ -329,6 +332,22 @@ const routes = [
         path: 'attractions-manage',
         name: 'AttractionsManage',
         component: AttractionsManage,
+      },
+      {
+        path: 'admins-manage',
+        name: 'AdminsManage',
+        component: AdminsManage,
+      },
+      {
+        path: 'settings',
+        name: 'AdminSettings',
+        component: AdminSettings,
+      },
+      {
+        path: 'details/:type/:id',
+        name: 'DashboardDetails',
+        component: () => import('@/Views/Dashboard/DashboardDetails.vue'),
+        props: true
       },
     ],
   },

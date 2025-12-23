@@ -8,22 +8,21 @@ export const userFilterConfig = {
   categoryOptions: [],
   customFilters: [
     {
-      key: 'email',
-      title: 'Email',
-      inputType: 'text',
-      placeholder: 'Enter email address'
-    },
-    {
-      key: 'phone',
-      title: 'Phone',
-      inputType: 'text',
-      placeholder: 'Enter phone number'
-    },
-    {
       key: 'nationality',
       title: 'Nationality',
-      inputType: 'text',
-      placeholder: 'Enter nationality'
+      type: 'single',
+      options: [
+        { label: 'Egyptian', value: 'Egyptian' },
+        { label: 'American', value: 'American' },
+        { label: 'British', value: 'British' },
+        { label: 'French', value: 'French' },
+        { label: 'German', value: 'German' },
+        { label: 'Italian', value: 'Italian' },
+        { label: 'Russian', value: 'Russian' },
+        { label: 'Saudi', value: 'Saudi' },
+        { label: 'Emirati', value: 'Emirati' },
+        { label: 'Other', value: 'Other' }
+      ]
     },
     {
       key: 'status',
@@ -31,7 +30,8 @@ export const userFilterConfig = {
       type: 'single',
       options: [
         { label: 'Verified', value: 'Verified' },
-        { label: 'Unverified', value: 'Unverified' }
+        { label: 'Unverified', value: 'Unverified' },
+        { label: 'Suspended', value: 'Suspended' }
       ]
     },
     {
@@ -49,7 +49,7 @@ export const userFilterConfig = {
 
 // ===== BOOKINGS =====
 export const bookingFilterConfig = {
-  showPriceFilter: true,
+  showPriceFilter: false,
   priceRange: { min: 0, max: 10000 },
   priceLabel: 'Total Amount',
   categoryOptions: [],
@@ -98,10 +98,10 @@ export const bookingFilterConfig = {
       inputType: 'date'
     },
     {
-      key: 'userName',
-      title: 'User Name',
+      key: 'bookingId',
+      title: 'Booking ID',
       inputType: 'text',
-      placeholder: 'Enter user name'
+      placeholder: 'Enter booking ID'
     }
   ]
 };
@@ -173,52 +173,43 @@ export const dashboardAttractionFilterConfig = {
 // ===== DASHBOARD HOTELS (Extended from existing) =====
 export const dashboardHotelFilterConfig = {
   showPriceFilter: true,
-  priceRange: { min: 0, max: 5000 },
+  priceRange: { min: 0, max: 1000 },
   priceLabel: 'Price / Night',
   categoryOptions: [],
   customFilters: [
     {
       key: 'city',
       title: 'City',
-      inputType: 'text',
-      placeholder: 'Enter city name'
+      type: 'text',
+      placeholder: 'Search by city...'
     },
     {
-      key: 'status',
+      key: 'statusSelected',
       title: 'Status',
       type: 'single',
       options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Maintenance', value: 'Maintenance' },
-        { label: 'Draft', value: 'Draft' }
+        { label: 'Active', value: 'Active' },
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Suspended', value: 'Suspended' }
       ]
     },
     {
-      key: 'featured',
+      key: 'ratingSelected',
+      title: 'Rating',
+      type: 'single',
+      options: [
+        { label: '4 Stars & Up', value: '4' },
+        { label: '3 Stars & Up', value: '3' },
+        { label: '2 Stars & Up', value: '2' }
+      ]
+    },
+    {
+      key: 'featuredSelected',
       title: 'Featured',
       type: 'single',
       options: [
         { label: 'Featured Only', value: 'true' },
-        { label: 'Non-Featured', value: 'false' }
-      ]
-    },
-    {
-      key: 'rating',
-      title: 'Hotel Rating',
-      type: 'single',
-      options: [
-        { label: '5 Stars', value: '5' },
-        { label: '4 Stars', value: '4' },
-        { label: '3 Stars', value: '3' }
-      ]
-    },
-    {
-      key: 'availability',
-      title: 'Room Availability',
-      type: 'single',
-      options: [
-        { label: 'Rooms Available', value: 'available' },
-        { label: 'Fully Booked', value: 'booked' }
+        { label: 'All', value: 'false' }
       ]
     }
   ]
@@ -227,45 +218,48 @@ export const dashboardHotelFilterConfig = {
 // ===== DASHBOARD CARS (Extended from existing) =====
 export const dashboardCarFilterConfig = {
   showPriceFilter: true,
-  priceRange: { min: 0, max: 3000 },
-  priceLabel: 'Price / Day',
-  categoryOptions: [],
+  priceRange: { min: 0, max: 500 },
   customFilters: [
     {
       key: 'city',
       title: 'City',
-      inputType: 'text',
-      placeholder: 'Enter city name'
+      type: 'single',
+      options: [
+        { label: 'Cairo', value: 'Cairo' },
+        { label: 'Giza', value: 'Giza' },
+        { label: 'Alexandria', value: 'Alexandria' },
+        { label: 'Luxor', value: 'Luxor' },
+        { label: 'Aswan', value: 'Aswan' },
+        { label: 'Sharm El Sheikh', value: 'Sharm El Sheikh' },
+        { label: 'Hurghada', value: 'Hurghada' },
+        { label: 'Dahab', value: 'Dahab' },
+        { label: 'Siwa', value: 'Siwa' },
+        { label: 'Faiyum', value: 'Faiyum' },
+        { label: 'Ain Sokhna', value: 'Ain Sokhna' },
+        { label: 'Marsa Alam', value: 'Marsa Alam' },
+        { label: 'Nuweiba', value: 'Nuweiba' },
+        { label: 'Port Said', value: 'Port Said' }
+      ]
     },
     {
-      key: 'carType',
+      key: 'carTypeSelected',
       title: 'Car Type',
       type: 'single',
       options: [
-        { label: 'Sedan', value: 'sedan' },
-        { label: 'SUV', value: 'suv' },
-        { label: 'Luxury', value: 'luxury' },
-        { label: 'Van', value: 'van' },
-        { label: 'Economy', value: 'economy' }
+        { label: 'SUV', value: 'SUV' },
+        { label: 'Sedan', value: 'Sedan' },
+        { label: 'Luxury', value: 'Luxury' },
+        { label: 'Van', value: 'Van' }
       ]
     },
     {
-      key: 'transmission',
-      title: 'Transmission',
+      key: 'statusSelected',
+      title: 'Status',
       type: 'single',
       options: [
-        { label: 'Automatic', value: 'automatic' },
-        { label: 'Manual', value: 'manual' }
-      ]
-    },
-    {
-      key: 'status',
-      title: 'Availability',
-      type: 'single',
-      options: [
-        { label: 'Available', value: 'available' },
-        { label: 'Maintenance', value: 'maintenance' },
-        { label: 'Rented', value: 'rented' }
+        { label: 'Available', value: 'Available' },
+        { label: 'Rented', value: 'Rented' },
+        { label: 'Maintenance', value: 'Maintenance' }
       ]
     },
     {
@@ -311,9 +305,9 @@ export const dashboardTripFilterConfig = {
       title: 'Status',
       type: 'single',
       options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Inactive', value: 'inactive' },
-        { label: 'Full', value: 'full' }
+        { label: 'Upcoming', value: 'Upcoming' },
+        { label: 'Ongoing', value: 'Ongoing' },
+        { label: 'Completed', value: 'Completed' }
       ]
     },
     {

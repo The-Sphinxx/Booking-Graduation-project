@@ -106,9 +106,18 @@
                 </option>
               </select>
 
-              <!-- For date/text inputs -->
+              <!-- For date inputs -->
+              <DatePicker
+                v-else-if="customFilter.inputType === 'date'"
+                v-model="tempFilters[customFilter.key]"
+                :placeholder="customFilter.placeholder || 'Select ' + customFilter.title.toLowerCase()"
+                input-class="bg-transparent"
+                class="w-full"
+              />
+
+              <!-- For text/number inputs -->
               <input
-                v-else-if="customFilter.inputType === 'date' || customFilter.inputType === 'text' || customFilter.inputType === 'number'"
+                v-else-if="customFilter.inputType === 'text' || customFilter.inputType === 'number'"
                 :type="customFilter.inputType"
                 v-model="tempFilters[customFilter.key]"
                 :placeholder="customFilter.placeholder || 'Enter ' + customFilter.title.toLowerCase()"
@@ -157,6 +166,7 @@
 
 <script setup>
 import { ref, computed, watch, defineProps, defineEmits } from 'vue';
+import DatePicker from '@/components/Common/DatePicker.vue';
 
 const props = defineProps({
   isOpen: {
