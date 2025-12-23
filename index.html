@@ -5,6 +5,24 @@
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PYRAMIS</title>
+    <script>
+      // Initialize theme immediately before rendering to prevent flash
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const isDark = savedTheme 
+          ? savedTheme === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        const html = document.documentElement;
+        if (isDark) {
+          html.setAttribute('data-theme', 'nileheritageDark');
+          html.classList.add('dark');
+        } else {
+          html.setAttribute('data-theme', 'nileheritage');
+          html.classList.remove('dark');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
