@@ -105,8 +105,9 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { useSupportStore } from '@/stores/supportStore';
+import { useChat, chatService } from '@/Services/chatService';
 import { storeToRefs } from 'pinia';
 
 const props = defineProps({
@@ -126,15 +127,16 @@ const props = defineProps({
 
 const store = useSupportStore();
 const { currentTicket } = storeToRefs(store);
+const { connect, disconnect } = useChat();
 const newMessage = ref('');
 const sending = ref(false);
 const messagesContainer = ref(null);
 
 const isMessageFromMe = (msg) => {
   if (props.isUserView) {
-    return !msg.isSupport; // Me (User) = !isSupport
+    return !msg.isSupport;
   } else {
-    return msg.isSupport; // Me (Admin) = isSupport
+    return msg.isSupport;
   }
 };
 
@@ -157,21 +159,18 @@ const sendMessage = async () => {
     
     sending.value = true;
     try {
-        const messageData = {
-            content: newMessage.value,
-        };
+        // Use chatService to send message via API (REST fallback for REST communication)
+        const result = await chatService.sendMessage(
+            currentTicket.value.id,
+            newMessage.value,
+            currentTicket.value.subject
+        );
 
-        if (props.isUserView) {
-            messageData.senderName = props.userName;
-            messageData.senderId = props.userId;
-            messageData.isSupport = false;
-        } else {
-            messageData.senderName = 'Support Team'; // Should be dynamic admin name
-            messageData.senderId = 'admin_1';
-            messageData.isSupport = true;
+        // Also try to broadcast via SignalR if connected
+        if (chatService.connection?.state === 'Connected') {
+            await chatService.sendMessageRealtime(currentTicket.value.id, newMessage.value);
         }
 
-        await store.sendMessage(currentTicket.value.id, messageData);
         newMessage.value = '';
     } catch (err) {
         console.error('Failed to send message', err);
@@ -187,7 +186,6 @@ const updateStatus = async (status) => {
 
 const assignToMe = async () => {
     if (!currentTicket.value) return;
-    // Assuming 'admin_1' is the current user ID for now
     await store.assignTicket(currentTicket.value.id, 'admin_1');
 };
 
@@ -226,4 +224,13 @@ const formatTime = (dateString) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
+
+// Connect to chat on mount, disconnect on unmount
+onMounted(async () => {
+    await connect();
+});
+
+onUnmounted(async () => {
+    await disconnect();
+});
 </script>

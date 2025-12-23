@@ -115,11 +115,15 @@ Comprehensive REST API for an AI-powered travel booking platform with intelligen
     {
         options.AddPolicy("AllowAll", policy => 
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
                   .AllowAnyMethod()
-                  .AllowAnyHeader();
+                  .AllowAnyHeader()
+                  .AllowCredentials();
         });
     });
+
+    // SignalR
+    builder.Services.AddSignalR();
 
     var app = builder.Build();
 
@@ -144,12 +148,30 @@ Comprehensive REST API for an AI-powered travel booking platform with intelligen
         logger.LogInformation("Hangfire recurring job 'image-cleanup-hourly' scheduled to run every hour (UTC).");
     }
 
+    // Seed default roles and users on startup
+    try
+    {
+        using var seedScope = app.Services.CreateScope();
+        var dbInitializer = seedScope.ServiceProvider.GetRequiredService<DbInitializer>();
+        dbInitializer.SeedAsync().GetAwaiter().GetResult();
+        Log.Information("Database seeding executed successfully.");
+    }
+    catch (Exception seedEx)
+    {
+        Log.Error(seedEx, "Database seeding failed during startup.");
+    }
+
     app.UseSerilogRequestLogging();
     app.UseMiddleware<Agentic_Rentify.Api.Middleware.GlobalExceptionHandlerMiddleware>(); // Use Middleware
     app.UseHangfireDashboard();
-    app.UseHttpsRedirection();
+    // In development, don't force HTTPS redirection since we're only listening on HTTP
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseHttpsRedirection();
+    }
     app.UseStaticFiles();
     app.UseCors("AllowAll");
+    app.UseAuthentication();
     app.UseAuthorization();
 
     // 4. Enable Swagger/Swashbuckle in Development
@@ -172,6 +194,7 @@ Comprehensive REST API for an AI-powered travel booking platform with intelligen
     }
 
     app.MapControllers();
+    app.MapHub<Agentic_Rentify.Infragentic.Hubs.ChatHub>("/hubs/chat");
 
     app.Run();
 }
