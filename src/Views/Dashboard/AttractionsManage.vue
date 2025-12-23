@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-2">
     <!-- Stats Cards -->
-    <StatsCard :stats="stats" />
+    <StatsCard v-if="!compactMode" :stats="stats" />
 
     <!-- Data Table -->
     <DataTable
@@ -12,7 +12,8 @@
       add-button-text="Add New Attraction"
       :show-actions="{ edit: true, delete: true, view: true }"
       empty-message="No attractions available"
-      :per-page="8"
+      :per-page="compactMode ? 5 : 8"
+      :show-pagination="!compactMode"
       resource="attractions"
       :loading="loading"
       @add="handleAdd"
@@ -47,7 +48,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router'; // Added useRoute import
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -56,9 +57,17 @@ import { attractionsAPI } from '@/Services/dashboardApi';
 import { dashboardAttractionFilterConfig } from '@/Utils/dashboardFilterConfigs';
 import { attractionFormConfig } from '@/Utils/dashboardFormConfigs';
 
+const props = defineProps({
+  compactMode: {
+    type: Boolean,
+    default: false
+  }
+});
+
 // State
 const attractions = ref([]);
 const router = useRouter();
+const route = useRoute(); // Added missing route definition
 const loading = ref(false);
 const showFilterModal = ref(false);
 const showFormModal = ref(false);
@@ -156,6 +165,18 @@ const stats = computed(() => {
 // Filtered attractions based on active filters
 const filteredAttractions = computed(() => {
   let result = attractions.value;
+
+  // Global Search
+  if (route.query.q) {
+    const search = route.query.q.toLowerCase();
+    result = result.filter(a => 
+      a.name?.toLowerCase().includes(search) || 
+      a.city?.toLowerCase().includes(search) ||
+      a.location?.toLowerCase().includes(search) ||
+      a.status?.toLowerCase().includes(search) || // Status match
+      (search === 'featured' && a.isFeatured) // "featured" keyword match
+    );
+  }
 
   // Apply price filter
   if (activeFilters.value.maxPrice && activeFilters.value.maxPrice < filterConfig.priceRange.max) {

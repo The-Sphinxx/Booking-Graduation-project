@@ -59,18 +59,31 @@ public class IdentityService : IIdentityService
         if (!result.Succeeded)
             throw new BadRequestException("User creation failed! Errors: " + string.Join(", ", result.Errors.Select(e => e.Description)));
 
-        // Generate OTP
-        var otp = new Random().Next(100000, 999999).ToString();
-        user.EmailVerificationCode = otp;
-        user.EmailVerificationCodeExpiresAt = DateTime.UtcNow.AddMinutes(10);
+        // Assign Client role on standard registration
+        var roleAssign = await _userManager.AddToRoleAsync(user, "Client");
+        if (!roleAssign.Succeeded)
+            throw new BadRequestException("Role assignment failed: " + string.Join(", ", roleAssign.Errors.Select(e => e.Description)));
+
+        // Generate email verification token (link-based)
+        var emailToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray())
+            .Replace("+", string.Empty)
+            .Replace("/", string.Empty)
+            .Replace("=", string.Empty);
+
+        user.EmailVerificationToken = emailToken;
+        user.EmailVerificationTokenExpiresAt = DateTime.UtcNow.AddHours(24);
         await _userManager.UpdateAsync(user);
 
-        // Send OTP Email
+        // Send Welcome email with verification link
+        var clientUrl = _configuration["ClientAppUrl"] ?? "http://localhost:5173";
+        var verifyLink = $"{clientUrl}?verifyEmail={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(emailToken)}";
         _backgroundJobClient.Enqueue(() => _emailService.SendEmailAsync(
-            email, 
-            "Verify Your Email", 
-            $"Your verification code is {otp}",
-            otp
+            email,
+            "Welcome to PYRAMIS — Verify your email",
+            "Click the button below to verify your email.",
+            "",
+            verifyLink,
+            "Verify Email"
         ));
 
         return await GenerateAuthResponseAsync(user);
@@ -93,6 +106,27 @@ public class IdentityService : IIdentityService
         user.EmailVerificationCodeExpiresAt = null;
         await _userManager.UpdateAsync(user);
 
+        return true;
+    }
+
+    public async Task<bool> ConfirmEmailByTokenAsync(string email, string token)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) throw new NotFoundException("User not found");
+        if (user.IsVerified) return true;
+
+        if (string.IsNullOrWhiteSpace(user.EmailVerificationToken) ||
+            !string.Equals(user.EmailVerificationToken, token, StringComparison.Ordinal) ||
+            user.EmailVerificationTokenExpiresAt is null ||
+            user.EmailVerificationTokenExpiresAt < DateTime.UtcNow)
+        {
+            throw new BadRequestException("Invalid or expired verification token");
+        }
+
+        user.IsVerified = true;
+        user.EmailVerificationToken = null;
+        user.EmailVerificationTokenExpiresAt = null;
+        await _userManager.UpdateAsync(user);
         return true;
     }
 
@@ -184,6 +218,11 @@ public class IdentityService : IIdentityService
             };
             var result = await _userManager.CreateAsync(user); 
              if (!result.Succeeded) throw new BadRequestException("Google User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+
+            // Ensure Client role for new Google users
+            var roleAssign = await _userManager.AddToRoleAsync(user, "Client");
+            if (!roleAssign.Succeeded)
+                throw new BadRequestException("Role assignment failed: " + string.Join(", ", roleAssign.Errors.Select(e => e.Description)));
         }
         
         return await GenerateAuthResponseAsync(user);
@@ -211,33 +250,44 @@ public class IdentityService : IIdentityService
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null) return; 
 
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        
-        // Construct Reset Link
-        var clientUrl = _configuration["ClientAppUrl"] ?? "http://localhost:3000";
-        var encodedToken = Uri.EscapeDataString(token);
-        var encodedEmail = Uri.EscapeDataString(email);
-        var resetLink = $"{clientUrl}/auth/reset-password?token={encodedToken}&email={encodedEmail}";
-
-        string message = "We received a request to reset your password. Click the button below to proceed.";
+        // Generate numeric OTP (6 digits) with 10 minutes expiry
+        var otp = new Random().Next(100000, 999999).ToString();
+        user.PasswordResetOtp = otp;
+        user.PasswordResetOtpExpiresAt = DateTime.UtcNow.AddMinutes(10);
+        await _userManager.UpdateAsync(user);
 
         _backgroundJobClient.Enqueue(() => _emailService.SendEmailAsync(
-            email, 
-            "Reset Password", 
-            message,
-            "", // No OTP
-            resetLink,
-            "Reset Password"
+            email,
+            "Reset Password Code",
+            "Use the following code to reset your password:",
+            otp
         ));
     }
 
-    public async Task ResetPasswordAsync(string email, string token, string newPassword)
+    public async Task ResetPasswordAsync(string email, string tokenOrOtp, string newPassword)
     {
          var user = await _userManager.FindByEmailAsync(email);
          if (user == null) throw new NotFoundException("User not found");
-         
-         var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-         if (!result.Succeeded) throw new BadRequestException("Reset failed: " + string.Join(" ", result.Errors.Select(e => e.Description)));
+
+         // Treat incoming token as OTP; validate then use Identity reset token under the hood
+         if (string.IsNullOrWhiteSpace(user.PasswordResetOtp) ||
+             !string.Equals(user.PasswordResetOtp, tokenOrOtp, StringComparison.Ordinal) ||
+             user.PasswordResetOtpExpiresAt is null ||
+             user.PasswordResetOtpExpiresAt < DateTime.UtcNow)
+         {
+             throw new BadRequestException("Invalid or expired reset code");
+         }
+
+         // Generate Identity reset token and reset password
+         var identityToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+         var result = await _userManager.ResetPasswordAsync(user, identityToken, newPassword);
+         if (!result.Succeeded)
+             throw new BadRequestException("Reset failed: " + string.Join(" ", result.Errors.Select(e => e.Description)));
+
+         // Invalidate OTP immediately
+         user.PasswordResetOtp = null;
+         user.PasswordResetOtpExpiresAt = null;
+         await _userManager.UpdateAsync(user);
     }
     
     public async Task ChangePasswordAsync(string email, string currentPassword, string newPassword)
@@ -308,10 +358,41 @@ public class IdentityService : IIdentityService
             Email = user.Email!,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            Role = userRoles.FirstOrDefault() ?? string.Empty,
             Token = new JwtSecurityTokenHandler().WriteToken(token),
             RefreshToken = refreshToken,
             RefreshTokenExpiration = user.RefreshTokenExpiryTime
         };
+    }
+
+    // Create an admin user (used by admin-only endpoint)
+    public async Task<(string Id, string Email)> CreateAdminAsync(string email, string password, string firstName, string lastName)
+    {
+        var existing = await _userManager.FindByEmailAsync(email);
+        if (existing != null)
+            throw new BadRequestException("User already exists!");
+
+        var user = new ApplicationUser
+        {
+            Email = email,
+            UserName = email,
+            SecurityStamp = Guid.NewGuid().ToString(),
+            FirstName = firstName,
+            LastName = lastName,
+            IsVerified = true,
+            EmailConfirmed = true,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var create = await _userManager.CreateAsync(user, password);
+        if (!create.Succeeded)
+            throw new BadRequestException("Admin creation failed: " + string.Join(", ", create.Errors.Select(e => e.Description)));
+
+        var role = await _userManager.AddToRoleAsync(user, "Admin");
+        if (!role.Succeeded)
+            throw new BadRequestException("Assigning Admin role failed: " + string.Join(", ", role.Errors.Select(e => e.Description)));
+
+        return (user.Id, user.Email!);
     }
 
     private static string GenerateRefreshToken()

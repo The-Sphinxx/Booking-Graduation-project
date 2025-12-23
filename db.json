@@ -5205,7 +5205,7 @@
       },
       "pricePerNight": 295,
       "featured": true,
-      "status": "Inactive"
+      "status": "Active"
     },
     {
       "id": "3",
@@ -5369,7 +5369,7 @@
       },
       "pricePerNight": 95,
       "featured": false,
-      "status": "Maintenance"
+      "status": "Pending"
     },
     {
       "id": "5",
@@ -5950,104 +5950,33 @@
       "total_fleet": 20,
       "available_now": 5,
       "fuelType": "hybrid",
-      "status": "maintenance",
-      "featured": true,
-      "id": "1"
-    },
-    {
-      "id": "2",
-      "name": "Kia Carens",
-      "city": "Giza",
-      "description": "Family MPV suitable for 5-6 passengers.",
-      "seats": 6,
-      "transmission": "Auto",
-      "nextAvailability": "2025-12-20",
-      "featured": true,
-      "status": "Rented",
-      "total_fleet": 20,
-      "available_now": 4,
-      "booked_today": 4,
-      "in_maintenance": 11,
-      "features": [
-        "GPS",
-        "A/C",
-        "Bluetooth",
-        "Cruise Control"
-      ],
-      "images": [
-        "/images-car/KiaCarens.avif",
-        "/images-car/KiaCarens2.webp",
-        "/images-car/KiaCarens3.jpg"
-      ],
-      "price": 150,
-      "basePrice": 150,
-      "overview": "Kia Carens is a spacious family MPV offering comfort, safety, and modern features for 5-6 passengers. Ideal for city drives and weekend trips.",
-      "highlights": [
-        "Spacious interior",
-        "Comfortable seats",
-        "Smooth handling",
-        "Family-friendly amenities"
-      ],
-      "amenities": [
-        "Air Conditioning",
-        "GPS Navigation",
-        "Bluetooth Connectivity",
-        "Cruise Control",
-        "Entertainment System",
-        "USB Ports"
-      ],
-      "reviews": {
-        "overallRating": 4.7,
-        "totalReviews": 987,
-        "ratingCriteria": {
-          "experience": 4.7,
-          "comfort": 4.8,
-          "reliability": 4.6,
-          "valueForMoney": 4.5,
-          "features": 4.6
-        }
-      },
-      "userReviews": [
-        {
-          "id": 1,
-          "userName": "Michael Chen",
-          "userImage": "/images/users/user_m_3.jpg",
-          "rating": 5,
-          "date": "March 2025",
-          "comment": "Spacious and comfortable for family trips."
-        }
-      ],
-      "availability": "Sold Out"
-    },
-    {
-      "id": "3",
-      "name": "Toyota Rush",
-      "city": "Alexandria",
-      "description": "Compact SUV ideal for 5-6 passengers with flexibility for city and trips.",
-      "seats": 6,
-      "transmission": "Auto",
-      "nextAvailability": "2025-12-18",
-      "featured": true,
       "status": "Available",
+      "featured": true,
+      "id": "1",
+      "isFeatured": false
+    },
+    {
+      "name": "Toyota Rush",
+      "brand": "Toyota",
+      "model": "Rush",
+      "year": 2023,
+      "city": "Alexandria",
+      "price": 160,
+      "type": "luxury",
+      "transmission": "automatic",
+      "seats": 6,
       "total_fleet": 20,
       "available_now": 5,
-      "booked_today": 4,
-      "in_maintenance": 11,
+      "fuelType": "Petrol",
+      "nextAvailability": "2025-12-18",
+      "description": "Compact SUV ideal for 5-6 passengers with flexibility for city and trips.",
+      "overview": "Toyota Rush is a compact SUV combining city practicality with weekend trip capabilities. Flexible seating and modern features make it ideal for families.",
       "features": [
         "GPS",
         "A/C",
         "Bluetooth",
         "Sunroof"
       ],
-      "images": [
-        "/images-car/ToyotaRush.jpg",
-        "/images-car/ToyotaRush2.webp",
-        "/images-car/ToyotaRush3.avif",
-        "/images-car/ToyotaRush4.jpg"
-      ],
-      "price": 160,
-      "basePrice": 160,
-      "overview": "Toyota Rush is a compact SUV combining city practicality with weekend trip capabilities. Flexible seating and modern features make it ideal for families.",
       "highlights": [
         "Flexible seating",
         "Sunroof",
@@ -6062,31 +5991,19 @@
         "Cruise Control",
         "USB Ports"
       ],
-      "reviews": {
-        "overallRating": 4.8,
-        "totalReviews": 1023,
-        "ratingCriteria": {
-          "experience": 4.8,
-          "comfort": 4.7,
-          "reliability": 4.8,
-          "valueForMoney": 4.6,
-          "features": 4.5
-        }
-      },
-      "userReviews": [
-        {
-          "id": 1,
-          "userName": "Alex Johnson",
-          "userImage": "/images/users/user_m_4.jpg",
-          "rating": 5,
-          "date": "January 2025",
-          "comment": "Versatile and smooth ride. Great for road trips."
-        }
-      ]
+      "images": "/images-car/ToyotaRush.jpg",
+      "status": "Available",
+      "featured": true,
+      "id": "3"
     },
     {
       "id": "4",
       "name": "Mitsubishi Xpander",
+      "brand": "Mitsubishi",
+      "model": "Xpander",
+      "year": 2023,
+      "type": "MPV",
+      "fuelType": "Petrol",
       "city": "Luxor",
       "description": "Modern MPV for 5-6 passengers with comfortable interior.",
       "seats": 6,
@@ -6890,6 +6807,11 @@
     {
       "id": "16",
       "name": "Volkswagen Atlas",
+      "brand": "Volkswagen",
+      "model": "Atlas",
+      "year": 2024,
+      "type": "SUV",
+      "fuelType": "Petrol",
       "city": "Giza",
       "description": "Spacious SUV perfect for family road trips.",
       "seats": 7,
@@ -6955,6 +6877,11 @@
     {
       "id": "17",
       "name": "Toyota RAV4",
+      "brand": "Toyota",
+      "model": "RAV4",
+      "year": 2023,
+      "type": "SUV",
+      "fuelType": "Hybrid",
       "city": "Alexandria",
       "description": "Compact SUV ideal for city and weekend trips.",
       "seats": 4,
@@ -7019,6 +6946,11 @@
     {
       "id": "18",
       "name": "Honda CR‑V",
+      "brand": "Honda",
+      "model": "CR-V",
+      "year": 2023,
+      "type": "SUV",
+      "fuelType": "Hybrid",
       "city": "Luxor",
       "description": "Reliable SUV with excellent fuel efficiency for families.",
       "seats": 4,
@@ -7083,6 +7015,11 @@
     {
       "id": "19",
       "name": "Mazda CX‑5",
+      "brand": "Mazda",
+      "model": "CX-5",
+      "year": 2024,
+      "type": "SUV",
+      "fuelType": "Petrol",
       "city": "Aswan",
       "description": "Stylish and comfortable SUV for smaller families.",
       "seats": 4,
@@ -7148,6 +7085,11 @@
     {
       "id": "20",
       "name": "Toyota Avanza",
+      "brand": "Toyota",
+      "model": "Avanza",
+      "year": 2022,
+      "type": "Van",
+      "fuelType": "Diesel",
       "city": "Sharm El Sheikh",
       "description": "Compact MPV ideal for 5–7 passengers, perfect for city rides and family trips.",
       "seats": 7,
@@ -7216,6 +7158,11 @@
       "id": "1",
       "title": "Siwa Oasis Camping",
       "city": "Siwa Oasis",
+      "destination": "Siwa Oasis",
+      "tripType": "Desert Safari",
+      "featured": true,
+      "status": "Ongoing",
+      "availableSpots": 8,
       "description": "Explore the remote Siwa Oasis, salt lakes, and spend nights under the stars. Perfect for those seeking tranquility and a connection with nature.",
       "price": 13700,
       "rating": 4.8,
@@ -7337,13 +7284,15 @@
         "accommodation": true,
         "meals": 3
       },
-      "availability": "Available",
-      "status": "Completed"
+      "availability": "Available"
     },
     {
       "id": "2",
       "title": "Luxor & Aswan Nile Cruise",
       "city": "Luxor & Aswan",
+      "destination": "Luxor & Aswan",
+      "tripType": "Nile Cruise",
+      "availableSpots": 12,
       "description": "Experience ancient Egypt with visits to Valley of the Kings, Karnak Temple, and Abu Simbel. A journey through history on a luxury cruise.",
       "price": 28500,
       "rating": 4.9,
@@ -8547,24 +8496,6 @@
       "rating": 4.9
     }
   ],
-  "wallet": [
-    {
-      "id": "wallet_1",
-      "userId": "1",
-      "balance": 2500,
-      "currency": "EGP",
-      "points": 150,
-      "transactions": [
-        {
-          "id": 1,
-          "type": "deposit",
-          "amount": 1000,
-          "date": "2024-12-01",
-          "description": "Added funds"
-        }
-      ]
-    }
-  ],
   "recentActivity": [
     {
       "id": "act_1",
@@ -8583,6 +8514,114 @@
       "date": "2024-09-12",
       "status": "completed",
       "icon": "🚗"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "TK-001",
+      "userId": "1",
+      "userName": "Hassan Sabry",
+      "userEmail": "hassan@example.com",
+      "subject": "Refund request for cancelled booking",
+      "status": "Pending",
+      "priority": "High",
+      "createdAt": "2024-12-23T09:00:00.000Z",
+      "updatedAt": "2025-12-23T09:23:42.922Z",
+      "assignedTo": null,
+      "messages": [
+        {
+          "id": 1,
+          "senderId": "1",
+          "senderName": "Hassan Sabry",
+          "content": "I need to request a refund for my booking BK-001234. The hotel cancelled my reservation without notice.",
+          "timestamp": "2024-12-23T09:00:00.000Z",
+          "isSupport": false
+        },
+        {
+          "id": 2,
+          "senderId": "admin_1",
+          "senderName": "Support Team",
+          "content": "I'm sorry to hear about this issue. I'm looking into your booking now and will process the refund immediately.",
+          "timestamp": "2024-12-23T09:30:00.000Z",
+          "isSupport": true
+        },
+        {
+          "id": 1766481799731,
+          "content": "i have a problem with reservation",
+          "senderName": "Hassan Sabry",
+          "senderId": "1",
+          "isSupport": false,
+          "timestamp": "2025-12-23T09:23:19.731Z"
+        },
+        {
+          "id": 1766481822922,
+          "content": "tell me the issue",
+          "senderName": "Support Team",
+          "senderId": "admin_1",
+          "isSupport": true,
+          "timestamp": "2025-12-23T09:23:42.922Z"
+        }
+      ]
+    },
+    {
+      "id": "TK-002",
+      "userId": "google_1766073359742",
+      "userName": "Google User",
+      "userEmail": "user@gmail.com",
+      "subject": "Unable to complete payment",
+      "status": "Pending",
+      "priority": "Medium",
+      "createdAt": "2024-12-22T14:00:00.000Z",
+      "updatedAt": "2025-12-23T14:01:06.920Z",
+      "assignedTo": null,
+      "messages": [
+        {
+          "id": 1,
+          "senderId": "google_1766073359742",
+          "senderName": "Google User",
+          "content": "I keep getting an error when I try to pay with my credit card. Error code: ERR_PAY_01",
+          "timestamp": "2024-12-22T14:00:00.000Z",
+          "isSupport": false
+        },
+        {
+          "id": 1766498466920,
+          "content": "i will check",
+          "senderName": "Support Team",
+          "senderId": "admin_1",
+          "isSupport": true,
+          "timestamp": "2025-12-23T14:01:06.920Z"
+        }
+      ]
+    },
+    {
+      "id": "TK-003",
+      "userId": "3",
+      "userName": "Emma Wilson",
+      "userEmail": "emma@test.com",
+      "subject": "Question about AI trip suggestions",
+      "status": "Resolved",
+      "priority": "Low",
+      "createdAt": "2024-12-20T10:00:00.000Z",
+      "updatedAt": "2024-12-21T11:00:00.000Z",
+      "assignedTo": "1",
+      "messages": [
+        {
+          "id": 1,
+          "senderId": "3",
+          "senderName": "Emma Wilson",
+          "content": "How accurate are the AI suggestions?",
+          "timestamp": "2024-12-20T10:00:00.000Z",
+          "isSupport": false
+        },
+        {
+          "id": 2,
+          "senderId": "1",
+          "senderName": "Hassan Sabry",
+          "content": "They are based on your preferences and popular ratings. They are usually very helpful!",
+          "timestamp": "2024-12-21T11:00:00.000Z",
+          "isSupport": true
+        }
+      ]
     }
   ]
 }

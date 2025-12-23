@@ -14,6 +14,8 @@
         <input 
           type="text" 
           placeholder="Search" 
+          v-model="searchQuery"
+          @input="handleSearch"
           class="input input-bordered w-full pl-10 bg-base-200 rounded-md text-sm"
         />
         <svg 
@@ -85,17 +87,41 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
+const searchQuery = ref('');
 
 onMounted(() => {
   authStore.initAuth();
+  // Initialize search from URL
+  if (route.query.q) {
+    searchQuery.value = route.query.q;
+  }
 });
 
 const user = computed(() => authStore.user);
+
+// Watch for search input and update URL
+let timeout;
+const handleSearch = () => {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    router.replace({ 
+      query: { 
+        ...route.query, 
+        q: searchQuery.value || undefined 
+      } 
+    });
+  }, 300);
+};
+
+// Clear search when changing main routes (optional, but good UX if context changes completely)
+watch(() => route.path, () => {
+  searchQuery.value = '';
+});
 
 const menuItems = [
   {
