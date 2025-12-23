@@ -10,6 +10,8 @@ import ContactUs from '@/Views/ContactUs.vue'
 import Login from '@/Views/Authentication/Login.vue'
 import SignUp from '@/Views/Authentication/SignUp.vue'
 import ForgetPassword from '@/Views/Authentication/ForgetPassword.vue'
+import ResetPassword from '@/Views/Authentication/ResetPassword.vue'
+import VerifyEmail from '@/Views/Authentication/VerifyEmail.vue'
 
 // User Account
 import Profile from '@/Views/UserAccount/Profile.vue'
@@ -81,17 +83,17 @@ const routes = [
 
   // Authentication Routes (No Layout)
   {
-    path: '/authentication/login',
+    path: '/auth/login',
     name: 'Login',
     component: Login,
   },
   {
-    path: '/authentication/sign-up',
+    path: '/auth/sign-up',
     name: 'SignUp',
     component: SignUp,
   },
   {
-    path: '/authentication/forget-password',
+    path: '/auth/forget-password',
     name: 'ForgetPassword',
     component: ForgetPassword,
   },

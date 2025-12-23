@@ -5943,78 +5943,16 @@
   ],
   "cars": [
     {
-      "id": "1",
       "name": "Toyota Corolla",
       "city": "Cairo",
       "description": "Reliable compact sedan suitable for 4 passengers.",
       "seats": 4,
-      "transmission": "Auto",
-      "nextAvailability": "2025-12-26",
-      "featured": true,
-      "status": "Available",
       "total_fleet": 20,
       "available_now": 5,
-      "booked_today": 4,
-      "in_maintenance": 11,
-      "features": [
-        "GPS",
-        "A/C",
-        "Bluetooth",
-        "Backup Camera"
-      ],
-      "images": [
-        "/images-car/ToyotaCorolla.avif",
-        "/images-car/ToyotaCorolla2.jpg",
-        "/images-car/ToyotaCorolla3.jpg",
-        "/images-car/ToyotaCorolla4.jpg"
-      ],
-      "price": 120,
-      "basePrice": 120,
-      "overview": "The Toyota Corolla is a reliable compact sedan perfect for city driving and short family trips. It offers fuel efficiency, modern technology features, and smooth handling.",
-      "highlights": [
-        "Fuel-efficient engine",
-        "Smooth city driving",
-        "Advanced safety features",
-        "Comfortable seating for 4 passengers"
-      ],
-      "amenities": [
-        "Air Conditioning",
-        "GPS Navigation",
-        "Bluetooth Connectivity",
-        "Backup Camera",
-        "Cruise Control",
-        "USB Ports"
-      ],
-      "reviews": {
-        "overallRating": 4.8,
-        "totalReviews": 1523,
-        "ratingCriteria": {
-          "experience": 4.8,
-          "comfort": 4.6,
-          "reliability": 4.9,
-          "valueForMoney": 4.7,
-          "features": 4.5
-        }
-      },
-      "userReviews": [
-        {
-          "id": 1,
-          "userName": "John Doe",
-          "userImage": "/images/users/user_m_1.jpg",
-          "rating": 5,
-          "date": "January 2025",
-          "comment": "Perfect car for city trips. Comfortable and compact."
-        },
-        {
-          "id": 2,
-          "userName": "Sarah Ahmed",
-          "userImage": "/images/users/user_f_2.jpg",
-          "rating": 5,
-          "date": "February 2025",
-          "comment": "Reliable and smooth ride."
-        }
-      ],
-      "availability": "Available"
+      "fuelType": "hybrid",
+      "status": "maintenance",
+      "featured": true,
+      "id": "1"
     },
     {
       "id": "2",
@@ -6078,7 +6016,8 @@
           "date": "March 2025",
           "comment": "Spacious and comfortable for family trips."
         }
-      ]
+      ],
+      "availability": "Sold Out"
     },
     {
       "id": "3",
@@ -6374,6 +6313,7 @@
       "nextAvailability": "2025-12-28",
       "featured": true,
       "status": "Available",
+      "status": "Available",
       "total_fleet": 20,
       "available_now": 2,
       "booked_today": 4,
@@ -6437,6 +6377,7 @@
       "transmission": "Auto",
       "nextAvailability": "2025-12-29",
       "featured": true,
+      "status": "Rented",
       "status": "Rented",
       "total_fleet": 20,
       "available_now": 0,

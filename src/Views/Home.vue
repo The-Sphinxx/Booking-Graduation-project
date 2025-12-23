@@ -5,8 +5,7 @@
 
     <!-- Hero Section -->
     <div class="relative w-full h-screen overflow-hidden">
-      <div class="absolute inset-0">
-        <img :src="heroSection.backgroundImage || defaultHero.backgroundImage" alt="Pyramid" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: `url(${heroSection.backgroundImage || defaultHero.backgroundImage})` }">
         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
       </div>
       
@@ -379,8 +378,9 @@ const tabs = [
 const defaultHero = {
   title: 'Discover Egypt — Your Journey Starts Here',
   subtitle: 'Explore ancient wonders, luxury stays, and unforgettable experiences',
-  backgroundImage: 'https://images.unsplash.com/photo-1568322445389-f64ac2515020?q=80&w=2070'
+  backgroundImage: ''
 };
+  import { getBackgrounds } from '@/Services/systemService';
 
 const defaultMetadata = {
   siteName: 'PYRAMIS',
@@ -469,8 +469,19 @@ const applyHomeData = (payload) => {
 onMounted(async () => {
   isHomeLoading.value = true;
   try {
-    const data = await getHomePageData();
+    const [data, backgrounds] = await Promise.all([
+      getHomePageData(),
+      getBackgrounds('HomeHero')
+    ]);
+
+    console.log('Backgrounds response:', backgrounds);
     applyHomeData(data);
+    if (backgrounds && backgrounds.length > 0 && backgrounds[0].url) {
+      console.log('Setting background to:', backgrounds[0].url);
+      heroSection.value.backgroundImage = backgrounds[0].url;
+    } else {
+      console.warn('No backgrounds found or URL is empty');
+    }
   } catch (error) {
     console.error('Failed to load home page data', error);
     applyHomeData({});
