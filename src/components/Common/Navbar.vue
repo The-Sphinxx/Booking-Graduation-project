@@ -1,76 +1,122 @@
 <template>
-  <nav class="bg-base-100 shadow-md sticky top-0 z-50">
-    <div class="page-container">
-      <div class="flex items-center justify-between h-20">
-        <router-link :to="{ name: 'Home' }" class="text-3xl font-bold text-primary font-cairo">{{ metadata.siteName || 'PYRAMIS' }}</router-link>
-        
-        <div class="hidden md:flex items-center space-x-8">
-          <router-link :to="{ name: 'Home' }" class="font-cairo font-semibold text-primary hover:text-primary/80" active-class="text-primary">
-            Home
-          </router-link>
-          <router-link :to="{ name: 'AttractionsList' }" class="font-cairo text-base-content hover:text-primary" active-class="text-primary">
-            Attractions
-          </router-link>
-          <router-link :to="{ name: 'HotelsList' }" class="font-cairo text-base-content hover:text-primary" active-class="text-primary">
-            Hotels
-          </router-link>
-          <router-link :to="{ name: 'TripsList' }" class="font-cairo text-base-content hover:text-primary" active-class="text-primary">
-            Trips
-          </router-link>
-          <router-link :to="{ name: 'CarsList' }" class="font-cairo text-base-content hover:text-primary" active-class="text-primary">
-            Car Rental
-          </router-link>
-          <router-link :to="{ name: 'AiCollectData' }" class="font-cairo text-base-content hover:text-primary" active-class="text-primary">
-            Ai Trip Planner
-          </router-link>
-        </div>
+  <nav 
+    :class="[
+      'fixed top-0 w-full z-50 transition-all duration-300 ease-in-out',
+      isScrolled ? 'bg-base-100 shadow-md py-2' : 'bg-transparent py-4'
+    ]"
+  >
+    <div class="page-container flex items-center justify-between">
+      
+      <div class="flex-shrink-0">
+        <router-link 
+          :to="{ name: 'Home' }" 
+          class="flex items-center gap-2 transition-colors duration-300"
+          :class="isScrolled ? 'text-primary' : 'text-white drop-shadow-md'"
+        >
+          <svg viewBox="0 0 115 25" class="h-10 w-auto fill-current" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.57585 9.83996C6.84785 10.48 7.40785 10.8 8.25585 10.8C9.21585 10.8 9.98385 10.32 10.5598 9.35996C10.9598 8.70396 11.1598 7.87196 11.1598 6.86396C11.1598 5.37596 10.7678 4.28796 9.98385 3.59996C9.39185 3.08796 8.63985 2.83196 7.72785 2.83196C7.51985 2.83196 7.30385 2.84796 7.07985 2.87996L5.47185 3.11996V17.208C5.47185 17.64 5.62385 18 5.92785 18.288C6.23185 18.576 6.59185 18.72 7.00785 18.72H7.31985V18.96H0.0238477V18.72H0.335848C0.751848 18.72 1.10385 18.576 1.39185 18.288C1.69585 18 1.85585 17.64 1.87185 17.208V4.41596C1.85585 3.99996 1.72785 3.67196 1.48785 3.43196C1.26385 3.19196 0.927848 3.07196 0.479848 3.07196C0.367848 3.07196 0.223848 3.07996 0.0478477 3.09596L-0.00015226 2.87996C1.35985 2.76796 2.78385 2.58396 4.27185 2.32796C5.77585 2.05596 6.75985 1.88796 7.22385 1.82396C7.70385 1.75996 8.18385 1.72796 8.66385 1.72796C9.15985 1.72796 9.75185 1.78396 10.4398 1.89596C11.1278 1.99196 11.8318 2.22396 12.5518 2.59196C13.2718 2.94396 13.8558 3.47196 14.3038 4.17596C14.7678 4.94396 14.9998 5.81596 14.9998 6.79196C14.9998 7.75196 14.8238 8.59996 14.4718 9.33596C13.7998 10.744 12.6478 11.64 11.0158 12.024C10.6158 12.12 10.2318 12.168 9.86385 12.168C9.51185 12.168 9.17585 12.136 8.85585 12.072C8.19985 11.976 7.64785 11.752 7.19985 11.4C6.75185 11.048 6.47185 10.56 6.35985 9.93596L6.57585 9.83996ZM14.2577 0.767961C14.5137 0.75196 14.9217 0.743959 15.4817 0.743959C16.0257 0.743959 16.7457 0.86396 17.6417 1.10396C18.5537 1.32796 19.3937 1.68796 20.1617 2.18396C20.9297 2.67996 21.6337 3.27996 22.2737 3.98396C23.4577 5.29596 24.3857 6.87196 25.0577 8.71196C26.0177 5.97596 27.2657 3.87996 28.8017 2.42396C29.9697 1.31996 31.2577 0.767961 32.6657 0.767961C32.7297 0.767961 32.7937 0.767961 32.8577 0.767961V1.00796C32.0577 1.02396 31.2257 1.44796 30.3617 2.27996C29.5137 3.09596 28.7697 4.08796 28.1297 5.25596C27.4897 6.42396 26.9457 7.63996 26.4977 8.90396C26.0657 10.168 25.8097 11.264 25.7297 12.192V17.208C25.7297 17.608 25.8737 17.96 26.1617 18.264C26.4657 18.568 26.8337 18.72 27.2657 18.72H27.5777V18.96H20.2817V18.72H20.5937C21.0097 18.72 21.3617 18.576 21.6497 18.288C21.9537 17.984 22.1137 17.624 22.1297 17.208V12.168C21.9377 10.44 21.3617 8.60796 20.4017 6.67196C19.2977 4.43196 18.0577 2.83996 16.6817 1.89596C15.8817 1.33596 15.0737 1.03996 14.2577 1.00796V0.767961ZM57.9135 23.04C56.6655 23.664 55.3375 23.976 53.9295 23.976C52.6815 23.976 51.5455 23.784 50.5215 23.4C48.3135 22.584 46.4335 20.992 44.8815 18.624C44.4815 18.048 43.7375 16.944 42.6495 15.312C41.5615 13.68 40.8575 12.64 40.5375 12.192C39.9775 11.312 39.5295 10.832 39.1935 10.752V10.512C39.2095 10.512 39.2255 10.512 39.2415 10.512C39.2735 10.512 39.3055 10.512 39.3375 10.512C39.3695 10.512 39.4015 10.512 39.4335 10.512C39.4655 10.512 39.5055 10.512 39.5535 10.512C39.6015 10.512 39.6415 10.512 39.6735 10.512C40.4895 10.512 41.2415 10.328 41.9295 9.95996C42.9695 9.38396 43.4895 8.31996 43.4895 6.76796C43.4895 5.63196 43.1695 4.75996 42.5295 4.15196C41.8895 3.52796 41.1215 3.21596 40.2255 3.21596H38.4015V17.208C38.4015 17.624 38.5535 17.984 38.8575 18.288C39.1615 18.576 39.5215 18.72 39.9375 18.72H40.2495V18.96H32.9535V18.72H33.2655C33.6655 18.72 34.0175 18.576 34.3215 18.288C34.6255 18 34.7855 17.648 34.8015 17.232V3.91196C34.7855 3.49596 34.6255 3.14396 34.3215 2.85596C34.0335 2.55196 33.6815 2.39996 33.2655 2.39996H32.9535V2.15996H41.1855C43.2495 2.15996 44.8495 2.63196 45.9855 3.57596C46.8815 4.31196 47.3295 5.35196 47.3295 6.69596C47.3295 8.03996 46.8895 9.13596 46.0095 9.98396C45.1455 10.816 44.1535 11.232 43.0335 11.232C42.9375 11.232 42.8335 11.224 42.7215 11.208C43.3775 11.56 43.9215 11.952 44.3535 12.384C44.8015 12.816 45.1855 13.224 45.5055 13.608C45.8415 13.992 46.1215 14.336 46.3455 14.64C46.5855 14.928 46.8975 15.32 47.2815 15.816C47.6655 16.296 48.0655 16.8 48.4815 17.328C48.8975 17.856 49.3535 18.4 49.8495 18.96C50.3615 19.504 50.9215 20.024 51.5295 20.52C52.1535 21.016 52.7855 21.424 53.4255 21.744C54.7855 22.432 56.2815 22.784 57.9135 22.8V23.04ZM72.6122 23.352C70.8682 24.232 69.1002 24.376 67.3082 23.784C65.4042 23.176 63.7642 21.88 62.3882 19.896C61.6522 18.84 61.0202 17.616 60.4922 16.224L59.7242 14.184H54.0602L52.7882 17.208C52.7082 17.416 52.6682 17.584 52.6682 17.712C52.6682 17.84 52.6922 17.984 52.7402 18.144C52.8042 18.288 52.9242 18.424 53.1002 18.552C53.2922 18.664 53.5002 18.72 53.7242 18.72H53.9162V18.96H48.7802V18.72H48.9962C49.3642 18.72 49.7242 18.616 50.0762 18.408C50.4442 18.184 50.7482 17.856 50.9882 17.424L56.3402 5.20796C55.7162 3.79996 55.0522 2.83196 54.3482 2.30396C53.7562 1.85596 53.1882 1.63196 52.6442 1.63196C52.1162 1.63196 51.6202 1.71196 51.1562 1.87196L51.1082 1.63196C52.2602 1.03996 53.3642 0.743959 54.4202 0.743959C55.7322 0.743959 56.9082 1.25596 57.9482 2.27996C58.9722 3.28796 59.8762 4.74396 60.6602 6.64796L64.1402 15.24C65.4522 18.488 66.7962 20.72 68.1722 21.936C68.7322 22.432 69.3082 22.776 69.9002 22.968C70.4922 23.16 70.9882 23.256 71.3882 23.256C71.8042 23.256 72.2042 23.208 72.5882 23.112L72.6122 23.352ZM54.4682 13.152H59.3642L57.6842 8.71196C57.6042 8.48796 57.4922 8.18396 57.3482 7.79996C57.2042 7.39996 57.1082 7.11996 57.0602 6.95996L54.4682 13.152ZM64.0461 0.57596C64.9581 0.19196 65.7501 -3.95775e-05 66.4221 -3.95775e-05C67.0941 -3.95775e-05 67.6861 0.0639601 68.1981 0.191959C68.7101 0.31996 69.2301 0.53596 69.7581 0.83996C70.3021 1.12796 70.8061 1.48796 71.2701 1.91996C72.1661 2.76796 72.9261 3.72796 73.5501 4.79996L78.3501 13.8L85.3101 1.82396H85.5261L88.0221 15.936C88.4061 18.112 89.0701 19.84 90.0141 21.12C90.9581 22.416 92.2541 23.064 93.9021 23.064C94.0141 23.064 94.1181 23.064 94.2141 23.064V23.304C93.3341 23.544 92.4701 23.664 91.6221 23.664C89.8941 23.664 88.3181 22.984 86.8941 21.624C85.5181 20.328 84.5821 18.432 84.0861 15.936L82.9101 8.95196L78.3981 16.776C77.7901 17.784 77.4781 18.672 77.4621 19.44H77.2461L71.2701 8.11196L70.0941 17.712C70.0461 18.08 70.2061 18.376 70.5741 18.6C70.7181 18.696 70.8701 18.744 71.0301 18.744H71.4141V18.96H66.3981V18.72H66.7821C67.1981 18.72 67.5661 18.6 67.8861 18.36C68.2221 18.104 68.4301 17.76 68.5101 17.328L70.1421 5.87996C69.4221 4.59996 68.5981 3.46396 67.6701 2.47196C66.6301 1.35196 65.5421 0.79196 64.4061 0.79196C64.2941 0.79196 64.1901 0.79996 64.0941 0.81596L64.0461 0.57596ZM99.2727 18.72H99.5847V18.96H92.2887V18.72H92.6007C93.0167 18.72 93.3687 18.576 93.6567 18.288C93.9607 17.984 94.1207 17.624 94.1367 17.208V3.14396L91.8567 3.23996C90.3527 3.30396 89.6007 3.86396 89.6007 4.91996C89.6007 5.35196 89.7447 5.71996 90.0327 6.02396C90.3367 6.31196 90.7527 6.45596 91.2807 6.45596C91.3287 6.45596 91.3767 6.45596 91.4247 6.45596V6.59996C91.1047 6.71196 90.8327 6.76796 90.6087 6.76796C89.8887 6.76796 89.3367 6.51196 88.9527 5.99996C88.6807 5.64796 88.5447 5.24796 88.5447 4.79996C88.5447 4.09596 88.8247 3.51996 89.3847 3.07196C89.9287 2.60796 90.7767 2.33596 91.9287 2.25596C92.1367 2.23996 92.8087 2.20796 93.9447 2.15996C96.5367 2.06396 98.4167 1.90396 99.5847 1.67996L99.6327 1.91996C98.9447 2.03196 98.4567 2.26396 98.1687 2.61596C97.8967 2.96796 97.7527 3.48796 97.7367 4.17596V17.208C97.7527 17.624 97.9047 17.984 98.1927 18.288C98.4967 18.72 99.2727 18.72ZM102.614 12.144C101.974 13.168 101.654 14.216 101.654 15.288C101.654 16.456 102.078 17.52 102.926 18.48C103.39 19.024 103.974 19.448 104.678 19.752C105.398 20.056 106.182 20.208 107.03 20.208C107.878 20.208 108.638 20.048 109.31 19.728C110.654 19.072 111.326 18 111.326 16.512C111.326 15.952 111.134 15.36 110.75 14.736C110.382 14.112 109.822 13.552 109.07 13.056L104.99 10.32C103.406 9.32796 102.614 8.04796 102.614 6.47996C102.614 6.31996 102.622 6.15996 102.638 5.99996C102.734 4.76796 103.222 3.76796 104.102 2.99996C104.998 2.21596 106.19 1.82396 107.678 1.82396C108.59 1.82396 109.694 1.90396 110.99 2.06396H112.478L112.166 5.59196H111.95C111.934 4.75996 111.614 4.09596 110.99 3.59996C110.366 3.08796 109.542 2.83196 108.518 2.83196C107.27 2.83196 106.366 3.20796 105.806 3.95996C105.534 4.34396 105.398 4.75996 105.398 5.20796C105.398 5.65596 105.534 6.03996 105.806 6.35996C106.078 6.66396 106.51 6.99996 107.102 7.36796L111.59 10.296C112.502 10.888 113.214 11.584 113.726 12.384C114.334 13.328 114.638 14.296 114.638 15.288C114.638 15.928 114.502 16.608 114.23 17.328C113.974 18.032 113.542 18.688 112.934 19.296C112.342 19.904 111.574 20.4 110.63 20.784C109.686 21.168 108.638 21.36 107.486 21.36C106.35 21.36 105.318 21.16 104.39 20.76C102.678 20.04 101.59 18.784 101.126 16.992C101.03 16.608 100.982 16.208 100.982 15.792C100.982 14.448 101.454 13.176 102.398 11.976L102.614 12.144Z"/>
+          </svg>
+        </router-link>
+      </div>
+      
+      <div class="hidden lg:flex items-center space-x-6 xl:space-x-8">
+        <router-link 
+          v-for="link in links" 
+          :key="link.name"
+          :to="{ name: link.name }" 
+          class="nav-item transition-colors duration-300"
+          :class="isScrolled ? 'text-base-content hover:text-primary' : 'text-white hover:text-white/80 drop-shadow-sm'"
+          active-class="active-nav"
+        >
+          {{ link.label }}
+        </router-link>
+      </div>
 
-        <div class="hidden md:flex items-center gap-3">
-          <template v-if="!authStore.isAuthenticated">
-            <router-link :to="{ name: 'Login' }" class="btn btn-ghost btn-sm font-cairo border border-base-300">
-              <i class="fas fa-user mr-2"></i>Login
-            </router-link>
-            <router-link :to="{ name: 'SignUp' }" class="btn btn-primary btn-sm font-cairo">Sign Up</router-link>
-          </template>
-          <template v-else>
-            <router-link v-if="authStore.user?.role === 'Admin'" :to="{ path: '/dashboard/overview' }" class="btn btn-ghost btn-sm font-cairo border border-base-300">
-              <i class="fas fa-gauge mr-2"></i>Dashboard
-            </router-link>
-            <router-link v-else :to="{ name: 'Profile' }" class="btn btn-ghost btn-sm font-cairo border border-base-300">
-              <i class="fas fa-user mr-2"></i>Profile
-            </router-link>
-            <button @click="handleLogout" class="btn btn-primary btn-sm font-cairo">Logout</button>
-          </template>
-          <button @click="toggleTheme" class="btn btn-circle btn-sm btn-ghost" :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-            <i v-if="isDark" class="fas fa-sun text-lg"></i>
-            <i v-else class="fas fa-moon text-lg"></i>
-          </button>
-        </div>
+      <div class="hidden lg:flex items-center gap-3">
+        <template v-if="!authStore.isAuthenticated">
+          
+          <router-link 
+            :to="{ name: 'Login' }" 
+            class="btn btn-sm h-10 px-5 font-cairo font-bold gap-2 transition-all duration-300 flex items-center"
+            :class="isScrolled ? 'btn-outline btn-primary' : 'btn-outline border-white text-white hover:bg-white hover:text-primary hover:border-white'"
+          >
+            <svg viewBox="0 0 15 14" class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.64666 3.65858e-05C8.48594 0.000817836 8.30334 0.0170678 8.09325 0.0454428C8.036 0.420755 7.97388 0.803411 7.91303 1.19188C7.91678 1.19035 7.92016 1.18885 7.92397 1.18735L8.13178 1.71007C7.72897 1.87019 7.482 2.02932 7.36981 2.14732C7.25763 2.26529 7.26109 2.29857 7.28481 2.37651C7.30847 2.45441 7.40887 2.59332 7.59656 2.74351C7.78425 2.89369 8.04844 3.05576 8.35713 3.21938L8.09369 3.71641C7.92613 3.62757 7.76847 3.53832 7.62297 3.44729C7.57634 3.99922 7.55328 4.55675 7.56962 5.11619C8.5585 5.28369 9.46 5.40276 10.7602 4.82413C10.7452 4.83082 10.7869 4.80485 10.8249 4.71701C10.8629 4.62919 10.8968 4.4955 10.9145 4.347C10.9498 4.05032 10.9179 3.68957 10.8395 3.47919L10.4175 2.44707L10.359 1.68697L10.3589 1.68422C10.3456 1.45216 10.2228 1.03822 10.0401 0.702005C9.8575 0.365787 9.60353 0.127911 9.47191 0.0994739C9.17088 0.0344114 8.92853 -0.00130716 8.64666 3.65858e-05ZM7.51791 0.075099C5.47572 0.310411 3.68241 1.14054 2.62478 3.53729C3.06691 3.74247 4.01425 3.92244 4.91384 3.98441C5.39922 4.01785 5.87678 4.02363 6.26847 4.00169C6.60706 3.98272 6.89088 3.93238 7.02372 3.89029C7.0395 3.60772 7.06309 3.32779 7.09122 3.05019C6.93141 2.90107 6.80688 2.73857 6.74653 2.54007C6.66794 2.28144 6.75434 1.97822 6.96216 1.75969C7.0525 1.66469 7.16219 1.57751 7.29372 1.49479C7.36794 1.00857 7.44659 0.534161 7.51784 0.075099H7.51791ZM9.83822 1.69447C9.99056 2.14994 9.92753 2.28666 9.69494 2.7421L8.63191 1.89785L9.83819 1.69451L9.83822 1.69447ZM2.61919 4.1481C2.72387 4.82313 3.062 5.44341 3.76941 5.90944C4.88059 6.61857 5.99459 6.83819 7.21588 6.97244C7.04338 6.13401 6.98756 5.30035 7.00166 4.48244C6.80172 4.52666 6.56866 4.54822 6.29991 4.56325C5.87759 4.58691 5.38116 4.58044 4.87519 4.54557C4.05169 4.48882 3.21994 4.37457 2.61919 4.1481ZM7.601 5.68869C7.64225 6.20285 7.72047 6.71744 7.84888 7.22954L7.94575 7.61594L7.54925 7.57791C6.27478 7.45579 5.04509 7.27354 3.825 6.59697C3.5865 6.93166 3.29394 7.25522 2.88375 7.53251L2.81238 7.58072H0V8.76554H10.2777C10.14 8.32329 9.94375 7.89663 9.66231 7.49107C9.39319 7.10319 9.18369 6.69929 9.15006 6.24594C9.13922 6.10013 9.14903 5.95169 9.17941 5.80135C8.61697 5.83688 8.10456 5.77094 7.601 5.68869ZM0 9.32804V10.2655H10.5548C10.5266 9.94807 10.4848 9.63501 10.4216 9.32804H0ZM0 10.828V11.6034C0.445094 11.5095 0.969 11.4363 1.66222 11.3766C1.79087 11.3655 1.91197 11.3604 2.02606 11.3613C2.36834 11.3638 2.64756 11.4194 2.87834 11.525C3.18606 11.6658 3.39209 11.901 3.51347 12.149C3.69628 12.5225 3.73419 12.9243 3.78553 13.2278H14.4999C14.5373 12.8222 14.4427 12.417 14.0043 12.0904C13.8653 11.9867 13.6561 11.8991 13.1904 11.8834C12.7247 11.8677 12.0186 11.9324 10.954 12.1286L10.6283 12.1886L10.6218 11.8575C10.615 11.5118 10.6078 11.1681 10.5917 10.828H0ZM2.02063 11.924C1.92656 11.9232 1.82347 11.9273 1.7105 11.937C0.966688 12.0011 0.440812 12.0755 0 12.1747V13.2278H3.20366C3.14566 12.9138 3.11428 12.6129 3.00822 12.3962C2.93025 12.2369 2.83234 12.1225 2.64428 12.0365C2.50325 11.9719 2.30272 11.9263 2.02063 11.924Z"/>
+            </svg>
+            Login
+          </router-link>
 
-        <button class="md:hidden btn btn-ghost btn-circle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu">
-          <i class="fas fa-bars text-xl"></i>
+          <router-link 
+            :to="{ name: 'SignUp' }" 
+            class="btn btn-sm h-10 px-6 font-cairo font-bold shadow-md transition-all duration-300"
+            :class="isScrolled ? 'btn-primary text-white' : 'bg-white text-primary border-white hover:bg-gray-100 hover:border-white'"
+          >
+            Sign Up
+          </router-link>
+        </template>
+
+        <template v-else>
+           <router-link 
+             v-if="authStore.user?.role === 'Admin'" 
+             :to="{ path: '/dashboard/overview' }" 
+             class="btn btn-sm h-10 btn-ghost font-cairo"
+             :class="isScrolled ? 'text-base-content' : 'text-white hover:bg-white/20'"
+           >
+             Dashboard
+           </router-link>
+           <router-link 
+             v-else 
+             :to="{ name: 'Profile' }" 
+             class="btn btn-sm h-10 btn-ghost font-cairo"
+             :class="isScrolled ? 'text-base-content' : 'text-white hover:bg-white/20'"
+           >
+             Profile
+           </router-link>
+           <button @click="handleLogout" class="btn btn-sm h-10 btn-error btn-outline font-cairo">Logout</button>
+        </template>
+
+        <button 
+          @click="toggleTheme" 
+          class="btn btn-circle btn-sm transition-colors ml-1"
+          :class="isScrolled ? 'btn-ghost text-primary' : 'btn-ghost text-white hover:bg-white/20'"
+        >
+          <i v-if="isDark" class="fas fa-sun text-lg"></i>
+          <i v-else class="fas fa-moon text-lg spin-slow"></i> 
         </button>
       </div>
 
-      <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-base-300">
-        <div class="flex flex-col space-y-4">
-          <router-link :to="{ name: 'Home' }" class="font-cairo font-semibold text-primary" @click="closeMobile">Home</router-link>
-          <router-link :to="{ name: 'AttractionsList' }" class="font-cairo text-base-content" @click="closeMobile">Attractions</router-link>
-          <router-link :to="{ name: 'HotelsList' }" class="font-cairo text-base-content" @click="closeMobile">Hotels</router-link>
-          <router-link :to="{ name: 'TripsList' }" class="font-cairo text-base-content" @click="closeMobile">Trips</router-link>
-          <router-link :to="{ name: 'CarsList' }" class="font-cairo text-base-content" @click="closeMobile">Car Rental</router-link>
-          <router-link :to="{ name: 'AiCollectData' }" class="font-cairo text-base-content" @click="closeMobile">Ai Trip Planner</router-link>
-          <div class="flex gap-2 pt-4">
-            <template v-if="!authStore.isAuthenticated">
-              <router-link :to="{ name: 'Login' }" class="btn btn-ghost btn-sm font-cairo flex-1" @click="closeMobile">Login</router-link>
-              <router-link :to="{ name: 'SignUp' }" class="btn btn-primary btn-sm font-cairo flex-1" @click="closeMobile">Sign Up</router-link>
-            </template>
-            <template v-else>
-              <router-link v-if="authStore.user?.role === 'Admin'" :to="{ path: '/dashboard/overview' }" class="btn btn-ghost btn-sm font-cairo flex-1" @click="closeMobile">Dashboard</router-link>
-              <router-link v-else :to="{ name: 'Profile' }" class="btn btn-ghost btn-sm font-cairo flex-1" @click="closeMobile">Profile</router-link>
-              <button class="btn btn-primary btn-sm font-cairo flex-1" @click="() => { handleLogout(); closeMobile(); }">Logout</button>
-            </template>
-          </div>
+      <button 
+        class="lg:hidden btn btn-ghost btn-circle" 
+        :class="isScrolled ? 'text-primary' : 'text-white'"
+        @click="mobileMenuOpen = !mobileMenuOpen"
+      >
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+
+    <div v-show="mobileMenuOpen" class="lg:hidden border-t border-base-300 bg-base-100 shadow-lg absolute w-full left-0 transition-all duration-300">
+      <div class="page-container py-6 flex flex-col space-y-4">
+        <router-link 
+          v-for="link in links" 
+          :key="link.name"
+          :to="{ name: link.name }" 
+          class="mobile-link" 
+          active-class="text-primary bg-primary/10" 
+          @click="closeMobile"
+        >
+          {{ link.label }}
+        </router-link>
+        
+        <div class="divider my-2"></div>
+        
+        <div class="flex flex-col gap-3">
+           <template v-if="!authStore.isAuthenticated">
+              <router-link :to="{ name: 'Login' }" class="btn btn-outline btn-primary w-full font-cairo" @click="closeMobile">Login</router-link>
+              <router-link :to="{ name: 'SignUp' }" class="btn btn-primary w-full font-cairo text-white" @click="closeMobile">Sign Up</router-link>
+           </template>
+           <template v-else>
+              <button @click="handleLogout" class="btn btn-error btn-outline w-full font-cairo">Logout</button>
+           </template>
         </div>
       </div>
     </div>
@@ -78,23 +124,42 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useTheme } from '@/composables/useTheme';
 
 const mobileMenuOpen = ref(false);
+const isScrolled = ref(false);
 const { isDark, toggleTheme } = useTheme();
 const router = useRouter();
 const authStore = useAuthStore();
 
-const metadata = ref({
-  siteName: 'PYRAMIS'
+const links = [
+  { name: 'Home', label: 'Home' },
+  { name: 'AttractionsList', label: 'Attractions' },
+  { name: 'HotelsList', label: 'Hotels' },
+  { name: 'TripsList', label: 'Trips' },
+  { name: 'CarsList', label: 'Car Rental' },
+  { name: 'AiCollectData', label: 'Ai Trip Planner' },
+];
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 50;
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 
 const handleLogout = () => {
   authStore.logout();
   router.push({ name: 'Home' });
+  closeMobile();
 };
 
 const closeMobile = () => {
@@ -103,7 +168,43 @@ const closeMobile = () => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 
-.font-cairo { font-family: 'Cairo', sans-serif; }
+.nav-item {
+  @apply font-cairo text-[1.05rem] font-medium relative py-2;
+}
+
+/* Active Link Styling */
+.active-nav {
+  @apply font-bold;
+}
+
+/* Dynamic colors based on scroll */
+nav:not(.bg-base-100) .active-nav {
+  @apply text-white;
+}
+nav:not(.bg-base-100) .active-nav::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-full h-[2px] bg-white rounded-full;
+}
+
+nav.bg-base-100 .active-nav {
+  @apply text-primary;
+}
+nav.bg-base-100 .active-nav::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-full h-[2px] bg-primary rounded-full;
+}
+
+.mobile-link {
+  @apply font-cairo text-lg font-medium p-3 rounded-lg text-base-content hover:text-primary hover:bg-base-200 transition-colors;
+}
+
+.spin-slow {
+  animation: spin 8s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 </style>
