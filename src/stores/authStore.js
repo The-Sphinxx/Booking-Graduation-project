@@ -1,52 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { authApi, api } from '@/Services/api';
-
-const decodeToken = (token) => {
-  try {
-    const payload = token.split('.')[1];
-    const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-    return decoded;
-  } catch (e) {
-    return null;
-  }
-};
-
-const buildUserFromToken = (token) => {
-  const decoded = decodeToken(token);
-  if (!decoded) return null;
-
-  const claim = (keys) => {
-    for (const k of keys) {
-      if (decoded[k]) return decoded[k];
-    }
-    return '';
-  };
-
-  return {
-    id: claim([
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier',
-      'nameid',
-      'sub'
-    ]) || null,
-    email: claim([
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
-      'email'
-    ]) || null,
-    firstName: claim([
-      'given_name',
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
-    ]),
-    lastName: claim([
-      'family_name',
-      'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'
-    ]),
-    role: claim([
-      'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
-      'role'
-    ])
-  };
-};
+import { decodeJwt, buildUserFromToken } from '@/Utils/auth';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
@@ -91,7 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
     const savedRefresh = localStorage.getItem('refreshToken');
 
     if (savedToken && savedRefresh) {
-      const decoded = decodeToken(savedToken);
+      const decoded = decodeJwt(savedToken);
       const nowSeconds = Math.floor(Date.now() / 1000);
       const isExpired = decoded?.exp && decoded.exp < nowSeconds;
 
