@@ -91,6 +91,9 @@ public static class InfrastructureExtensions
         // Photo & Image Management Services
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<IImageCleanupService, ImageCleanupService>();
+        
+        // Seeder
+        services.AddScoped<DbInitializer>();
 
         // Repositories & UnitOfWork
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

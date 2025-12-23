@@ -148,6 +148,19 @@ Comprehensive REST API for an AI-powered travel booking platform with intelligen
         logger.LogInformation("Hangfire recurring job 'image-cleanup-hourly' scheduled to run every hour (UTC).");
     }
 
+    // Seed default roles and users on startup
+    try
+    {
+        using var seedScope = app.Services.CreateScope();
+        var dbInitializer = seedScope.ServiceProvider.GetRequiredService<DbInitializer>();
+        dbInitializer.SeedAsync().GetAwaiter().GetResult();
+        Log.Information("Database seeding executed successfully.");
+    }
+    catch (Exception seedEx)
+    {
+        Log.Error(seedEx, "Database seeding failed during startup.");
+    }
+
     app.UseSerilogRequestLogging();
     app.UseMiddleware<Agentic_Rentify.Api.Middleware.GlobalExceptionHandlerMiddleware>(); // Use Middleware
     app.UseHangfireDashboard();
