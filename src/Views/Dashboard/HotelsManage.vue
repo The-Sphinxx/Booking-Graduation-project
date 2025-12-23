@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-2">
     <!-- Stats Grid -->
-    <StatsCard :stats="stats" />
+    <StatsCard v-if="!compactMode" :stats="stats" />
 
     <!-- Hotels Data Table -->
     <DataTable
@@ -12,7 +12,8 @@
       add-button-text="Add New Hotel"
       :show-actions="{ edit: true, delete: true, view: true }"
       empty-message="No hotels available"
-      :per-page="8"
+      :per-page="compactMode ? 5 : 8"
+      :show-pagination="!compactMode"
       resource="hotels"
       :loading="loading"
       @add="handleAdd"
@@ -47,9 +48,16 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router'; // Added useRoute import
+import { useRouter, useRoute } from 'vue-router';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import DataTable from '@/components/Dashboard/DataTable.vue';
+
+const props = defineProps({
+  compactMode: {
+    type: Boolean,
+    default: false
+  }
+});
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
 import FormModal from '@/components/Dashboard/FormModal.vue';
 import { hotelsAPI } from '@/Services/dashboardApi';

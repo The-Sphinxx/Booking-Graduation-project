@@ -8572,7 +8572,7 @@
       "status": "Pending",
       "priority": "Medium",
       "createdAt": "2024-12-22T14:00:00.000Z",
-      "updatedAt": "2024-12-22T14:00:00.000Z",
+      "updatedAt": "2025-12-23T14:01:06.920Z",
       "assignedTo": null,
       "messages": [
         {
@@ -8582,6 +8582,14 @@
           "content": "I keep getting an error when I try to pay with my credit card. Error code: ERR_PAY_01",
           "timestamp": "2024-12-22T14:00:00.000Z",
           "isSupport": false
+        },
+        {
+          "id": 1766498466920,
+          "content": "i will check",
+          "senderName": "Support Team",
+          "senderId": "admin_1",
+          "isSupport": true,
+          "timestamp": "2025-12-23T14:01:06.920Z"
         }
       ]
     },

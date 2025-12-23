@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-2">
     <!-- Stats Cards -->
-    <StatsCard :stats="stats" />
+    <StatsCard v-if="!compactMode" :stats="stats" />
 
     <!-- Data Table -->
     <DataTable
@@ -12,7 +12,8 @@
       add-button-text="Add New Attraction"
       :show-actions="{ edit: true, delete: true, view: true }"
       empty-message="No attractions available"
-      :per-page="8"
+      :per-page="compactMode ? 5 : 8"
+      :show-pagination="!compactMode"
       resource="attractions"
       :loading="loading"
       @add="handleAdd"
@@ -55,6 +56,13 @@ import FormModal from '@/components/Dashboard/FormModal.vue';
 import { attractionsAPI } from '@/Services/dashboardApi';
 import { dashboardAttractionFilterConfig } from '@/Utils/dashboardFilterConfigs';
 import { attractionFormConfig } from '@/Utils/dashboardFormConfigs';
+
+const props = defineProps({
+  compactMode: {
+    type: Boolean,
+    default: false
+  }
+});
 
 // State
 const attractions = ref([]);
