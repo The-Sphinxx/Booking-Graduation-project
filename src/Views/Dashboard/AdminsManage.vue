@@ -21,7 +21,7 @@
       :data="admins"
       :loading="loading"
       :show-add-button="true"
-      :show-filter-button="false" 
+      :show-filter="false" 
       add-button-text="Add New Admin"
       @add="openAddModal"
       @edit="openEditModal"
@@ -66,11 +66,21 @@ const columns = [
 
 const adminFormConfig = {
   fields: [
-    { name: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Enter first name' },
-    { name: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Enter last name' },
-    { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'Enter email' },
-    { name: 'password', label: 'Password', type: 'password', required: true, placeholder: 'Enter password' }, // Only for new admins usually
-    { name: 'phone', label: 'Phone', type: 'tel', placeholder: 'Enter phone number' }
+    { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Enter first name' },
+    { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Enter last name' },
+    { key: 'email', label: 'Email', type: 'email', required: true, placeholder: 'Enter email' },
+    { key: 'password', label: 'Password', type: 'password', required: true, placeholder: 'Enter password' },
+    { key: 'phone', label: 'Phone', type: 'tel', placeholder: 'Enter phone number' },
+    { 
+      key: 'role', 
+      label: 'Role', 
+      type: 'select', 
+      required: true,
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'Super Admin', value: 'superadmin' }
+      ]
+    }
   ]
 };
 
@@ -93,7 +103,7 @@ const openAddModal = () => {
   editingAdmin.value = null;
   
   // Ensure password field is required/visible for creating
-  const pwdField = adminFormConfig.fields.find(f => f.name === 'password');
+  const pwdField = adminFormConfig.fields.find(f => f.key === 'password');
   if(pwdField) pwdField.type = 'password';
 
   isModalOpen.value = true;
@@ -113,13 +123,13 @@ const closeModal = () => {
   editingAdmin.value = null;
 };
 
-const handleSubmit = async (formData) => {
+const handleSubmit = async ({ data: formData }) => {
   try {
     // Construct payload
     const payload = {
       ...formData,
       fullName: `${formData.firstName} ${formData.lastName}`,
-      role: 'admin', // Force role
+      role: formData.role || 'admin', // Use selected role or default to 'admin'
       profileImage: editingAdmin.value?.profileImage || '/images/users/user_m_1.jpg',
       status: editingAdmin.value?.status || 'Active',
       updatedAt: new Date().toISOString()

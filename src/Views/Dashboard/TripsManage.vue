@@ -46,7 +46,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router'; // Added useRoute import
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -58,6 +58,7 @@ import { tripFormConfig } from '@/Utils/dashboardFormConfigs';
 // Component State
 const loading = ref(false);
 const router = useRouter();
+const route = useRoute(); // Added missing route definition
 const trips = ref([]);
 const showFilterModal = ref(false);
 const showFormModal = ref(false);
@@ -185,13 +186,27 @@ const fetchTrips = async () => {
 const filteredTrips = computed(() => {
   let result = trips.value;
 
+  // Global Search
+  if (route.query.q) {
+    const search = route.query.q.toLowerCase();
+    result = result.filter(t => 
+      (t.title?.toLowerCase().includes(search)) || 
+      (t.city?.toLowerCase().includes(search)) ||
+      (t.destination?.toLowerCase().includes(search)) ||
+      (t.tripType?.toLowerCase().includes(search)) ||
+      (t.status?.toLowerCase().includes(search)) || // Status text match
+      (search.includes('featured') && t.featured) || // "featured" keyword
+      (t.price?.toString().includes(search)) // Price match
+    );
+  }
+
   if (activeFilters.value.maxPrice && activeFilters.value.maxPrice < filterConfig.priceRange.max) {
     result = result.filter(t => t.price <= activeFilters.value.maxPrice);
   }
 
   if (activeFilters.value.destination) {
-    const searchDest = activeFilters.value.destination.toLowerCase();
-    result = result.filter(t => t.destination?.toLowerCase().includes(searchDest));
+    const searchCity = activeFilters.value.destination.toLowerCase();
+    result = result.filter(t => t.city?.toLowerCase().includes(searchCity));
   }
 
   if (activeFilters.value.tripTypeSelected) {

@@ -47,7 +47,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router'; // Added useRoute import
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -59,6 +59,7 @@ import { attractionFormConfig } from '@/Utils/dashboardFormConfigs';
 // State
 const attractions = ref([]);
 const router = useRouter();
+const route = useRoute(); // Added missing route definition
 const loading = ref(false);
 const showFilterModal = ref(false);
 const showFormModal = ref(false);
@@ -156,6 +157,18 @@ const stats = computed(() => {
 // Filtered attractions based on active filters
 const filteredAttractions = computed(() => {
   let result = attractions.value;
+
+  // Global Search
+  if (route.query.q) {
+    const search = route.query.q.toLowerCase();
+    result = result.filter(a => 
+      a.name?.toLowerCase().includes(search) || 
+      a.city?.toLowerCase().includes(search) ||
+      a.location?.toLowerCase().includes(search) ||
+      a.status?.toLowerCase().includes(search) || // Status match
+      (search === 'featured' && a.isFeatured) // "featured" keyword match
+    );
+  }
 
   // Apply price filter
   if (activeFilters.value.maxPrice && activeFilters.value.maxPrice < filterConfig.priceRange.max) {

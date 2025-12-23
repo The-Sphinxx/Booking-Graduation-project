@@ -44,7 +44,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -58,6 +58,7 @@ const users = ref([]);
 const loading = ref(false);
 const showFilterModal = ref(false);
 const router = useRouter();
+const route = useRoute();
 const showFormModal = ref(false);
 const formMode = ref('add');
 const selectedUser = ref({});
@@ -156,6 +157,18 @@ const stats = computed(() => {
 // Filtered users based on active filters
 const filteredUsers = computed(() => {
   let result = users.value;
+
+  // Global Search from Sidebar
+  if (route.query.q) {
+    const search = route.query.q.toLowerCase();
+    result = result.filter(u => 
+      u.name?.toLowerCase().includes(search) || 
+      u.email?.toLowerCase().includes(search) ||
+      u.nationality?.toLowerCase().includes(search) ||
+      u.status?.toLowerCase().includes(search) || // Text match for status
+      u.phone?.toLowerCase().includes(search)
+    );
+  }
 
   // Apply nationality filter
   if (activeFilters.value.nationality) {

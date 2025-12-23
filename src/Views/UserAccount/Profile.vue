@@ -101,6 +101,23 @@
         </div>
       </div>
 
+      <!-- Support Tab -->
+      <div v-if="activeTab === 'support'" class="h-[600px] flex bg-base-100 border border-base-300 rounded-lg overflow-hidden shadow-sm">
+        <div class="w-80 border-r border-base-300 flex-none">
+          <TicketList 
+            :is-user-view="true" 
+            :user-id="authStore.user?.id || '1'" 
+          />
+        </div>
+        <div class="flex-1 min-w-0">
+          <TicketChat 
+            :is-user-view="true" 
+            :user-id="authStore.user?.id || '1'" 
+            :user-name="user.name"
+          />
+        </div>
+      </div>
+
 
 
     </div>
@@ -122,6 +139,8 @@ import ProfileHeader from '@/components/profile/ProfileHeader.vue';
 import BookingCard from '@/components/profile/BookingCard.vue';
 import ActivityItem from '@/components/profile/ActivityItem.vue';
 import EditProfileModal from '@/components/profile/EditProfileModal.vue';
+import TicketList from '@/components/Support/TicketList.vue';
+import TicketChat from '@/components/Support/TicketChat.vue';
 
 import { useAuthStore } from '@/stores/authStore';
 
@@ -142,7 +161,8 @@ const isEditModalOpen = ref(false);
 const tabs = [
   { id: 'overview', name: 'Overview', icon: 'fas fa-th-large' },
   { id: 'bookings', name: 'Bookings', icon: 'fas fa-calendar-alt' },
-  { id: 'saved', name: 'Saved', icon: 'fas fa-bookmark' }
+  { id: 'saved', name: 'Saved', icon: 'fas fa-bookmark' },
+  { id: 'support', name: 'Support', icon: 'fas fa-headset' }
 ];
 
 const upcomingBookings = computed(() => {
