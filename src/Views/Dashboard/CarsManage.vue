@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="space-y-2">
     <!-- Stats Grid -->
     <StatsCard :stats="stats" />
 
@@ -20,7 +20,6 @@
       @delete="handleDelete"
       @view="handleView"
       @toggle="handleToggle"
-      @status-click="handleStatusClick"
       @status-change="handleStatusChange"
       @filter="openFilterModal"
     />
@@ -47,6 +46,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -57,6 +57,7 @@ import { carFormConfig } from '@/Utils/dashboardFormConfigs';
 
 // Component State
 const loading = ref(false);
+const router = useRouter();
 const cars = ref([]);
 const showFilterModal = ref(false);
 const showFormModal = ref(false);
@@ -100,13 +101,7 @@ const columns = [
     type: 'toggle',
     headerClass: 'w-1/12'
   },
-  {
-    label: 'Availability',
-    field: 'availability',
-    type: 'status',
-    headerClass: 'w-1/8',
-    clickable: true
-  },
+
   {
     label: 'Status',
     field: 'status',
@@ -168,7 +163,6 @@ const fetchCars = async () => {
       images: Array.isArray(car.images) ? car.images[0] : car.images,
       location: car.city || 'Cairo', 
       price: car.price || car.pricePerDay,
-      availability: car.availability || 'Available',
       status: car.status || 'Available'
     }));
   } catch (error) {
@@ -237,7 +231,7 @@ const handleDelete = async (row) => {
 };
 
 const handleView = (row) => {
-  console.log('View car:', row);
+  router.push({ name: 'DashboardDetails', params: { type: 'cars', id: row.id } });
 };
 
 const handleToggle = async ({ row, field, newValue }) => {
@@ -251,23 +245,7 @@ const handleToggle = async ({ row, field, newValue }) => {
   }
 };
 
-const handleStatusClick = async ({ row, field, value }) => {
-  if (field === 'availability') {
-    const newAvailability = value === 'Available' ? 'Sold Out' : 'Available';
-    const rowIndex = cars.value.findIndex(c => c.id === row.id);
-    if (rowIndex !== -1) {
-      cars.value[rowIndex].availability = newAvailability;
-    }
-    try {
-      await carsAPI.patch(row.id, { availability: newAvailability });
-    } catch (error) {
-      console.error('Error:', error);
-      if (rowIndex !== -1) {
-        cars.value[rowIndex].availability = value;
-      }
-    }
-  }
-};
+
 
 const handleStatusChange = async ({ row, field, newValue }) => {
   try {

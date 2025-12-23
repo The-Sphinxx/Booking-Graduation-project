@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 p-6">
+  <div class="space-y-2">
     <!-- Stats Cards -->
     <StatsCard :stats="stats" />
 
@@ -47,6 +47,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -57,6 +58,7 @@ import { attractionFormConfig } from '@/Utils/dashboardFormConfigs';
 
 // State
 const attractions = ref([]);
+const router = useRouter();
 const loading = ref(false);
 const showFilterModal = ref(false);
 const showFormModal = ref(false);
@@ -255,8 +257,7 @@ const handleDelete = async (row) => {
 };
 
 const handleView = (row) => {
-  console.log('View attraction:', row);
-  // TODO: Navigate to attraction details page
+  router.push({ name: 'DashboardDetails', params: { type: 'attractions', id: row.id } });
 };
 
 const handleToggle = async ({ row, field, newValue }) => {

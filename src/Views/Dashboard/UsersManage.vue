@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 p-6">
+  <div class="space-y-2">
     <!-- Stats Cards -->
     <StatsCard :stats="stats" />
 
@@ -9,8 +9,7 @@
       :columns="columns"
       :data="filteredUsers"
       :show-filter="true"
-      add-button-text="Add New User"
-      :show-actions="{ edit: true, delete: true, view: false }"
+      :show-actions="{ edit: true, delete: true, view: true }"
       empty-message="No users found"
       :per-page="10"
       resource="users"
@@ -18,6 +17,7 @@
       @add="handleAdd"
       @edit="handleEdit"
       @delete="handleDelete"
+      @view="handleView"
       @filter="openFilterModal"
       @status-change="handleStatusChange"
     />
@@ -44,6 +44,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -56,6 +57,7 @@ import { userFormConfig } from '@/Utils/dashboardFormConfigs';
 const users = ref([]);
 const loading = ref(false);
 const showFilterModal = ref(false);
+const router = useRouter();
 const showFormModal = ref(false);
 const formMode = ref('add');
 const selectedUser = ref({});
@@ -95,7 +97,8 @@ const columns = [
   {
     label: 'Status',
     field: 'status',
-    type: 'status',
+    type: 'status-dropdown',
+    options: ['Verified', 'Unverified', 'Suspended'],
     headerClass: 'w-1/8'
   },
   {
@@ -154,27 +157,26 @@ const stats = computed(() => {
 const filteredUsers = computed(() => {
   let result = users.value;
 
-  // Apply email filter
-  if (activeFilters.value.email) {
-    const searchEmail = activeFilters.value.email.toLowerCase();
-    result = result.filter(u => u.email?.toLowerCase().includes(searchEmail));
-  }
-
-  // Apply phone filter
-  if (activeFilters.value.phone) {
-    const searchPhone = activeFilters.value.phone;
-    result = result.filter(u => u.phone?.includes(searchPhone));
-  }
-
   // Apply nationality filter
   if (activeFilters.value.nationality) {
-    const searchNat = activeFilters.value.nationality.toLowerCase();
-    result = result.filter(u => u.nationality?.toLowerCase().includes(searchNat));
+      if (Array.isArray(activeFilters.value.nationality) && activeFilters.value.nationality.length > 0) {
+           const searchNat = activeFilters.value.nationality[0].toLowerCase();
+           result = result.filter(u => u.nationality?.toLowerCase().includes(searchNat));
+      } else if (typeof activeFilters.value.nationality === 'string' && activeFilters.value.nationality) {
+           const searchNat = activeFilters.value.nationality.toLowerCase();
+           result = result.filter(u => u.nationality?.toLowerCase().includes(searchNat));
+      }
   }
 
   // Apply status filter
   if (activeFilters.value.statusSelected) {
     result = result.filter(u => u.status === activeFilters.value.statusSelected);
+  } else if (activeFilters.value.status && activeFilters.value.status.length > 0) {
+      // Handle array or string status
+      const status = Array.isArray(activeFilters.value.status) ? activeFilters.value.status[0] : activeFilters.value.status;
+      if (status) {
+         result = result.filter(u => u.status === status);
+      }
   }
 
   // Apply date range filters
@@ -205,7 +207,7 @@ const fetchUsers = async () => {
       else if (user.firstName) name = user.firstName;
 
       // Determine status
-      const status = user.isVerified ? 'Verified' : 'Unverified';
+      let status = user.status || (user.isVerified ? 'Verified' : 'Unverified');
 
       // Safe date parsing
       let createdAt = user.createdAt ? new Date(user.createdAt) : new Date();
@@ -290,10 +292,28 @@ const handleFormSubmit = async ({ mode, data }) => {
   }
 };
 
+const deleteUser = async (user) => {
+// ... existing delete logic ...
+};
+
+const handleView = (row) => {
+  router.push({ name: 'DashboardDetails', params: { type: 'users', id: row.id } });
+};
+
 const handleStatusChange = async ({ row, newValue }) => {
-    // This might not be fully applicable depending on how `status` works for users vs attractions
-    // But keeping structure for consistency
-    console.log('Status change requested', row, newValue);
+    try {
+      await usersAPI.updateStatus(row.id, newValue);
+      // Update local state to reflect change immediately (optimistic UI is handled by DataTable but good to sync)
+      const userIndex = users.value.findIndex(u => u.id === row.id);
+      if (userIndex !== -1) {
+        users.value[userIndex].status = newValue;
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('Failed to update status');
+      // Revert if needed, but DataTable might need a refresh or prop update to revert
+      await fetchUsers();
+    }
 };
 
 // Lifecycle

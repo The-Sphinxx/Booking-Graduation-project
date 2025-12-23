@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="space-y-2">
     <!-- Stats Grid -->
     <StatsCard :stats="stats" />
 
@@ -19,8 +19,8 @@
       @edit="handleEdit"
       @delete="handleDelete"
       @toggle="handleToggle"
-      @status-click="handleStatusClick"
       @status-change="handleStatusChange"
+      @view="handleView"
       @filter="openFilterModal"
     />
 
@@ -46,6 +46,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -56,6 +57,7 @@ import { tripFormConfig } from '@/Utils/dashboardFormConfigs';
 
 // Component State
 const loading = ref(false);
+const router = useRouter();
 const trips = ref([]);
 const showFilterModal = ref(false);
 const showFormModal = ref(false);
@@ -78,7 +80,7 @@ const columns = [
   },
   {
     label: 'Destination',
-    field: 'city',
+    field: 'destination', // Updated from 'city' to 'destination'
     type: 'text',
     headerClass: 'w-1/6'
   },
@@ -107,17 +109,10 @@ const columns = [
     headerClass: 'w-1/12'
   },
   {
-    label: 'Availability',
-    field: 'availability',
-    type: 'status',
-    headerClass: 'w-1/8',
-    clickable: true
-  },
-  {
     label: 'Status',
     field: 'status',
     type: 'status-dropdown',
-    options: ['Active', 'Inactive', 'Full'],
+    options: ['Upcoming', 'Ongoing', 'Completed'],
     headerClass: 'w-1/8'
   },
   {
@@ -175,9 +170,9 @@ const fetchTrips = async () => {
       name: trip.title, // Map title to name for DataTable image column
       images: Array.isArray(trip.images) ? trip.images[0] : trip.trip.image || trip.image,
       nextDate: trip.availableDates ? trip.availableDates[0] : 'TBD',
+      destination: trip.destination || trip.city || 'Unknown', // Fallback for destination
       featured: trip.featured || false,
-      availability: trip.availability || 'Available',
-      status: trip.status || 'Active'
+      status: trip.status || 'Upcoming'
     }));
   } catch (error) {
     console.error('Error fetching trips:', error);
@@ -241,7 +236,7 @@ const handleDelete = async (row) => {
 };
 
 const handleView = (row) => {
-  console.log('View trip:', row);
+  router.push({ name: 'DashboardDetails', params: { type: 'trips', id: row.id } });
 };
 
 const handleToggle = async ({ row, field, newValue }) => {
@@ -256,23 +251,7 @@ const handleToggle = async ({ row, field, newValue }) => {
   }
 };
 
-const handleStatusClick = async ({ row, field, value }) => {
-  if (field === 'availability') {
-    const newAvailability = value === 'Available' ? 'Sold Out' : 'Available';
-    const rowIndex = trips.value.findIndex(t => t.id === row.id);
-    if (rowIndex !== -1) {
-      trips.value[rowIndex].availability = newAvailability;
-    }
-    try {
-      await tripsAPI.patch(row.id, { availability: newAvailability });
-    } catch (error) {
-      console.error('Error:', error);
-      if (rowIndex !== -1) {
-        trips.value[rowIndex].availability = value;
-      }
-    }
-  }
-};
+
 
 const handleStatusChange = async ({ row, field, newValue }) => {
   try {
