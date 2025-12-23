@@ -3,6 +3,7 @@ using Agentic_Rentify.Application.Features.Chat.Commands.SendMessage;
 using Agentic_Rentify.Application.Features.Chat.Queries.GetActiveConversations;
 using Agentic_Rentify.Application.Features.Chat.Queries.GetChatHistory;
 using Agentic_Rentify.Infragentic.Hubs;
+using Agentic_Rentify.Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace Agentic_Rentify.Api.Controllers;
 [Route("api/chat")]
 [Produces("application/json")]
 [ApiExplorerSettings(GroupName = "Chat System")]
-public class ChatSupportController(IMediator mediator, IHubContext<ChatHub> hubContext) : ControllerBase
+public class ChatSupportController(IMediator mediator, IHubContext<ChatHub> hubContext, IChatRepository chatRepository) : ControllerBase
 {
     /// <summary>
     /// Get all active conversations (Admin sees all, Client sees only their own)
@@ -76,6 +77,35 @@ public class ChatSupportController(IMediator mediator, IHubContext<ChatHub> hubC
             : Agentic_Rentify.Core.Enums.ChatRole.Client;
 
         var message = await mediator.Send(command);
+
+        try
+        {
+            var conversation = await chatRepository.GetConversationAsync(message.ConversationId, HttpContext.RequestAborted);
+            var broadcastPayload = new
+            {
+                id = message.Id,
+                conversationId = message.ConversationId,
+                senderId = message.SenderId,
+                senderName = message.SenderName,
+                senderRole = message.SenderRole,
+                content = message.Content,
+                sentAt = message.SentAt
+            };
+
+            // Notify admins and everyone in the conversation group (including client)
+            await hubContext.Clients.Group("Admins").SendAsync("ReceiveMessage", broadcastPayload);
+            await hubContext.Clients.Group($"Conversation_{message.ConversationId}").SendAsync("ReceiveMessage", broadcastPayload);
+            // Also notify the specific client if we know their id
+            if (conversation?.ClientId is not null)
+            {
+                await hubContext.Clients.Group($"Client_{conversation.ClientId}").SendAsync("ReceiveMessage", broadcastPayload);
+            }
+        }
+        catch
+        {
+            // Non-blocking: if broadcast fails, we still return the saved message
+        }
+
         return Ok(message);
     }
 

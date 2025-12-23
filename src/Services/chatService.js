@@ -22,6 +22,17 @@ class ChatService {
     });
   }
 
+  upsertMessage(msg) {
+    if (!msg) return;
+    const key = msg.id ?? `${msg.senderId}-${msg.timestamp}-${msg.content}`;
+    const idx = this.messages.current.findIndex((m) => (m.id ?? `${m.senderId}-${m.timestamp}-${m.content}`) === key);
+    if (idx === -1) {
+      this.messages.current.push(msg);
+    } else {
+      this.messages.current[idx] = msg;
+    }
+  }
+
   /**
    * Initialize SignalR connection and authenticate
    */
@@ -45,7 +56,7 @@ class ChatService {
       // Setup event handlers
       this.connection.on('ReceiveMessage', (message) => {
         console.log('New message received:', message);
-        this.messages.current.push({
+        this.upsertMessage({
           id: message.id || Date.now(),
           conversationId: message.conversationId,
           senderId: message.senderId,
@@ -121,11 +132,13 @@ class ChatService {
     this.messages.loading = true;
     try {
       const response = await apiService.get(`/chat/conversations/${conversationId}/messages`);
-      this.messages.current = response.data.map((msg) => ({
+      this.messages.current = [];
+      response.data.forEach((msg) => this.upsertMessage({
         id: msg.id,
         conversationId: msg.conversationId,
         senderId: msg.senderId,
         senderName: msg.senderName,
+        senderRole: msg.senderRole,
         content: msg.content,
         timestamp: msg.sentAt,
         isSupport: msg.senderRole === 'Admin'
@@ -153,7 +166,18 @@ class ChatService {
       };
 
       const response = await apiService.post('/chat/messages', command);
-      return response.data;
+      const saved = response.data;
+      this.upsertMessage({
+        id: saved.id,
+        conversationId: saved.conversationId,
+        senderId: saved.senderId,
+        senderName: saved.senderName,
+        senderRole: saved.senderRole,
+        content: saved.content,
+        timestamp: saved.sentAt,
+        isSupport: saved.senderRole === 'Admin'
+      });
+      return saved;
     } catch (error) {
       console.error('Failed to send message:', error);
       throw error;
