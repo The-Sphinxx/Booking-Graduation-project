@@ -115,11 +115,15 @@ Comprehensive REST API for an AI-powered travel booking platform with intelligen
     {
         options.AddPolicy("AllowAll", policy => 
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
                   .AllowAnyMethod()
-                  .AllowAnyHeader();
+                  .AllowAnyHeader()
+                  .AllowCredentials();
         });
     });
+
+    // SignalR
+    builder.Services.AddSignalR();
 
     var app = builder.Build();
 
@@ -147,9 +151,14 @@ Comprehensive REST API for an AI-powered travel booking platform with intelligen
     app.UseSerilogRequestLogging();
     app.UseMiddleware<Agentic_Rentify.Api.Middleware.GlobalExceptionHandlerMiddleware>(); // Use Middleware
     app.UseHangfireDashboard();
-    app.UseHttpsRedirection();
+    // In development, don't force HTTPS redirection since we're only listening on HTTP
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseHttpsRedirection();
+    }
     app.UseStaticFiles();
     app.UseCors("AllowAll");
+    app.UseAuthentication();
     app.UseAuthorization();
 
     // 4. Enable Swagger/Swashbuckle in Development
@@ -172,6 +181,7 @@ Comprehensive REST API for an AI-powered travel booking platform with intelligen
     }
 
     app.MapControllers();
+    app.MapHub<Agentic_Rentify.Infragentic.Hubs.ChatHub>("/hubs/chat");
 
     app.Run();
 }

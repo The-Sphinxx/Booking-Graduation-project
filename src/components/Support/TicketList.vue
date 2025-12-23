@@ -93,6 +93,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useSupportStore } from '@/stores/supportStore';
+import { useChat } from '@/Services/chatService';
 import { storeToRefs } from 'pinia';
 
 const props = defineProps({
@@ -108,6 +109,7 @@ const props = defineProps({
 
 const store = useSupportStore();
 const { currentTicket, loading } = storeToRefs(store);
+const { chatService } = useChat();
 
 const searchQuery = ref('');
 const filters = ref({
@@ -124,8 +126,12 @@ const filteredList = computed(() => {
   return list;
 });
 
-const selectTicket = (ticket) => {
+const selectTicket = async (ticket) => {
   store.currentTicket = ticket;
+  // Load real messages from backend via chatService
+  if (ticket.id) {
+    await chatService.fetchHistory(ticket.id);
+  }
 };
 
 // Helpers
@@ -151,8 +157,6 @@ const getPriorityClass = (priority) => {
 const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  // Simple "time ago" logic if date-fns not available, or just use toLocaleDateString
-  // Using a simple formatter for now to avoid dependency issues if date-fns isn't there
   const now = new Date();
   const diffInSeconds = Math.floor((now - date) / 1000);
   
@@ -164,5 +168,6 @@ const formatDate = (dateString) => {
 
 onMounted(() => {
   store.fetchTickets();
+  chatService.fetchConversations();
 });
 </script>
