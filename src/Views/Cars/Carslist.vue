@@ -42,8 +42,13 @@
       </p>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="loading" class="page-container flex justify-center items-center py-20">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+
     <!-- Cars Grid -->
-    <div class="page-container">
+    <div v-else-if="paginatedCars.length > 0" class="page-container">
       <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <LuxurySUVCardDynamic
           v-for="car in paginatedCars"
@@ -63,9 +68,29 @@
           :show-per-page-selector="true"
           :per-page-options="[10, 20, 30]"
           @update:current-page="handlePageChange"
-          @update:per-page="val => { itemsPerPage.value = val; currentPage.value = 1 }"
+          @update:per-page="val => { itemsPerPage = val; currentPage = 1 }"
         />
       </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-else class="page-container text-center py-20">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8m-4-8v8m0-8V6m10 10v6H2v-6m0 0V6a2 2 0 012-2h16a2 2 0 012 2v10z" />
+      </svg>
+      <h3 class="text-2xl font-bold text-base-content mb-2 font-cairo">No cars found</h3>
+      <p class="text-base-content/60 mb-4 font-cairo">Try adjusting your search parameters or filters</p>
+      <button @click="resetFilters" class="btn btn-primary font-cairo text-white">
+        Reset Filters
+      </button>
+    </div>
+
+    <!-- Error State -->
+    <div v-if="error" class="page-container alert alert-error my-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m9-11a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ error }}</span>
     </div>
   </div>
 </template>
@@ -87,9 +112,11 @@ const router = useRouter();
 const currentPage = ref(1);
 const itemsPerPage = ref(12);
 
+const loading = computed(() => store.loading);
+const error = computed(() => store.error);
+
 onMounted(async () => {
   await store.fetchCars();
-
 });
 
 const cars = computed(() => store.cars);
@@ -126,6 +153,10 @@ function handleSearch(payload) {
 function handlePageChange(page) {
   currentPage.value = page;
   window.scrollTo({ top: 400, behavior: 'smooth' });
+}
+
+function resetFilters() {
+  currentPage.value = 1;
 }
 </script>
 
