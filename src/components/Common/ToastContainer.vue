@@ -1,63 +1,38 @@
 <template>
-  <div class="fixed inset-0 pointer-events-none z-[1000]">
-    <div class="absolute top-4 right-4 flex flex-col gap-3 w-[min(92vw,380px)]">
-      <transition-group name="toast-fade" tag="div">
-        <div
-          v-for="t in toasts"
-          :key="t.id"
-          class="pointer-events-auto shadow-lg rounded-md px-4 py-3 text-sm flex items-start gap-3 border"
-          :class="toastClass(t.type)"
-        >
-          <span class="mt-0.5 text-base">{{ icon(t.type) }}</span>
-          <div class="flex-1">{{ t.message }}</div>
-          <button
-            class="ml-2 opacity-70 hover:opacity-100"
-            @click="remove(t.id)"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </div>
-      </transition-group>
+  <div class="toast toast-end toast-top z-50">
+    <div 
+      v-for="toast in toasts" 
+      :key="toast.id" 
+      class="alert shadow-lg transition-all duration-300"
+      :class="{
+        'alert-success': toast.type === 'success',
+        'alert-error': toast.type === 'error',
+        'alert-info': toast.type === 'info',
+        'alert-warning': toast.type === 'warning'
+      }"
+    >
+      <div class="flex items-center gap-2">
+        <svg v-if="toast.type === 'success'" xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <svg v-if="toast.type === 'error'" xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <svg v-if="toast.type === 'info'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span>{{ toast.message }}</span>
+      </div>
+      <button class="btn btn-sm btn-ghost" @click="removeToast(toast.id)">✕</button>
     </div>
   </div>
-  
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia'
-import { useNotifyStore } from '@/stores/notifyStore'
+import { useToast } from '@/composables/useToast';
 
-const notify = useNotifyStore()
-const { toasts } = storeToRefs(notify)
-
-const remove = (id) => notify.remove(id)
-
-const toastClass = (type) => {
-  switch (type) {
-    case 'success':
-      return 'bg-green-50 text-green-800 border-green-200'
-    case 'error':
-      return 'bg-red-50 text-red-800 border-red-200'
-    default:
-      return 'bg-slate-50 text-slate-800 border-slate-200'
-  }
-}
-
-const icon = (type) => {
-  switch (type) {
-    case 'success':
-      return '✅'
-    case 'error':
-      return '⚠️'
-    default:
-      return 'ℹ️'
-  }
-}
+const { toasts, removeToast } = useToast();
 </script>
 
-<style>
-.toast-fade-enter-active, .toast-fade-leave-active { transition: all .2s ease; }
-.toast-fade-enter-from { opacity: 0; transform: translateY(-6px); }
-.toast-fade-leave-to { opacity: 0; transform: translateY(-6px); }
+<style scoped>
+.toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  max-width: 24rem;
+}
 </style>

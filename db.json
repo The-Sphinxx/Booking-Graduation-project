@@ -15,14 +15,27 @@
       "resetToken": null,
       "resetTokenExpiry": null,
       "createdAt": "2024-01-01T10:00:00.000Z",
-      "updatedAt": "2024-01-01T10:00:00.000Z"
+      "updatedAt": "2024-01-01T10:00:00.000Z",
+      "status": "Verified",
+      "role": "admin"
     },
     {
       "id": "google_1766073359742",
       "fullName": "Google User",
       "email": "user@gmail.com",
       "provider": "google",
-      "createdAt": "2025-12-18T15:55:59.742Z"
+      "createdAt": "2025-12-18T15:55:59.742Z",
+      "status": "Verified",
+      "firstName": "Google",
+      "lastName": "User",
+      "phone": "",
+      "role": "user",
+      "dateOfBirth": null,
+      "nationality": null,
+      "gender": null,
+      "profileImage": null,
+      "isVerified": true,
+      "updatedAt": "2025-12-18T15:55:59.742Z"
     }
   ],
   "attractions": [
@@ -5930,81 +5943,21 @@
   ],
   "cars": [
     {
-      "id": "1",
       "name": "Toyota Corolla",
+      "city": "Cairo",
       "description": "Reliable compact sedan suitable for 4 passengers.",
       "seats": 4,
-      "transmission": "Auto",
-      "nextAvailability": "2025-12-26",
-      "featured": true,
-      "status": "Available",
       "total_fleet": 20,
       "available_now": 5,
-      "booked_today": 4,
-      "in_maintenance": 11,
-      "features": [
-        "GPS",
-        "A/C",
-        "Bluetooth",
-        "Backup Camera"
-      ],
-      "images": [
-        "/images-car/ToyotaCorolla.avif",
-        "/images-car/ToyotaCorolla2.jpg",
-        "/images-car/ToyotaCorolla3.jpg",
-        "/images-car/ToyotaCorolla4.jpg"
-      ],
-      "price": 120,
-      "basePrice": 120,
-      "overview": "The Toyota Corolla is a reliable compact sedan perfect for city driving and short family trips. It offers fuel efficiency, modern technology features, and smooth handling.",
-      "highlights": [
-        "Fuel-efficient engine",
-        "Smooth city driving",
-        "Advanced safety features",
-        "Comfortable seating for 4 passengers"
-      ],
-      "amenities": [
-        "Air Conditioning",
-        "GPS Navigation",
-        "Bluetooth Connectivity",
-        "Backup Camera",
-        "Cruise Control",
-        "USB Ports"
-      ],
-      "reviews": {
-        "overallRating": 4.8,
-        "totalReviews": 1523,
-        "ratingCriteria": {
-          "experience": 4.8,
-          "comfort": 4.6,
-          "reliability": 4.9,
-          "valueForMoney": 4.7,
-          "features": 4.5
-        }
-      },
-      "userReviews": [
-        {
-          "id": 1,
-          "userName": "John Doe",
-          "userImage": "/images/users/user_m_1.jpg",
-          "rating": 5,
-          "date": "January 2025",
-          "comment": "Perfect car for city trips. Comfortable and compact."
-        },
-        {
-          "id": 2,
-          "userName": "Sarah Ahmed",
-          "userImage": "/images/users/user_f_2.jpg",
-          "rating": 5,
-          "date": "February 2025",
-          "comment": "Reliable and smooth ride."
-        }
-      ],
-      "availability": "Available"
+      "fuelType": "hybrid",
+      "status": "maintenance",
+      "featured": true,
+      "id": "1"
     },
     {
       "id": "2",
       "name": "Kia Carens",
+      "city": "Giza",
       "description": "Family MPV suitable for 5-6 passengers.",
       "seats": 6,
       "transmission": "Auto",
@@ -6063,11 +6016,13 @@
           "date": "March 2025",
           "comment": "Spacious and comfortable for family trips."
         }
-      ]
+      ],
+      "availability": "Sold Out"
     },
     {
       "id": "3",
       "name": "Toyota Rush",
+      "city": "Alexandria",
       "description": "Compact SUV ideal for 5-6 passengers with flexibility for city and trips.",
       "seats": 6,
       "transmission": "Auto",
@@ -6132,6 +6087,7 @@
     {
       "id": "4",
       "name": "Mitsubishi Xpander",
+      "city": "Luxor",
       "description": "Modern MPV for 5-6 passengers with comfortable interior.",
       "seats": 6,
       "transmission": "Auto",
@@ -6197,6 +6153,7 @@
     {
       "id": "5",
       "name": "Toyota Land Cruiser",
+      "city": "Aswan",
       "description": "Great for families exploring Cairo, Giza, and Alexandria.",
       "seats": 7,
       "transmission": "Auto",
@@ -6285,6 +6242,7 @@
     {
       "id": "6",
       "name": "Honda Pilot",
+      "city": "Sharm El Sheikh",
       "description": "Perfect for family trips across major Egyptian cities.",
       "seats": 7,
       "transmission": "Auto",
@@ -6348,12 +6306,13 @@
     {
       "id": "7",
       "name": "Ford Explorer",
+      "city": "Hurghada",
       "description": "Spacious and comfortable SUV for family adventures.",
       "seats": 7,
       "transmission": "Auto",
       "nextAvailability": "2025-12-28",
       "featured": true,
-      "status": "pending",
+      "status": "Available",
       "total_fleet": 20,
       "available_now": 2,
       "booked_today": 4,
@@ -6411,12 +6370,13 @@
     {
       "id": "8",
       "name": "Chevrolet Tahoe",
+      "city": "Dahab",
       "description": "Full-size SUV perfect for family adventures.",
       "seats": 7,
       "transmission": "Auto",
       "nextAvailability": "2025-12-29",
       "featured": true,
-      "status": "pending",
+      "status": "Rented",
       "total_fleet": 20,
       "available_now": 0,
       "booked_today": 4,
@@ -6475,6 +6435,7 @@
     {
       "id": "9",
       "name": "Chevrolet Suburban",
+      "city": "Siwa",
       "description": "Iconic large SUV for family adventures across Egypt.",
       "seats": 7,
       "transmission": "Auto",
@@ -6539,6 +6500,7 @@
     {
       "id": "10",
       "name": "GMC Yukon",
+      "city": "Marsa Alam",
       "description": "Large SUV with comfort and advanced tech.",
       "seats": 7,
       "transmission": "Auto",
@@ -6603,6 +6565,7 @@
     {
       "id": "11",
       "name": "Hyundai Palisade",
+      "city": "Port Said",
       "description": "Comfortable family SUV with advanced features.",
       "seats": 7,
       "transmission": "Auto",
@@ -6667,6 +6630,7 @@
     {
       "id": "12",
       "name": "Kia Telluride",
+      "city": "Nuweiba",
       "description": "Family-friendly SUV with modern amenities.",
       "seats": 7,
       "transmission": "Auto",
@@ -6731,6 +6695,7 @@
     {
       "id": "13",
       "name": "Mazda CX-9",
+      "city": "Faiyum",
       "description": "Elegant and spacious SUV for family trips.",
       "seats": 7,
       "transmission": "Auto",
@@ -6795,6 +6760,7 @@
     {
       "id": "14",
       "name": "Nissan Patrol",
+      "city": "Ain Sokhna",
       "description": "Reliable SUV with comfort and space for the whole family.",
       "seats": 7,
       "transmission": "Auto",
@@ -6859,6 +6825,7 @@
     {
       "id": "15",
       "name": "Subaru Ascent",
+      "city": "Cairo",
       "description": "Family SUV with safety and comfort in mind.",
       "seats": 7,
       "transmission": "Auto",
@@ -6923,6 +6890,7 @@
     {
       "id": "16",
       "name": "Volkswagen Atlas",
+      "city": "Giza",
       "description": "Spacious SUV perfect for family road trips.",
       "seats": 7,
       "transmission": "Auto",
@@ -6987,6 +6955,7 @@
     {
       "id": "17",
       "name": "Toyota RAV4",
+      "city": "Alexandria",
       "description": "Compact SUV ideal for city and weekend trips.",
       "seats": 4,
       "transmission": "Auto",
@@ -7050,6 +7019,7 @@
     {
       "id": "18",
       "name": "Honda CR‑V",
+      "city": "Luxor",
       "description": "Reliable SUV with excellent fuel efficiency for families.",
       "seats": 4,
       "transmission": "Auto",
@@ -7113,6 +7083,7 @@
     {
       "id": "19",
       "name": "Mazda CX‑5",
+      "city": "Aswan",
       "description": "Stylish and comfortable SUV for smaller families.",
       "seats": 4,
       "transmission": "Auto",
@@ -7177,6 +7148,7 @@
     {
       "id": "20",
       "name": "Toyota Avanza",
+      "city": "Sharm El Sheikh",
       "description": "Compact MPV ideal for 5–7 passengers, perfect for city rides and family trips.",
       "seats": 7,
       "transmission": "Auto",
@@ -7365,7 +7337,8 @@
         "accommodation": true,
         "meals": 3
       },
-      "availability": "Available"
+      "availability": "Available",
+      "status": "Completed"
     },
     {
       "id": "2",
@@ -7478,7 +7451,8 @@
         "transport": true,
         "accommodation": true,
         "meals": 3
-      }
+      },
+      "status": "Completed"
     },
     {
       "id": "3",
@@ -8041,8 +8015,6 @@
       }
     }
   ],
-  "reviews": [],
-  "wishlist": [],
   "bookings": [
     {
       "id": "2e6a",
@@ -8561,6 +8533,8 @@
       "bookingDate": "2025-12-20T23:19:45.124Z"
     }
   ],
+  "reviews": [],
+  "wishlist": [],
   "savedItems": [
     {
       "id": "saved_1",

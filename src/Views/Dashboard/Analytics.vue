@@ -1,29 +1,6 @@
 <template>
-  <div class="min-h-screen bg-base-200 p-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-      <div>
-        <h1 class="text-3xl font-bold text-base-content">Analytics Dashboard</h1>
-        <p class="text-sm text-base-content/60 mt-1">
-          Real-time insights and performance metrics
-        </p>
-      </div>
-      <div class="flex gap-2 items-center">
-        <button 
-          @click="fetchData" 
-          class="btn btn-sm btn-circle btn-ghost"
-          :class="{ 'loading': loading }"
-        >
-          <svg v-if="!loading" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-        </button>
-        <div class="text-xs text-base-content/60">
-          Updated: {{ new Date().toLocaleTimeString() }}
-        </div>
-      </div>
-    </div>
-
+  <div class="min-h-screen bg-base-200 space-y-2">
+ 
     <!-- Stats Cards -->
     <StatsCard :stats="stats" />
 

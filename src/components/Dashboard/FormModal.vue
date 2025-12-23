@@ -63,12 +63,12 @@
                 ></textarea>
 
                 <!-- Date -->
-                <input
+                <DatePicker
                   v-else-if="field.type === 'date'"
-                  type="date"
                   v-model="formData[field.key]"
+                  :label="field.label"
                   :required="field.required"
-                  class="input input-bordered w-full font-cairo text-base-content"
+                  class="w-full"
                 />
 
                 <!-- Select (Single) -->
@@ -156,6 +156,16 @@
                     {{ Array.isArray(formData[field.key]) ? formData[field.key].length + ' file(s) selected' : 'File selected' }}
                   </div>
                 </div>
+
+                <!-- Multi-Image Upload -->
+                <ImageUploader
+                  v-else-if="field.type === 'image-upload'"
+                  v-model="formData[field.key]"
+                  :max-images="field.maxImages || 4"
+                  :accept="field.accept"
+                  :max-size="field.maxSize"
+                  :required="field.required"
+                />
               </div>
             </div>
           </form>
@@ -188,6 +198,8 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import DatePicker from '@/components/Common/DatePicker.vue';
+import ImageUploader from '@/components/Dashboard/ImageUploader.vue';
 
 const props = defineProps({
   isOpen: {
@@ -239,6 +251,8 @@ const initializeForm = () => {
         data[field.key] = false;
       } else if (field.type === 'number' || field.type === 'rating') {
         data[field.key] = 0;
+      } else if (field.type === 'image-upload') {
+        data[field.key] = [];
       } else {
         data[field.key] = '';
       }

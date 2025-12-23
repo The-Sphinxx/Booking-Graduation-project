@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="space-y-2">
     <!-- Stats Grid -->
     <StatsCard :stats="stats" />
 
@@ -47,6 +47,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import StatsCard from '@/components/Dashboard/StatsCard.vue';
 import DataTable from '@/components/Dashboard/DataTable.vue';
 import FilterModal from '@/components/Dashboard/FilterModal.vue';
@@ -57,6 +58,7 @@ import { hotelFormConfig } from '@/Utils/dashboardFormConfigs';
 
 // Component State
 const loading = ref(false);
+const router = useRouter();
 const hotels = ref([]);
 const showFilterModal = ref(false);
 const showFormModal = ref(false);
@@ -105,7 +107,7 @@ const columns = [
     label: 'Status',
     field: 'status',
     type: 'status-dropdown',
-    options: ['Active', 'Inactive', 'Maintenance'],
+    options: ['Active', 'Pending', 'Suspended'],
     headerClass: 'w-1/8'
   },
   {
@@ -232,8 +234,7 @@ const handleDelete = async (row) => {
 };
 
 const handleView = (row) => {
-  console.log('View hotel:', row);
-  // Implement view details logic
+  router.push({ name: 'DashboardDetails', params: { type: 'hotels', id: row.id } });
 };
 
 const handleToggle = async ({ row, field, newValue }) => {
@@ -252,7 +253,7 @@ const handleToggle = async ({ row, field, newValue }) => {
 
 const handleStatusClick = async ({ row, field, value }) => {
   // Simple status toggle logic for demo
-  const newStatus = value === 'active' ? 'Maintenance' : 'active';
+  const newStatus = value === 'Active' ? 'Suspended' : 'Active';
   try {
     await hotelsAPI.updateStatus(row.id, newStatus);
     // Manually update local state if not refreshing entire list

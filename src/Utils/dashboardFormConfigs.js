@@ -186,6 +186,15 @@ export const attractionFormConfig = {
       label: 'Featured',
       type: 'toggle',
       required: false
+    },
+    {
+      key: 'images',
+      label: 'Images',
+      type: 'image-upload',
+      maxImages: 4,
+      required: true,
+      accept: 'image/jpeg,image/png,image/webp',
+      maxSize: 2 * 1024 * 1024 // 2MB per image
     }
   ]
 };
@@ -303,6 +312,15 @@ export const hotelFormConfig = {
       label: 'Featured',
       type: 'toggle',
       required: false
+    },
+    {
+      key: 'images',
+      label: 'Images',
+      type: 'image-upload',
+      maxImages: 4,
+      required: true,
+      accept: 'image/jpeg,image/png,image/webp',
+      maxSize: 2 * 1024 * 1024 // 2MB per image
     }
   ]
 };
@@ -417,6 +435,48 @@ export const carFormConfig = {
       required: false
     },
     {
+      key: 'description',
+      label: 'Description',
+      type: 'textarea',
+      required: true
+    },
+    {
+      key: 'overview',
+      label: 'Overview',
+      type: 'textarea',
+      required: false
+    },
+    {
+      key: 'features',
+      label: 'Technical Features',
+      type: 'tags',
+      placeholder: 'Add feature (Press Enter)',
+      required: false
+    },
+    {
+      key: 'highlights',
+      label: 'Highlights',
+      type: 'tags',
+      placeholder: 'Add highlight',
+      required: false
+    },
+    {
+      key: 'amenities',
+      label: 'Amenities',
+      type: 'tags',
+      placeholder: 'Add amenity',
+      required: false
+    },
+    {
+      key: 'images',
+      label: 'Images',
+      type: 'image-upload',
+      maxImages: 4,
+      required: true,
+      accept: 'image/jpeg,image/png,image/webp',
+      maxSize: 2 * 1024 * 1024 // 2MB per image
+    },
+    {
       key: 'status',
       label: 'Status',
       type: 'select',
@@ -509,6 +569,48 @@ export const tripFormConfig = {
       required: true
     },
     {
+      key: 'description',
+      label: 'Description',
+      type: 'textarea',
+      required: true
+    },
+    {
+      key: 'highlights',
+      label: 'Highlights',
+      type: 'tags',
+      placeholder: 'Add highlight',
+      required: false
+    },
+    {
+      key: 'itinerary',
+      label: 'Itinerary (JSON)',
+      type: 'textarea', // Simplified for now, complex object editing is hard
+      required: false
+    },
+    {
+      key: 'images',
+      label: 'Images',
+      type: 'image-upload',
+      maxImages: 4,
+      required: true,
+      accept: 'image/jpeg,image/png,image/webp',
+      maxSize: 2 * 1024 * 1024 // 2MB per image
+    },
+    {
+      key: 'maxPeople',
+      label: 'Max People',
+      type: 'number',
+      min: 1,
+      required: true
+    },
+    {
+      key: 'price',
+      label: 'Price',
+      type: 'number',
+      min: 0,
+      required: true
+    },
+    {
       key: 'startDate',
       label: 'Start Date',
       type: 'date',
@@ -521,27 +623,13 @@ export const tripFormConfig = {
       required: false
     },
     {
-      key: 'includes',
-      label: 'Includes',
-      type: 'multi-select',
-      options: [
-        { label: 'Accommodation', value: 'accommodation' },
-        { label: 'Meals', value: 'meals' },
-        { label: 'Transport', value: 'transport' },
-        { label: 'Guide', value: 'guide' },
-        { label: 'Activities', value: 'activities' },
-        { label: 'Equipment', value: 'equipment' }
-      ],
-      required: false
-    },
-    {
       key: 'status',
       label: 'Status',
       type: 'select',
       options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Inactive', value: 'inactive' },
-        { label: 'Full', value: 'full' }
+        { label: 'Upcoming', value: 'Upcoming' },
+        { label: 'Ongoing', value: 'Ongoing' },
+        { label: 'Completed', value: 'Completed' }
       ],
       required: true
     },
@@ -550,6 +638,55 @@ export const tripFormConfig = {
       label: 'Featured',
       type: 'toggle',
       required: false
+    }
+  ]
+};
+
+// ===== BOOKINGS =====
+export const bookingFormConfig = {
+  title: 'Booking',
+  fields: [
+    {
+      key: 'id',
+      label: 'Booking ID',
+      type: 'text',
+      readonly: true
+    },
+    {
+      key: 'type',
+      label: 'Type',
+      type: 'text',
+      readonly: true
+    },
+    {
+      key: 'userName',
+      label: 'User Name',
+      type: 'text',
+      readonly: true
+    },
+    {
+      key: 'bookingDate',
+      label: 'Booking Date',
+      type: 'date',
+      readonly: true
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'status',
+      required: true
+    },
+    {
+      key: 'paymentStatus',
+      label: 'Payment Status',
+      type: 'status',
+      required: true
+    },
+    {
+      key: 'price',
+      label: 'Total Amount',
+      type: 'price',
+      readonly: true
     }
   ]
 };
