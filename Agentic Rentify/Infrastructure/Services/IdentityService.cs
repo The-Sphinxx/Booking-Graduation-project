@@ -251,6 +251,15 @@ public class IdentityService : IIdentityService
         return await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
     }
 
+    public async Task UpdateUserAsync(ApplicationUser user)
+    {
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            throw new BadRequestException("Failed to update user: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+        }
+    }
+
     public async Task ForgotPasswordAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);

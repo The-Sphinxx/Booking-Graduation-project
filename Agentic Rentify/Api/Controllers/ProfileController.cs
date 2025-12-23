@@ -1,4 +1,5 @@
 using Agentic_Rentify.Application.Features.Profile.Queries.GetUserProfile;
+using Agentic_Rentify.Application.Features.Profile.Commands.UpdateProfile;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,5 +28,16 @@ public class ProfileController(IMediator mediator) : ControllerBase
     {
         var result = await mediator.Send(new GetUserProfileQuery(userId));
         return Ok(result);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileCommand command)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId)) return Unauthorized();
+
+        command.UserId = userId;
+        await mediator.Send(command);
+        return Ok(new { message = "Profile updated successfully" });
     }
 }

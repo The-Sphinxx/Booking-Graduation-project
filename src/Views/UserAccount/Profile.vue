@@ -132,7 +132,7 @@
     <!-- Edit Profile Modal -->
     <EditProfileModal
       :is-open="isEditModalOpen"
-      :user="authStore.user"
+      :user="user"
       @close="isEditModalOpen = false"
       @save="handleSaveProfile"
     />
@@ -249,9 +249,17 @@ onMounted(async () => {
     const { data } = await api.get('/Profile');
 
     user.value = {
+      id: data.id,
       name: data.fullName || `${data.firstName} ${data.lastName}`.trim() || 'Guest User',
+      firstName: data.firstName,
+      lastName: data.lastName,
       email: data.email,
       avatar: data.profileImage || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+      profileImage: data.profileImage,
+      phone: data.phone,
+      nationality: data.nationality,
+      gender: data.gender,
+      dateOfBirth: data.dateOfBirth,
       membershipType: data.membershipType || 'Standard Member'
     };
 

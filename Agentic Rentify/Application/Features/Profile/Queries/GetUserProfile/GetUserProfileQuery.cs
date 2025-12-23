@@ -44,6 +44,10 @@ public class GetUserProfileQueryHandler : IRequestHandler<GetUserProfileQuery, U
             LastName = user.LastName,
             FullName = string.IsNullOrWhiteSpace(fullName) ? user.UserName ?? string.Empty : fullName,
             ProfileImage = user.ProfileImage ?? string.Empty,
+            Phone = user.PhoneNumber,
+            Nationality = user.Nationality,
+            Gender = user.Gender,
+            DateOfBirth = user.DateOfBirth,
             MembershipType = "Standard Member",
             Bookings = bookings.ToList(),
             Wishlist = wishlist

@@ -10,6 +10,7 @@ public interface IIdentityService
     Task<AuthResponseDto> LoginWithGoogleAsync(string idToken);
     Task<AuthResponseDto> RefreshTokenAsync(string token, string refreshToken);
     Task<ApplicationUser?> GetByIdAsync(string userId);
+    Task UpdateUserAsync(ApplicationUser user);
     
     Task ForgotPasswordAsync(string email);
     Task ResetPasswordAsync(string email, string tokenOrOtp, string newPassword);

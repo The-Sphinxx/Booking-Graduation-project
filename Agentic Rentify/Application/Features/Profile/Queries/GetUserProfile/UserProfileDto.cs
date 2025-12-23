@@ -11,6 +11,10 @@ public class UserProfileDto
     public string LastName { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public string ProfileImage { get; set; } = string.Empty;
+    public string? Phone { get; set; }
+    public string? Nationality { get; set; }
+    public string? Gender { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     public string MembershipType { get; set; } = string.Empty;
     public List<Booking> Bookings { get; set; } = new();
     public List<WishlistItemDto> Wishlist { get; set; } = new();
