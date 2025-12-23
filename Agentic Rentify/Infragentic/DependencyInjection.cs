@@ -54,9 +54,11 @@ public static class InfragenticExtensions
             // Create plugin instances with resolved dependencies and add them
             var discoveryPlugin = new DiscoveryPlugin(serviceScopeFactory);
             var bookingPlugin = new BookingPlugin(serviceScopeFactory);
+            var travelDatabasePlugin = new TravelDatabasePlugin(serviceScopeFactory);
 
             kernelBuilder.Plugins.AddFromObject(discoveryPlugin, "Discovery");
             kernelBuilder.Plugins.AddFromObject(bookingPlugin, "Booking");
+            kernelBuilder.Plugins.AddFromObject(travelDatabasePlugin, "TravelDatabase");
 
             return kernelBuilder.Build();
         });
@@ -77,6 +79,7 @@ public static class InfragenticExtensions
 
         // Register AI Services
         services.AddScoped<IChatAiService, ChatAiService>();
+        services.AddScoped<IAiTripPlannerService, AiTripPlannerService>();
 
         return services;
     }

@@ -37,6 +37,8 @@ import AdminSettings from '@/Views/Dashboard/AdminSettings.vue'
 // AI
 import AiCollectData from '@/Views/Ai/AiCollectData.vue'
 import AiPlanResults from '@/Views/Ai/AiPlanResults.vue'
+import AiPlanner from '@/Views/Ai/AiPlanner.vue'
+import AiPlannerResult from '@/Views/Ai/AiPlannerResult.vue'
 
 // Attractions
 import AttractionsList from '@/Views/Attractions/AttractionsList.vue'
@@ -151,6 +153,18 @@ const routes = [
         path: 'ai/plan-results',
         name: 'AiPlanResults',
         component: AiPlanResults,
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'ai/planner',
+        name: 'AiPlanner',
+        component: AiPlanner,
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'ai/planner-result',
+        name: 'PlannerResult',
+        component: AiPlannerResult,
         meta: { requiresAuth: false },
       },
 
