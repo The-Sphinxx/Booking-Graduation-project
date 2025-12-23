@@ -40,17 +40,34 @@
         </p>
       </div>
 
-      <!-- Trips Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-        <TripCard 
-          v-for="trip in paginatedTrips" 
-          :key="trip.id" 
-          :trip="trip" 
-        />
+      <!-- Loading State -->
+      <div v-if="loading" class="flex justify-center items-center py-20">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
 
-       <!-- No Results State -->
-       <div v-if="paginatedTrips.length === 0" class="text-center py-20">
+      <!-- Trips Grid -->
+      <div v-else-if="paginatedTrips.length > 0" class="mb-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+          <TripCard 
+            v-for="trip in paginatedTrips" 
+            :key="trip.id" 
+            :trip="trip" 
+          />
+        </div>
+
+        <!-- Pagination -->
+        <div v-if="filteredTrips.length > itemsPerPage" class="flex justify-center mt-8">
+          <Pagination 
+            :current-page="currentPage" 
+            :total="filteredTrips.length"
+            :per-page="itemsPerPage"
+            @update:current-page="handlePageChange"
+          />
+        </div>
+      </div>
+
+      <!-- No Results State -->
+      <div v-else class="text-center py-20">
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-base-200 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -63,14 +80,12 @@
         </button>
       </div>
 
-      <!-- Pagination -->
-      <div v-if="filteredTrips.length > itemsPerPage" class="flex justify-center mt-8">
-        <Pagination 
-          :current-page="currentPage" 
-          :total="filteredTrips.length"
-          :per-page="itemsPerPage"
-          @update:current-page="handlePageChange"
-        />
+      <!-- Error State -->
+      <div v-if="error" class="alert alert-error my-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m9-11a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ error }}</span>
       </div>
     </div>
   </div>
@@ -78,54 +93,54 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import tripsApi from '@/Services/tripsApi';
+import { useTripsStore } from '@/stores/tripsStore';
 import Search from '@/components/Common/Search.vue';
 import TripCard from '@/components/Trips/TripCard.vue';
 import Pagination from '@/components/Common/Pagination.vue';
 
+const tripsStore = useTripsStore();
+
 // State
-const trips = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 8;
 const searchParams = ref({});
 
+// Computed
+const loading = computed(() => tripsStore.loading);
+const error = computed(() => tripsStore.error);
+const trips = computed(() => tripsStore.trips);
+
 // Load Data
 onMounted(async () => {
   try {
-    const result = await tripsApi.getAllTrips();
-    trips.value = Array.isArray(result) ? result : [];
+    await tripsStore.fetchTrips();
   } catch (error) {
     console.error('Failed to load trips from API', error);
-    trips.value = [];
   }
 });
 
 // Computed Filters
 const filteredTrips = computed(() => {
-  return trips.value.filter(trip => {
-    // Filter by Location
-    if (searchParams.value.pickupLocation && searchParams.value.pickupLocation !== 'All Cities') {
-       const location = searchParams.value.pickupLocation.toLowerCase();
-       const titleMatch = trip.title ? trip.title.toLowerCase().includes(location) : false;
-       const descMatch = trip.description ? trip.description.toLowerCase().includes(location) : false;
-       
-       if (!titleMatch && !descMatch) {
-         return false;
-       }
-    }
-    
-    // Additional filters (dates, etc) could go here
-    // Note: The provided trips JSON doesn't have dates, so we can't filter by exact availability 
-    // without more data structure, but this is a starter logic.
+  let result = trips.value;
 
-    return true;
-  });
+  // Filter by Location
+  if (searchParams.value.pickupLocation && searchParams.value.pickupLocation !== 'All Cities') {
+     const location = searchParams.value.pickupLocation.toLowerCase();
+     const titleMatch = result.some(trip => trip.title?.toLowerCase().includes(location));
+     const descMatch = result.some(trip => trip.description?.toLowerCase().includes(location));
+     
+     if (titleMatch || descMatch) {
+       result = result.filter(trip => 
+         trip.title?.toLowerCase().includes(location) || 
+         trip.description?.toLowerCase().includes(location)
+       );
+     }
+  }
+
+  return result;
 });
 
 // Pagination Logic
-// Pagination component calculates totalPages internaly based on total items and perPage
-// We just need to slice the data for the current view
-
 const paginatedTrips = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
@@ -135,7 +150,7 @@ const paginatedTrips = computed(() => {
 // Handlers
 const handleSearch = (params) => {
   searchParams.value = params;
-  currentPage.value = 1; // Reset to first page on new search
+  currentPage.value = 1;
   console.log('Search params:', params);
 };
 
