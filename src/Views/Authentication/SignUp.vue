@@ -34,9 +34,11 @@
               v-model="formData.fullName"
               type="text"
               placeholder="Enter your full name"
-              class="input input-bordered w-full bg-white/90 focus:bg-white"
+              class="input input-bordered w-full bg-white/90 focus:bg-white text-gray-900"
+              :class="{ 'input-error': errors.fullName }"
               required
             />
+            <span v-if="errors.fullName" class="text-error text-xs mt-1 block">{{ errors.fullName }}</span>
           </div>
 
           <!-- Email Field -->
@@ -48,9 +50,11 @@
               v-model="formData.email"
               type="email"
               placeholder="Enter your email"
-              class="input input-bordered w-full bg-white/90 focus:bg-white"
+              class="input input-bordered w-full bg-white/90 focus:bg-white text-gray-900"
+              :class="{ 'input-error': errors.email }"
               required
             />
+            <span v-if="errors.email" class="text-error text-xs mt-1 block">{{ errors.email }}</span>
           </div>
 
           <!-- Password Field -->
@@ -98,10 +102,11 @@
               v-model="formData.password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="Enter your password"
-              class="input input-bordered w-full bg-white/90 focus:bg-white"
+              class="input input-bordered w-full bg-white/90 focus:bg-white text-gray-900"
+              :class="{ 'input-error': errors.password }"
               required
-              minlength="6"
             />
+            <span v-if="errors.password" class="text-error text-xs mt-1 block">{{ errors.password }}</span>
           </div>
 
           <!-- Confirm Password Field -->
@@ -149,9 +154,11 @@
               v-model="formData.confirmPassword"
               :type="showConfirmPassword ? 'text' : 'password'"
               placeholder="Confirm your password"
-              class="input input-bordered w-full bg-white/90 focus:bg-white"
+              class="input input-bordered w-full bg-white/90 focus:bg-white text-gray-900"
+              :class="{ 'input-error': errors.confirmPassword }"
               required
             />
+            <span v-if="errors.confirmPassword" class="text-error text-xs mt-1 block">{{ errors.confirmPassword }}</span>
           </div>
 
           <!-- Error Message -->
@@ -217,6 +224,12 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotifyStore } from '@/stores/notifyStore';
+import { 
+  validateFullName, 
+  validateEmail, 
+  validatePassword, 
+  validateConfirmPassword 
+} from '@/Utils/validators';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -242,6 +255,7 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 const loading = ref(false);
 const error = ref(null);
+const errors = ref({});
 
 // Methods
 const togglePassword = () => {
@@ -254,17 +268,35 @@ const toggleConfirmPassword = () => {
 
 const handleSignUp = async () => {
   error.value = null;
+  errors.value = {};
+  let isValid = true;
 
   // Validation
-  if (formData.value.password !== formData.value.confirmPassword) {
-    error.value = 'Passwords do not match';
-    return;
+  const nameValidation = validateFullName(formData.value.fullName);
+  if (!nameValidation.valid) {
+    errors.value.fullName = nameValidation.message;
+    isValid = false;
   }
 
-  if (formData.value.password.length < 6) {
-    error.value = 'Password must be at least 6 characters';
-    return;
+  const emailValidation = validateEmail(formData.value.email);
+  if (!emailValidation.valid) {
+    errors.value.email = emailValidation.message;
+    isValid = false;
   }
+
+  const passwordValidation = validatePassword(formData.value.password);
+  if (!passwordValidation.valid) {
+    errors.value.password = passwordValidation.message;
+    isValid = false;
+  }
+
+  const confirmValidation = validateConfirmPassword(formData.value.password, formData.value.confirmPassword);
+  if (!confirmValidation.valid) {
+    errors.value.confirmPassword = confirmValidation.message;
+    isValid = false;
+  }
+
+  if (!isValid) return;
 
   loading.value = true;
 

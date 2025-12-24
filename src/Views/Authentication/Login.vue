@@ -34,9 +34,11 @@
               v-model="formData.email"
               type="email"
               placeholder="Enter your email address"
-              class="input input-bordered w-full bg-white/90 focus:bg-white"
+              class="input input-bordered w-full bg-white/90 focus:bg-white text-gray-900"
+              :class="{ 'input-error': errors.email }"
               required
             />
+            <span v-if="errors.email" class="text-error text-xs mt-1 block">{{ errors.email }}</span>
           </div>
 
           <!-- Password Field -->
@@ -84,7 +86,7 @@
               v-model="formData.password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="Enter your password"
-              class="input input-bordered w-full bg-white/90 focus:bg-white"
+              class="input input-bordered w-full bg-white/90 focus:bg-white text-gray-900"
               required
             />
           </div>
@@ -176,6 +178,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
+import { validateEmail } from '@/Utils/validators';
 
 const router = useRouter();
 const route = useRoute();
@@ -199,6 +202,7 @@ const formData = ref({
 const showPassword = ref(false);
 const loading = ref(false);
 const error = ref(null);
+const errors = ref({});
 
 // Methods
 const togglePassword = () => {
@@ -208,6 +212,15 @@ const togglePassword = () => {
 const handleSignIn = async () => {
   loading.value = true;
   error.value = null;
+  errors.value = {};
+
+  // Validate Email
+  const emailValidation = validateEmail(formData.value.email);
+  if (!emailValidation.valid) {
+    errors.value.email = emailValidation.message;
+    loading.value = false;
+    return;
+  }
 
   const result = await authStore.login({
     email: formData.value.email,

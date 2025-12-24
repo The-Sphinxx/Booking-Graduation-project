@@ -78,33 +78,3 @@ export const useDashboardStats = (category) => {
 };
 
 
-// Example usage in any component:
-/*
-<script setup>
-import { onMounted } from 'vue';
-import StatsCard from '@/components/StatsCard.vue';
-import { useDashboardStats } from '@/composables/useDashboardStats';
-
-const { stats, loading, error, fetchData } = useDashboardStats('attractions');
-
-onMounted(() => {
-  fetchData();
-});
-</script>
-
-<template>
-  <div class="page-container py-6">
-    <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
-    
-    <div v-if="loading" class="text-center py-10">
-      <span class="loading loading-spinner loading-lg"></span>
-    </div>
-    
-    <div v-else-if="error" class="alert alert-error">
-      <span>{{ error }}</span>
-    </div>
-    
-    <StatsCard v-else :stats="stats" />
-  </div>
-</template>
-*/
