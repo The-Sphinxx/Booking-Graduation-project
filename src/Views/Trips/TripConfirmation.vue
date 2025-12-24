@@ -135,7 +135,7 @@
                        </div>
                        <div class="badge badge-success badge-sm text-white gap-1 py-3 px-3">
                           <i class="fas fa-check-circle text-[10px]"></i>
-                          {{ booking?.paymentStatus === 'paid' ? 'Paid' : 'Pending Verification' }}
+                          {{ booking?.paymentStatus === 'paid' ? 'Paid' : 'Verified' }}
                        </div>
                     </div>
                  </div>
