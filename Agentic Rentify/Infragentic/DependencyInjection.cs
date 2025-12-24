@@ -77,6 +77,9 @@ public static class InfragenticExtensions
         services.AddScoped<IVectorDbService, QdrantVectorService>();
         services.AddScoped<DataSyncService>();
 
+        // Register Three-Brain AI Strategy
+        services.AddScoped<IAIBrainService, AIBrainService>();
+
         // Register AI Services
         services.AddScoped<IChatAiService, ChatAiService>();
         services.AddScoped<IAiTripPlannerService, AiTripPlannerService>();

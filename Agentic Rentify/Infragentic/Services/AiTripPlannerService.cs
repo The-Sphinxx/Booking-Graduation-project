@@ -5,9 +5,12 @@ using System.Text.Json;
 
 namespace Agentic_Rentify.Infragentic.Services;
 
-public class AiTripPlannerService(Kernel kernel) : IAiTripPlannerService
+public class AiTripPlannerService(
+    Kernel kernel,
+    IAIBrainService aiBrainService) : IAiTripPlannerService
 {
     private readonly Kernel _kernel = kernel;
+    private readonly IAIBrainService _aiBrainService = aiBrainService;
 
     public async Task<string> GenerateTripPlanAsync(
         string destination,
@@ -22,7 +25,7 @@ public class AiTripPlannerService(Kernel kernel) : IAiTripPlannerService
         // Build the sophisticated prompt for trip planning
         var plannerPrompt = BuildTripPlannerPrompt(destination, startDate, endDate, budgetLevel, travelers, interests, tripDays);
 
-        // Execution settings with tools
+        // Execution settings optimized for FastBrain JSON generation
         var executionSettings = new OpenAIPromptExecutionSettings
         {
             Temperature = 0.7,
@@ -30,10 +33,27 @@ public class AiTripPlannerService(Kernel kernel) : IAiTripPlannerService
             ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
         };
 
+        // Force JSON output (using experimental API - suppress warning)
+#pragma warning disable SKEXP0010
+        executionSettings.ResponseFormat = "json_object";
+#pragma warning restore SKEXP0010
+
         try
         {
-            // Invoke the AI to generate the trip plan
-            var result = await _kernel.InvokePromptAsync(plannerPrompt, new(executionSettings));
+            // Use FastBrain for optimized trip planning with fallback to DefaultBrain
+            var kernelArgs = new KernelArguments(executionSettings) { ["prompt"] = plannerPrompt };
+            
+            var result = await _aiBrainService.InvokeWithFallbackAsync(
+                AIBrain.FastBrain,
+                _kernel.CreateFunctionFromPrompt(plannerPrompt),
+                kernelArgs,
+                onFallback: (failedBrain, ex) =>
+                {
+                    // Log fallback event
+                    Console.WriteLine($"[FALLBACK] Trip planner switched from {failedBrain} to DefaultBrain: {ex.Message}");
+                }
+            );
+
             return result.ToString();
         }
         catch (Exception ex)
