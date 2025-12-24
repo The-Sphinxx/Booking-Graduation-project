@@ -234,7 +234,7 @@
   </div>
 </section>
 
-    <section class="bg-base-100 py-16">
+    <section class="bg-base-200 py-16">
   <div class="page-container">
     <div class="text-center mb-16">
       <h2 class="font-cairo text-4xl md:text-5xl font-bold mb-4 tracking-tight">
@@ -250,7 +250,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div v-for="item in testimonials" :key="item.id" 
-           class="card bg-base-100 shadow-glass-shadow border border-base-300 p-8 hover:border-primary/30 transition-all duration-300">
+           class="card bg-base-00 shadow-glass-shadow border border-base-300 p-8 hover:border-primary/30 transition-all duration-300">
         
         <i class="fas fa-quote-left text-3xl text-primary/20 mb-4"></i>
         
@@ -278,7 +278,7 @@
 
    
 
-    <section class="bg-base-200 py-16">
+    <section class="bg-base-100 py-16">
   <div class="page-container">
     <div class="text-center mb-16">
       <h2 class="font-cairo text-4xl md:text-5xl font-bold mb-4 tracking-tight">
