@@ -42,12 +42,12 @@
       </div>
 
       <!-- Button -->
-      <button
-        @click="handleViewDetails"
-        class="w-full bg-primary hover:bg-primary-focus text-primary-content font-bold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg active:scale-95"
+      <router-link
+        :to="`/attractions/details/${id}`"
+        class="block text-center w-full bg-primary hover:bg-primary-focus text-primary-content font-bold py-3 px-4 rounded-xl transition-all duration-300 hover:shadow-lg active:scale-95"
       >
         {{ buttonText }}
-      </button>
+      </router-link>
     </div>
   </div>
 </template>
