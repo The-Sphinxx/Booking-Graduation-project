@@ -37,8 +37,8 @@ const AdminsManage = () => import('@/Views/Dashboard/AdminsManage.vue')
 const AdminSettings = () => import('@/Views/Dashboard/AdminSettings.vue')
 
 // AI
-const AiCollectData = () => import('@/Views/Ai/AiCollectData.vue')
-const AiPlanResults = () => import('@/Views/Ai/AiPlanResults.vue')
+const AiPlanner = () => import('@/Views/Ai/AiPlanner.vue')
+const AiPlannerResult = () => import('@/Views/Ai/AiPlannerResult.vue')
 
 // Attractions
 const AttractionsList = () => import('@/Views/Attractions/AttractionsList.vue')
@@ -143,15 +143,15 @@ const routes = [
 
       // AI Routes (Protected)
       {
-        path: 'ai/collect-data',
-        name: 'AiCollectData',
-        component: AiCollectData,
+        path: 'ai/planner',
+        name: 'AiPlanner',
+        component: AiPlanner,
         meta: { requiresAuth: false },
       },
       {
-        path: 'ai/plan-results',
-        name: 'AiPlanResults',
-        component: AiPlanResults,
+        path: 'ai/planner/results',
+        name: 'AiPlannerResult',
+        component: AiPlannerResult,
         meta: { requiresAuth: false },
       },
 
