@@ -5,6 +5,7 @@
     </label>
     <div class="relative">
       <input
+        ref="inputRef"
         type="text"
         :value="displayValue"
         @click="togglePicker"
@@ -13,12 +14,15 @@
         class="input input-bordered w-full font-cairo cursor-pointer"
         :class="inputClass"
       />
-      <div
-        v-if="showPicker"
-        class="absolute z-50 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-4 min-w-[320px]"
-        :class="pickerPosition"
-      >
-        <div class="flex items-center justify-between mb-3">
+      
+      <Teleport to="body">
+        <div
+          v-if="showPicker"
+          ref="pickerRef"
+          class="fixed z-[9999] bg-white dark:bg-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-4 min-w-[320px]"
+          :style="pickerStyle"
+        >
+          <div class="flex items-center justify-between mb-3">
           <button
             @click="previousMonth"
             class="btn btn-ghost btn-xs btn-circle"
@@ -86,12 +90,13 @@
           </button>
         </div>
       </div>
+      </Teleport>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import dayjs from 'dayjs';
 
 const props = defineProps({
@@ -128,9 +133,12 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 const showPicker = ref(false);
+const inputRef = ref(null);
+const pickerRef = ref(null);
 const currentMonth = ref(dayjs().month());
 const currentYear = ref(dayjs().year());
 const selectedDate = ref(null);
+const pickerStyle = ref({});
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -176,8 +184,46 @@ const calendarDays = computed(() => {
   return days;
 });
 
-const togglePicker = () => {
-  showPicker.value = !showPicker.value;
+const updatePosition = () => {
+  if (!inputRef.value) return;
+  const rect = inputRef.value.getBoundingClientRect();
+  
+  // Default position: bottom-left aligned
+  let top = rect.bottom + 8;
+  let left = rect.left;
+  
+  // Adjusted logic to viewport boundaries
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const pickerWidth = 320; // min-w-[320px]
+  const pickerHeight = 400; // Approximate height
+
+  // Check right overflow
+  if (left + pickerWidth > viewportWidth) {
+    left = rect.right - pickerWidth; // Align right
+  }
+  // Check left overflow (if aligned right goes off screen left)
+  if (left < 0) left = 10;
+
+  // Check bottom overflow
+  if (top + pickerHeight > viewportHeight) {
+    top = rect.top - pickerHeight - 8; // Flip to top
+  }
+
+  pickerStyle.value = {
+    top: `${top}px`,
+    left: `${left}px`,
+  };
+};
+
+const togglePicker = async () => {
+  if (showPicker.value) {
+    closePicker();
+  } else {
+    showPicker.value = true;
+    await nextTick();
+    updatePosition();
+  }
 };
 
 const closePicker = () => {
@@ -216,9 +262,26 @@ const nextMonth = () => {
 };
 
 const handleClickOutside = (event) => {
-  const picker = event.target.closest('.relative');
-  if (!picker && showPicker.value) {
+  if (
+    showPicker.value &&
+    pickerRef.value &&
+    !pickerRef.value.contains(event.target) &&
+    inputRef.value &&
+    !inputRef.value.contains(event.target)
+  ) {
     closePicker();
+  }
+};
+
+const handleScroll = () => {
+  if (showPicker.value) {
+    updatePosition(); // Optional: Close it on scroll for simpler UX: closePicker();
+  }
+};
+
+const handleResize = () => {
+  if (showPicker.value) {
+    updatePosition();
   }
 };
 
@@ -232,9 +295,13 @@ watch(() => props.modelValue, (newVal) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('scroll', handleScroll, true); // Capture phase to catch all scrolls
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside);
+  window.removeEventListener('resize', handleResize);
+  window.removeEventListener('scroll', handleScroll, true);
 });
 </script>

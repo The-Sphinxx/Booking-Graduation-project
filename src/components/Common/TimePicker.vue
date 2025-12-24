@@ -5,6 +5,7 @@
     </label>
     <div class="relative">
       <input
+        ref="inputRef"
         type="text"
         :value="displayTime"
         @click="togglePicker"
@@ -14,12 +15,14 @@
         :class="inputClass"
       />
       
-      <div
-        v-if="showPicker"
-        class="absolute z-50 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-4 w-[240px]"
-        :class="pickerPosition"
-      >
-        <div class="text-center mb-3">
+      <Teleport to="body">
+        <div
+          v-if="showPicker"
+          ref="pickerRef"
+          class="fixed z-[9999] bg-white dark:bg-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-4 w-[240px]"
+          :style="pickerStyle"
+        >
+          <div class="text-center mb-3">
           <p class="font-cairo font-bold text-base text-primary">Select Time</p>
         </div>
 
@@ -105,12 +108,13 @@
           </button>
         </div>
       </div>
+      </Teleport>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import dayjs from 'dayjs';
 
 const props = defineProps({
@@ -147,6 +151,9 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 const showPicker = ref(false);
+const inputRef = ref(null);
+const pickerRef = ref(null);
+const pickerStyle = ref({});
 const hours = ref(12);
 const minutes = ref(0);
 const period = ref('AM');
@@ -164,8 +171,45 @@ const displayTime = computed(() => {
   return dayjs(`2000-01-01 ${props.modelValue}`).format('hh:mm A');
 });
 
-const togglePicker = () => {
-  showPicker.value = !showPicker.value;
+const updatePosition = () => {
+  if (!inputRef.value) return;
+  const rect = inputRef.value.getBoundingClientRect();
+  
+  // Default position: bottom-left aligned
+  let top = rect.bottom + 8;
+  let left = rect.left;
+  
+  // Viewport boundaries
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const pickerWidth = 240; // w-[240px]
+  const pickerHeight = 300; // Approximate height
+
+  // Check right overflow
+  if (left + pickerWidth > viewportWidth) {
+    left = rect.right - pickerWidth;
+  }
+  if (left < 0) left = 10;
+
+  // Check bottom overflow
+  if (top + pickerHeight > viewportHeight) {
+    top = rect.top - pickerHeight - 8;
+  }
+
+  pickerStyle.value = {
+    top: `${top}px`,
+    left: `${left}px`,
+  };
+};
+
+const togglePicker = async () => {
+  if (showPicker.value) {
+    showPicker.value = false;
+  } else {
+    showPicker.value = true;
+    await nextTick();
+    updatePosition();
+  }
 };
 
 const incrementHours = () => {
@@ -239,9 +283,26 @@ const clearTime = () => {
 };
 
 const handleClickOutside = (event) => {
-  const picker = event.target.closest('.relative');
-  if (!picker && showPicker.value) {
+  if (
+    showPicker.value &&
+    pickerRef.value &&
+    !pickerRef.value.contains(event.target) &&
+    inputRef.value &&
+    !inputRef.value.contains(event.target)
+  ) {
     showPicker.value = false;
+  }
+};
+
+const handleScroll = () => {
+  if (showPicker.value) {
+    updatePosition(); 
+  }
+};
+
+const handleResize = () => {
+  if (showPicker.value) {
+    updatePosition();
   }
 };
 
@@ -271,9 +332,13 @@ watch(() => props.modelValue, (newVal) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('scroll', handleScroll, true);
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside);
+  window.removeEventListener('resize', handleResize);
+  window.removeEventListener('scroll', handleScroll, true);
 });
 </script>
