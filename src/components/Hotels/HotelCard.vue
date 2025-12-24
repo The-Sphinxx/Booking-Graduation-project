@@ -123,7 +123,7 @@ export default {
 <style scoped>
 .hotel-card {
   width: 100%;
-  max-width: 570px;
+  /* max-width: 570px; Removed to allow grid to control width */
   background: white;
   border-radius: 16px;
   overflow: hidden;
@@ -207,7 +207,8 @@ export default {
 
 .hotel-amenities {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 16px;
 }
 
