@@ -15,17 +15,17 @@
 
         <div class="w-full max-w-6xl bg-base-100 rounded-2xl shadow-2xl p-4 md:p-6 animate-slide-up ">
           <!-- Tab Headers -->
-          <div role="tablist" class="tabs bg-base-200 p-0 mb-4 md:mb-6 gap-0 flex-wrap md:flex-nowrap border-b border-base-300 pb-4 rounded-t-lg">
+          <div role="tablist" class="tabs bg-base-200 p-2 mb-4 md:mb-6 gap-2 flex-wrap md:flex-nowrap rounded-t-lg">
             <button
               role="tab"
               v-for="tab in tabs"
               :key="tab.id"
               @click="activeTab = tab.id"
               :class="[
-                'tab font-cairo font-semibold text-sm md:text-base transition-all duration-300 flex-1 md:flex-initial border-b-2 rounded-none pb-3 pt-3',
+                'tab font-cairo font-semibold text-sm md:text-base transition-all duration-300 flex-1 md:flex-initial rounded-lg flex items-center justify-center min-h-[48px]',
                 activeTab === tab.id 
-                  ? ' text-primary bg-primary/10' 
-                  : 'border-transparent text-base-content/60 hover:text-base-content hover:border-base-300'
+                  ? 'text-primary bg-base-100 shadow-sm' 
+                  : 'text-base-content/60 hover:text-base-content hover:bg-base-300/50'
               ]"
             >
               <i :class="[tab.icon, 'mr-1 md:mr-2']"></i>
