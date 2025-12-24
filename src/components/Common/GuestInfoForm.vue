@@ -137,7 +137,9 @@
 
         <!-- Card Payment Details (Only show if card is selected) -->
         <div v-if="localData.paymentMethod === 'card'" class="space-y-6 animate-fade-in-down">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <slot v-if="useStripeElements" name="payment-element" />
+
+          <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Card Number -->
             <div class="form-control">
               <label class="label pl-0">
@@ -261,6 +263,10 @@ const props = defineProps({
   submitting: {
     type: Boolean,
     default: false
+  },
+  useStripeElements: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -319,7 +325,7 @@ const validate = () => {
     phone: { value: localData.value.phone, validator: validatePhone },
   };
 
-  if (localData.value.paymentMethod === 'card') {
+  if (localData.value.paymentMethod === 'card' && !props.useStripeElements) {
     fieldsToValidate.cardNumber = { value: localData.value.cardNumber, validator: validateCreditCard };
     fieldsToValidate.cardName = { value: localData.value.cardName, validator: (v) => validateRequired(v, 'Name on card') };
     fieldsToValidate.expiryDate = { value: localData.value.expiryDate, validator: validateExpiryDateString };
