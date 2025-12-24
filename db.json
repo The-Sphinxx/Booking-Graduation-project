@@ -5962,7 +5962,7 @@
       "features": ["GPS", "A/C", "Bluetooth"],
       "highlights": ["Reliable", "Fuel efficient", "Comfortable"],
       "amenities": ["Air Conditioning", "GPS Navigation", "Bluetooth Connectivity", "USB Ports"],
-      "images": ["/images-car/placeholder.jpg", "/images-car/placeholder_2.jpg"],
+      "images": ["/images-car/ToyotaCorolla.avif", "/images-car/ToyotaCorolla2.jpg","/images-car/ToyotaCorolla3.jpg","/images-car/ToyotaCorolla4.jpg"],
       "status": "Available",
       "featured": true,
       "isFeatured": true,
