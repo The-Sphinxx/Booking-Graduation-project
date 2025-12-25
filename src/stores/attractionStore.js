@@ -1,4 +1,4 @@
-// stores/attractionStore.js
+
 import { defineStore } from 'pinia';
 import attractionApi from '../Services/attractionApi';
 
@@ -20,7 +20,7 @@ export const useAttractionStore = defineStore('attraction', {
   }),
 
   getters: {
-    // Get attractions by category (updated for array)
+    // Get attractions by category
     getAttractionsByCategory: (state) => (category) => {
       if (category === 'All' || !category) return state.attractions;
       return state.attractions.filter(attr => 
@@ -114,10 +114,10 @@ export const useAttractionStore = defineStore('attraction', {
       try {
         const data = await attractionApi.getAllAttractions();
         
-        // Handle both paginated response and direct array
+        
         const attractionsArray = Array.isArray(data) ? data : (data.items || data.data || []);
 
-        // Transform attractions data - map PascalCase API response to camelCase
+        
         this.attractions = attractionsArray.map(attr => ({
           id: attr.id,
           name: attr.name,
@@ -136,7 +136,7 @@ export const useAttractionStore = defineStore('attraction', {
           highlights: attr.highlights || [],
           openingHours: attr.openingHours,
           address: attr.address,
-          // Include original data for flexibility
+          
           ...attr
         }));
         
@@ -156,12 +156,12 @@ async fetchAttractionById(id) {
   this.error = null;
 
   try {
-    // 1) تأكد أن قائمة الـ attractions محمّلة (مهمّ لحساب الـ Similar)
+    
     if (this.attractions.length === 0) {
       await this.fetchAttractions();
     }
 
-    // 2) ابحث محلياً
+    
     let attraction = this.attractions.find(
       (attr) => attr.id == id
     );
@@ -169,7 +169,7 @@ async fetchAttractionById(id) {
     if (attraction) {
       this.selectedAttraction = attraction;
     } else {
-      // 3) Fetch من الـ API لو مش موجود محلياً
+      
       const data = await attractionApi.getAttractionById(id);
       this.selectedAttraction = data;
       attraction = data;
@@ -186,13 +186,13 @@ async fetchAttractionById(id) {
 },
 
 
-    // Set single filter
+    
     setFilter(filterType, value) {
       this.filters[filterType] = value;
       this.applyFilters();
     },
 
-    // Add category to filters
+    
     addCategoryFilter(category) {
       if (!this.filters.categories.includes(category)) {
         this.filters.categories.push(category);
@@ -200,7 +200,7 @@ async fetchAttractionById(id) {
       }
     },
 
-    // Remove category from filters
+    
     removeCategoryFilter(category) {
       const index = this.filters.categories.indexOf(category);
       if (index > -1) {
@@ -209,7 +209,7 @@ async fetchAttractionById(id) {
       }
     },
 
-    // Set categories filter (replace all)
+    
     setCategoriesFilter(categories) {
       this.filters.categories = Array.isArray(categories) ? categories : [categories];
       this.applyFilters();

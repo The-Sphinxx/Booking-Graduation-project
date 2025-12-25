@@ -13,7 +13,7 @@ export const useHotelsStore = defineStore('hotels', {
             category: 'all',
             priceRange: { min: 0, max: 10000 },
             rating: 0,
-            minRating: 0, // Keeping for backward compatibility if needed, though 'rating' covers it
+            minRating: 0, 
             amenities: []
         }
     }),
@@ -94,12 +94,9 @@ export const useHotelsStore = defineStore('hotels', {
             try {
                 const data = await hotelsApi.getHotels(); 
 
-                // Transform hotels data to include required fields
-                // Handle both paginated response and direct array
                 const hotelsArray = Array.isArray(data) ? data : (data.items || data.data || []);
 
                 this.hotels = hotelsArray.map(hotel => ({
-                    // Map PascalCase API response to camelCase for Vue components
                     id: hotel.id,
                     name: hotel.name,
                     description: hotel.description,
