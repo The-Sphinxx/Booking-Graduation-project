@@ -73,7 +73,7 @@ export const bookingFilterConfig = {
         { label: 'Confirmed', value: 'confirmed' },
         { label: 'Pending', value: 'pending' },
         { label: 'Cancelled', value: 'cancelled' },
-        { label: 'Completed', value: 'completed' }
+        { label: 'Failed', value: 'failed' }
       ]
     },
     {
@@ -82,8 +82,8 @@ export const bookingFilterConfig = {
       type: 'single',
       options: [
         { label: 'Paid', value: 'paid' },
+        { label: 'Unpaid', value: 'unpaid' },
         { label: 'Pending', value: 'pending' },
-        { label: 'Failed', value: 'failed' },
         { label: 'Refunded', value: 'refunded' }
       ]
     },

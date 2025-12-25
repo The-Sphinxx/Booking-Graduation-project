@@ -12,5 +12,6 @@ public class BookingResponseDTO
     public DateTime? EndDate { get; set; }
     public decimal TotalPrice { get; set; }
     public BookingStatus Status { get; set; }
+    public PaymentStatus PaymentStatus { get; set; }
     public bool IsPaid { get; set; }
 }

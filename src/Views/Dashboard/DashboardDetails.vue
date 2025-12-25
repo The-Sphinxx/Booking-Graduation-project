@@ -102,7 +102,7 @@
 
                 <!-- Status/Badge -->
                 <div v-else-if="field.type === 'status'" class="badge badge-lg" :class="getStatusClass(getNestedValue(data, field.key))">
-                  {{ getNestedValue(data, field.key) }}
+                  {{ formatValue(getNestedValue(data, field.key), field) }}
                 </div>
                 
                 <!-- Array of strings (Features, etc) -->
@@ -278,6 +278,19 @@ const formatValue = (val, field) => {
   if (val === null || val === undefined) return '-';
   if (field.type === 'date') return dayjs(val).format('MMM D, YYYY');
   if (field.type === 'price') return `$${val}`;
+  
+  // Handle booking status enum (0=Pending, 1=Confirmed, 2=Cancelled, 3=Failed)
+  if (field.key === 'status' && typeof val === 'number') {
+    const statusMap = { 0: 'Pending', 1: 'Confirmed', 2: 'Cancelled', 3: 'Failed' };
+    return statusMap[val] || val;
+  }
+  
+  // Handle payment status enum (0=Unpaid, 1=Pending, 2=Paid, 3=Refunded)
+  if (field.key === 'paymentStatus' && typeof val === 'number') {
+    const paymentMap = { 0: 'Unpaid', 1: 'Pending', 2: 'Paid', 3: 'Refunded' };
+    return paymentMap[val] || val;
+  }
+  
   if (field.type === 'select' && field.options) {
       const opt = field.options.find(o => o.value === val);
       return opt ? opt.label : val;
@@ -286,11 +299,33 @@ const formatValue = (val, field) => {
 };
 
 const getStatusClass = (status) => {
-  if (!status) return 'badge-ghost';
-  const s = status.toLowerCase();
-  if (s === 'active' || s === 'verified' || s === 'available') return 'badge-success text-white';
-  if (s === 'inactive' || s === 'booked') return 'badge-error text-white';
-  if (s === 'pending' || s === 'maintenance') return 'badge-warning';
+  if (!status && status !== 0) return 'badge-ghost';
+  
+  // Handle booking status enums (0=Pending, 1=Confirmed, 2=Cancelled, 3=Failed)
+  // and payment status enums (0=Unpaid, 1=Pending, 2=Paid, 3=Refunded)
+  let s = status;
+  if (typeof status === 'number') {
+    const statusMap = {
+      0: 'pending',
+      1: 'confirmed',
+      2: 'cancelled',
+      3: 'failed'
+    };
+    const paymentMap = {
+      0: 'unpaid',
+      1: 'pending',
+      2: 'paid',
+      3: 'refunded'
+    };
+    // Try to map as booking status first, then payment status
+    s = statusMap[status] || paymentMap[status] || status.toString();
+  }
+  
+  s = s.toString().toLowerCase();
+  if (s === 'active' || s === 'verified' || s === 'available' || s === 'confirmed' || s === 'paid') return 'badge-success text-white';
+  if (s === 'inactive' || s === 'booked' || s === 'cancelled' || s === 'failed') return 'badge-error text-white';
+  if (s === 'pending' || s === 'maintenance' || s === 'unpaid') return 'badge-warning';
+  if (s === 'refunded') return 'badge-info';
   return 'badge-ghost';
 };
 

@@ -25,6 +25,7 @@ public class GetActiveBookingsQueryHandler(IUnitOfWork unitOfWork)
                 EndDate = b.EndDate,
                 TotalPrice = b.TotalPrice,
                 Status = b.Status,
+                PaymentStatus = b.PaymentStatus,
                 IsPaid = b.IsPaid
             })
             .ToList();
