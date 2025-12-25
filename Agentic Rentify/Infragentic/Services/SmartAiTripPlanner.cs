@@ -97,8 +97,19 @@ public class SmartAiTripPlannerService(
 
         var plannerFunction = kernel.CreateFunctionFromPrompt(promptConfig);
         
-        // تسجيل الوظيفة في Plugin وهمي لضمان ظهور الاسم في الفلتر والـ DB
-        var plugin = kernel.ImportPluginFromFunctions("AiPlannerPlugin", [plannerFunction]);
+        string pluginName = "AiPlannerPlugin";
+KernelPlugin plugin;
+
+// 2. Check if it already exists in the kernel
+if (kernel.Plugins.TryGetPlugin(pluginName, out var existingPlugin))
+{
+    plugin = existingPlugin;
+}
+else
+{
+    // 3. Only import if it's NOT already there
+    plugin = kernel.ImportPluginFromFunctions(pluginName, [plannerFunction]);
+}
 
         try {
             var result = await aiBrainService.InvokeWithFallbackAsync(
