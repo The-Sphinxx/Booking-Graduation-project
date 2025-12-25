@@ -1,27 +1,7 @@
 <template>
   <div class="min-h-screen bg-base-200 space-y-4 md:space-y-6">
     <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-base-content">Analytics Dashboard</h1>
-        <p class="text-base-content/60 mt-1 text-sm md:text-base">Comprehensive insights and performance metrics</p>
-      </div>
-      <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-        <select class="select select-bordered select-sm w-full sm:w-auto">
-          <option>Last 12 Months</option>
-          <option>Last 6 Months</option>
-          <option>Last 3 Months</option>
-          <option>This Month</option>
-        </select>
-        <button class="btn btn-sm btn-primary gap-2 w-full sm:w-auto">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-          </svg>
-          <span class="hidden sm:inline">Export Report</span>
-          <span class="sm:hidden">Export</span>
-        </button>
-      </div>
-    </div>
+   
  
     <!-- Stats Cards -->
     <StatsCard :stats="stats" />

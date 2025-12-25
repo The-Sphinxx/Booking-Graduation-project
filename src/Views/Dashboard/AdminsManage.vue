@@ -234,10 +234,7 @@ const handleView = (row) => {
 };
 
 onMounted(() => {
-  if (!isValidRole.value) {
-    toast.error('Access restricted to Administrators');
-    return;
-  }
+  
   fetchAdmins();
 });
 </script>

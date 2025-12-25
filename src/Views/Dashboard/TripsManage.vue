@@ -324,9 +324,11 @@ const handleToggle = async ({ row, field, newValue }) => {
     try {
       // Assuming API supports this, if not it might need implementing in store/backend adapter
        await tripsAPI.toggleFeatured(row.id, newValue);
+       toast.success(`${newValue ? 'Added to' : 'Removed from'} featured trips`);
        await fetchTrips(); // Refresh to underlying data sync
     } catch (error) {
        console.error('Featured toggle error:', error);
+       toast.error('Failed to update featured status');
        fetchTrips();
     }
   }

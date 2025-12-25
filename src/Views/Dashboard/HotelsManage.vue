@@ -329,9 +329,11 @@ const handleToggle = async ({ row, field, newValue }) => {
     // Optimistic update handled by DataTable, perform API call
     if (field === 'featured') {
       await hotelsAPI.toggleFeatured(row.id, newValue);
+      toast.success(`${newValue ? 'Added to' : 'Removed from'} featured hotels`);
     }
   } catch (error) {
     console.error('Error updating toggle:', error);
+    toast.error('Failed to update featured status');
     // Revert handling would be complex here without a refresh, 
     // ideally store would handle state
     await fetchHotels();
@@ -354,8 +356,10 @@ const handleStatusClick = async ({ row, field, value }) => {
 const handleStatusChange = async ({ row, newValue }) => {
   try {
     await hotelsAPI.updateStatus(row.id, newValue);
+    toast.success('Status updated successfully');
   } catch (error) {
     console.error('Error changing status:', error);
+    toast.error('Failed to update status');
   }
 };
 

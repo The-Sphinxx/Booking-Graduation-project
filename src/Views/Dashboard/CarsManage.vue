@@ -294,8 +294,10 @@ const handleToggle = async ({ row, field, newValue }) => {
   if (field === 'featured') {
     try {
       await carsAPI.toggleFeatured(row.id, newValue);
+      toast.success(`${newValue ? 'Added to' : 'Removed from'} featured vehicles`);
     } catch (error) {
       console.error('Error toggling featured:', error);
+      toast.error('Failed to update featured status');
       fetchCars();
     }
   }
