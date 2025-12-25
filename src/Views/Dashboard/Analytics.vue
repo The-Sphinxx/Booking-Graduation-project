@@ -183,25 +183,25 @@
               </thead>
               <tbody>
                 <tr v-for="booking in recentBookings" :key="booking.id" class="hover">
-                  <td class="font-mono text-xs">{{ booking.id.substring(0, 8) }}...</td>
+                  <td class="font-mono text-xs">{{ String(booking.id).substring(0, 8) }}...</td>
                   <td>
                     <div class="font-semibold">{{ booking.itemName || booking.title || 'Unknown Item' }}</div>
                   </td>
                   <td>
-                    <span class="badge badge-outline capitalize">{{ booking.type }}</span>
+                    <span class="badge badge-outline capitalize">{{ booking.bookingType || booking.type }}</span>
                   </td>
-                  <td class="text-sm">{{ formatDate(booking.bookingDate || booking.date) }}</td>
-                  <td class="font-semibold">{{ formatCurrency(booking.pricing?.total || booking.price || 0) }}</td>
+                  <td class="text-sm">{{ formatDate(booking.startDate || booking.bookingDate || booking.date) }}</td>
+                  <td class="font-semibold">{{ formatCurrency(booking.totalPrice || booking.pricing?.total || booking.price || 0) }}</td>
                   <td>
                     <span 
                       class="badge badge-sm"
                       :class="{
-                        'badge-success': booking.status === 'confirmed',
-                        'badge-warning': booking.status === 'pending',
-                        'badge-error': booking.status === 'cancelled'
+                        'badge-success': getStatusString(booking.status) === 'confirmed',
+                        'badge-warning': getStatusString(booking.status) === 'pending',
+                        'badge-error': getStatusString(booking.status) === 'cancelled'
                       }"
                     >
-                      {{ booking.status }}
+                      {{ getStatusString(booking.status).charAt(0).toUpperCase() + getStatusString(booking.status).slice(1) }}
                     </span>
                   </td>
                 </tr>
@@ -261,6 +261,22 @@ const bookings = ref([]);
 const users = ref([]);
 const loading = ref(false);
 
+// Enum Mappings (Backend returns numeric enums)
+// BookingStatus: 0=Pending, 1=Confirmed, 2=Cancelled, 3=Failed
+const statusEnumMap = {
+  0: 'pending',
+  1: 'confirmed',
+  2: 'cancelled',
+  3: 'failed'
+};
+
+const getStatusString = (statusEnum) => {
+  if (typeof statusEnum === 'number') {
+    return statusEnumMap[statusEnum] || 'unknown';
+  }
+  return (statusEnum || 'unknown').toString().toLowerCase();
+};
+
 // Theme colors from tailwind.config.js
 const chartColors = {
   primary: '#C86A41',
@@ -307,20 +323,20 @@ const stats = computed(() => {
   const currentYear = now.getFullYear();
   
   const currentMonthBookings = bookings.value.filter(b => {
-    const bookingDate = new Date(b.bookingDate || b.date);
+    const bookingDate = new Date(b.startDate || b.bookingDate || b.date);
     return bookingDate.getMonth() === currentMonth && bookingDate.getFullYear() === currentYear;
   });
   
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
   const prevMonthBookings = bookings.value.filter(b => {
-    const bookingDate = new Date(b.bookingDate || b.date);
+    const bookingDate = new Date(b.startDate || b.bookingDate || b.date);
     return bookingDate.getMonth() === prevMonth && bookingDate.getFullYear() === prevYear;
   });
   
-  const totalRevenue = bookings.value.reduce((sum, b) => sum + (b.pricing?.total || b.price || 0), 0);
-  const currentRevenue = currentMonthBookings.reduce((sum, b) => sum + (b.pricing?.total || b.price || 0), 0);
-  const prevRevenue = prevMonthBookings.reduce((sum, b) => sum + (b.pricing?.total || b.price || 0), 0);
+  const totalRevenue = bookings.value.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+  const currentRevenue = currentMonthBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+  const prevRevenue = prevMonthBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
   
   const calculateTrend = (current, previous) => {
     if (previous === 0) return current > 0 ? 100 : 0;
@@ -757,7 +773,7 @@ const bubbleChartOptions = {
 // Chart 5: Polar Area - Booking Status
 const polarAreaChartData = computed(() => {
   const statusCount = bookings.value.reduce((acc, b) => {
-    const status = (b.status || 'unknown').toLowerCase();
+    const status = getStatusString(b.status);
     acc[status] = (acc[status] || 0) + 1;
     return acc;
   }, {});
