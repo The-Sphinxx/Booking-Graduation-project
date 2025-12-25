@@ -95,12 +95,16 @@
                     <p class="font-cairo"><strong>Dinner:</strong> {{ dayData.meals.dinner }}</p>
                   </div>
                 </div>
-
-                <!-- Map Section -->
-                <div class="mt-6 bg-accent bg-opacity-20 rounded-lg overflow-hidden">
-                  <div id="map" class="w-full h-64"></div>
-                </div>
               </div>
+            </div>
+          </div>
+          <!-- Map Section -->
+          <div class="glass-morphism p-4">
+            <h3 class="text-lg font-bold text-base-content mb-3 pb-2 border-b-2 border-primary font-cairo">
+              🗺️ Trip Map
+            </h3>
+            <div class="mt-4 rounded-lg overflow-hidden shadow-lg">
+              <div id="map" class="w-full h-80"></div>
             </div>
           </div>
 
@@ -206,6 +210,8 @@
               </div>
             </div>
           </div>
+
+          
 
           <!-- Attractions -->
           <div class="glass-morphism p-4">
@@ -456,83 +462,229 @@ export default {
           const parsedData = JSON.parse(storedData);
           this.tripData = parsedData;
           console.log('Loaded trip data:', this.tripData);
-          // Clear the storage after loading
-          sessionStorage.removeItem('tripPlanData');
+          // Keep storage for page refreshes - only clear when leaving the site
         } catch (error) {
           console.error('Error parsing trip data:', error);
         }
       } else {
-        console.warn('No trip data found in sessionStorage');
+        console.warn('No trip data found in sessionStorage - using default data');
       }
       
       this.isLoading = false;
       
-      // Initialize map after data is loaded
+      // Initialize map after data is loaded and DOM is ready
       this.$nextTick(() => {
-        this.initMap();
+        if (this.tripData && document.getElementById('map')) {
+          this.initMap();
+        }
       });
     },
     
     initMap() {
+      // Safety check - don't initialize if no map container
+      const mapContainer = document.getElementById('map');
+      if (!mapContainer) {
+        console.warn('Map container not found');
+        return;
+      }
+      
       // Initialize OpenStreetMap
       if (this.map) {
-        this.map.remove();
+        try {
+          this.map.remove();
+          this.map = null;
+        } catch (error) {
+          console.warn('Error removing old map:', error);
+          this.map = null;
+        }
       }
       
       // Get coordinates from first attraction or hotel, or default to Cairo
       let lat = 30.0444;
       let lon = 31.2357;
+      let cityName = 'Cairo';
       
-      if (this.tripData.attractionRecommendations && this.tripData.attractionRecommendations.length > 0) {
+      // Try to get destination city from trip overview or first location
+      if (this.tripData.tripOverview?.destination) {
+        cityName = this.tripData.tripOverview.destination;
+      } else if (this.tripData.attractionRecommendations && this.tripData.attractionRecommendations.length > 0) {
         const firstAttr = this.tripData.attractionRecommendations[0].attraction;
+        cityName = firstAttr.city || cityName;
         if (firstAttr.latitude && firstAttr.longitude) {
           lat = firstAttr.latitude;
           lon = firstAttr.longitude;
         }
       } else if (this.tripData.lodgingRecommendations && this.tripData.lodgingRecommendations.length > 0) {
         const firstHotel = this.tripData.lodgingRecommendations[0].hotel;
+        cityName = firstHotel.city || cityName;
         if (firstHotel.latitude && firstHotel.longitude) {
           lat = firstHotel.latitude;
           lon = firstHotel.longitude;
         }
       }
       
-      this.map = L.map('map').setView([lat, lon], 13);
+      this.map = L.map('map').setView([lat, lon], 12);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(this.map);
       
-      // Add markers for attractions
+      // Custom icons
+      const attractionIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+      
+      const hotelIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+      
+      // Add city marker with custom styled popup
+      const cityPopup = `
+        <div style="min-width: 200px; font-family: 'Cairo', sans-serif;">
+          <div style="background: linear-gradient(135deg, #c86a41 0%, #a5533a 100%); color: white; padding: 12px; margin: -15px -20px 10px -20px; border-radius: 8px 8px 0 0;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: bold;">📍 ${cityName}</h3>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.9;">Your Destination</p>
+          </div>
+          <div style="padding: 5px 0;">
+            <p style="margin: 5px 0; font-size: 13px; color: #666;">
+              <strong>${this.tripData.durationDays || 0} days</strong> of adventure awaits
+            </p>
+          </div>
+        </div>
+      `;
+      
+      L.marker([lat, lon])
+        .addTo(this.map)
+        .bindPopup(cityPopup, { maxWidth: 300 })
+        .openPopup();
+      
+      // Add markers for attractions with enhanced popups
       if (this.tripData.attractionRecommendations) {
         this.tripData.attractionRecommendations.forEach(attr => {
           if (attr.attraction.latitude && attr.attraction.longitude) {
-            L.marker([attr.attraction.latitude, attr.attraction.longitude])
+            const attraction = attr.attraction;
+            const attractionPopup = `
+              <div style="min-width: 250px; font-family: 'Cairo', sans-serif;">
+                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 12px; margin: -15px -20px 10px -20px; border-radius: 8px 8px 0 0;">
+                  <h3 style="margin: 0; font-size: 16px; font-weight: bold;">🏛️ ${attraction.name}</h3>
+                </div>
+                ${attraction.images && attraction.images.length > 0 ? `
+                  <img src="${attraction.images[0]}" alt="${attraction.name}" 
+                       style="width: 100%; height: 120px; object-fit: cover; margin: 10px 0; border-radius: 6px;" 
+                       onerror="this.style.display='none'"/>
+                ` : ''}
+                <div style="padding: 5px 0;">
+                  <p style="margin: 5px 0; font-size: 13px; color: #666;">
+                    <strong>📍 Location:</strong> ${attraction.city || 'N/A'}
+                  </p>
+                  ${attraction.rating ? `
+                    <p style="margin: 5px 0; font-size: 13px; color: #666;">
+                      <strong>⭐ Rating:</strong> ${attraction.rating}/5
+                    </p>
+                  ` : ''}
+                  ${attraction.price ? `
+                    <p style="margin: 5px 0; font-size: 13px; color: #666;">
+                      <strong>💰 Price:</strong> ${attraction.price}
+                    </p>
+                  ` : ''}
+                  ${attr.visitReason ? `
+                    <p style="margin: 8px 0 5px 0; font-size: 12px; color: #888; font-style: italic; border-top: 1px solid #eee; padding-top: 8px;">
+                      ${attr.visitReason}
+                    </p>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+            
+            L.marker([attraction.latitude, attraction.longitude], { icon: attractionIcon })
               .addTo(this.map)
-              .bindPopup(`<b>${attr.attraction.name}</b><br>${attr.attraction.city}`);
+              .bindPopup(attractionPopup, { maxWidth: 300 });
           }
         });
       }
       
-      // Add markers for hotels
+      // Add markers for hotels with enhanced popups
       if (this.tripData.lodgingRecommendations) {
-        this.tripData.lodgingRecommendations.forEach(hotel => {
-          if (hotel.hotel.latitude && hotel.hotel.longitude) {
-            const hotelIcon = L.icon({
-              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowSize: [41, 41]
-            });
+        this.tripData.lodgingRecommendations.forEach(lodging => {
+          if (lodging.hotel.latitude && lodging.hotel.longitude) {
+            const hotel = lodging.hotel;
+            const hotelPopup = `
+              <div style="min-width: 250px; font-family: 'Cairo', sans-serif;">
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 12px; margin: -15px -20px 10px -20px; border-radius: 8px 8px 0 0;">
+                  <h3 style="margin: 0; font-size: 16px; font-weight: bold;">🏨 ${hotel.name}</h3>
+                </div>
+                ${hotel.images && hotel.images.length > 0 ? `
+                  <img src="${hotel.images[0]}" alt="${hotel.name}" 
+                       style="width: 100%; height: 120px; object-fit: cover; margin: 10px 0; border-radius: 6px;" 
+                       onerror="this.style.display='none'"/>
+                ` : ''}
+                <div style="padding: 5px 0;">
+                  <p style="margin: 5px 0; font-size: 13px; color: #666;">
+                    <strong>📍 Location:</strong> ${hotel.city || 'N/A'}
+                  </p>
+                  ${hotel.rating ? `
+                    <p style="margin: 5px 0; font-size: 13px; color: #666;">
+                      <strong>⭐ Rating:</strong> ${hotel.rating}/5
+                    </p>
+                  ` : ''}
+                  ${hotel.pricePerNight ? `
+                    <p style="margin: 5px 0; font-size: 13px; color: #666;">
+                      <strong>💰 Price:</strong> ${hotel.pricePerNight}/night
+                    </p>
+                  ` : ''}
+                  ${hotel.amenities && hotel.amenities.length > 0 ? `
+                    <p style="margin: 8px 0 5px 0; font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 8px;">
+                      <strong>✨ Amenities:</strong><br/>
+                      ${hotel.amenities.slice(0, 3).join(' • ')}
+                    </p>
+                  ` : ''}
+                  ${lodging.reason ? `
+                    <p style="margin: 8px 0 5px 0; font-size: 12px; color: #888; font-style: italic; border-top: 1px solid #eee; padding-top: 8px;">
+                      ${lodging.reason}
+                    </p>
+                  ` : ''}
+                </div>
+              </div>
+            `;
             
-            L.marker([hotel.hotel.latitude, hotel.hotel.longitude], { icon: hotelIcon })
+            L.marker([hotel.latitude, hotel.longitude], { icon: hotelIcon })
               .addTo(this.map)
-              .bindPopup(`<b>🏨 ${hotel.hotel.name}</b><br>${hotel.hotel.city}`);
+              .bindPopup(hotelPopup, { maxWidth: 300 });
           }
         });
+      }
+      
+      // Fit map bounds to show all markers if multiple locations exist
+      const allMarkers = [];
+      if (this.tripData.attractionRecommendations) {
+        this.tripData.attractionRecommendations.forEach(attr => {
+          if (attr.attraction.latitude && attr.attraction.longitude) {
+            allMarkers.push([attr.attraction.latitude, attr.attraction.longitude]);
+          }
+        });
+      }
+      if (this.tripData.lodgingRecommendations) {
+        this.tripData.lodgingRecommendations.forEach(lodging => {
+          if (lodging.hotel.latitude && lodging.hotel.longitude) {
+            allMarkers.push([lodging.hotel.latitude, lodging.hotel.longitude]);
+          }
+        });
+      }
+      
+      if (allMarkers.length > 1) {
+        const bounds = L.latLngBounds(allMarkers);
+        this.map.fitBounds(bounds, { padding: [50, 50] });
       }
     },
     
@@ -584,8 +736,15 @@ export default {
   },
   beforeUnmount() {
     if (this.map) {
-      this.map.remove();
+      try {
+        this.map.remove();
+        this.map = null;
+      } catch (error) {
+        console.warn('Error cleaning up map:', error);
+      }
     }
+    // Optionally clear sessionStorage when leaving the results page
+    // sessionStorage.removeItem('tripPlanData');
   }
 };
 </script>
