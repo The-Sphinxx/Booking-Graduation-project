@@ -1,30 +1,5 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-    <!-- Header -->
-    <header class="bg-white border-b-4 border-amber-500 py-4 shadow-md">
-      <div class="max-w-7xl mx-auto px-4">
-        <div class="flex justify-between items-center">
-          <div class="flex items-center gap-2">
-            <svg class="w-8 h-8 text-amber-600" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-            <span class="text-2xl font-bold text-amber-600 font-cairo">PYRAMIS</span>
-          </div>
-          <div class="flex gap-4">
-            <button class="px-4 py-2 text-gray-700 hover:text-amber-600 transition-colors">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-            </button>
-            <button class="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-semibold">
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
-
     <!-- Main Content -->
     <div class="max-w-5xl mx-auto px-4 py-8">
       <!-- Hero Section -->
@@ -67,23 +42,19 @@
               Choose Your Destination
             </label>
             <select 
-              v-model="formData.destination"
+              v-model="formData.headingTo"
+              :disabled="isLoadingDestinations"
               class="w-full p-4 border-2 border-amber-300 rounded-xl focus:border-amber-600 focus:outline-none text-lg font-cairo"
             >
-              <option v-for="city in egyptianCities" :key="city" :value="city">{{ city }}</option>
+              <option v-if="isLoadingDestinations" value="">Loading destinations...</option>
+              <option 
+                v-for="city in egyptianCities" 
+                :key="city.name || city" 
+                :value="city.name || city"
+              >
+                {{ city.displayName || city }}
+              </option>
             </select>
-          </div>
-
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2 font-cairo">
-              Trip Title
-            </label>
-            <input 
-              type="text"
-              v-model="formData.tripTitle"
-              placeholder="Example: Cairo 4-Day Adventure"
-              class="w-full p-4 border-2 border-amber-300 rounded-xl focus:border-amber-600 focus:outline-none text-lg font-cairo"
-            />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -147,16 +118,16 @@
 
           <div>
             <label class="block text-gray-700 font-semibold mb-3 font-cairo">
-              Your Interests (Select one or more)
+              Who are you traveling with?
             </label>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
               <button
-                v-for="option in interestOptions"
-                :key="option.id"
-                @click="toggleInterest(option.id)"
+                v-for="option in withWhomOptions"
+                :key="option.value"
+                @click="formData.withWhom = option.value"
                 :class="[
                   'p-4 rounded-xl border-2 transition-all text-center',
-                  formData.interests.includes(option.id)
+                  formData.withWhom === option.value
                     ? 'bg-amber-600 text-white border-amber-600'
                     : 'bg-white border-amber-300 text-gray-700 hover:border-amber-500'
                 ]"
@@ -169,16 +140,69 @@
 
           <div>
             <label class="block text-gray-700 font-semibold mb-3 font-cairo">
+              Your Travel Style (Select one or more)
+            </label>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <button
+                v-for="option in travelStyleOptions"
+                :key="option.id"
+                @click="toggleTravelStyle(option.id)"
+                :class="[
+                  'p-4 rounded-xl border-2 transition-all text-center',
+                  formData.travelStyle.includes(option.id)
+                    ? 'bg-amber-600 text-white border-amber-600'
+                    : 'bg-white border-amber-300 text-gray-700 hover:border-amber-500'
+                ]"
+              >
+                <div class="text-3xl mb-2">{{ option.icon }}</div>
+                <div class="text-sm font-semibold font-cairo">{{ option.label }}</div>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-3 font-cairo">
+              Travel Pace
+            </label>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                v-for="option in travelPaceOptions"
+                :key="option.value"
+                @click="formData.travelPace = option.value"
+                :class="[
+                  'p-6 rounded-xl border-2 transition-all',
+                  formData.travelPace === option.value
+                    ? 'bg-amber-600 text-white border-amber-600'
+                    : 'bg-white border-amber-300 text-gray-700 hover:border-amber-500'
+                ]"
+              >
+                <div class="text-4xl mb-2">{{ option.icon }}</div>
+                <div class="font-bold text-lg mb-1 font-cairo">{{ option.label }}</div>
+                <div class="text-sm opacity-80 font-cairo">{{ option.desc }}</div>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Step 3: Budget & Review -->
+        <div v-if="currentStep === 3" class="space-y-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b-4 border-amber-600 inline-block font-cairo">
+            � Final Details & Review
+          </h2>
+
+          <div>
+            <label class="block text-gray-700 font-semibold mb-3 font-cairo">
               Accommodation Type
             </label>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
                 v-for="option in accommodationOptions"
                 :key="option.value"
-                @click="formData.accommodationType = option.value"
+                @click="formData.accommodation = option.value"
                 :class="[
                   'p-6 rounded-xl border-2 transition-all',
-                  formData.accommodationType === option.value
+                  formData.accommodation === option.value
                     ? 'bg-amber-600 text-white border-amber-600'
                     : 'bg-white border-amber-300 text-gray-700 hover:border-amber-500'
                 ]"
@@ -192,16 +216,16 @@
 
           <div>
             <label class="block text-gray-700 font-semibold mb-3 font-cairo">
-              Transportation
+              Daily Rhythm Preference
             </label>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               <button
-                v-for="option in transportationOptions"
+                v-for="option in daysRhythmOptions"
                 :key="option.value"
-                @click="formData.transportation = option.value"
+                @click="formData.daysRhythm = option.value"
                 :class="[
                   'p-6 rounded-xl border-2 transition-all',
-                  formData.transportation === option.value
+                  formData.daysRhythm === option.value
                     ? 'bg-amber-600 text-white border-amber-600'
                     : 'bg-white border-amber-300 text-gray-700 hover:border-amber-500'
                 ]"
@@ -212,35 +236,17 @@
               </button>
             </div>
           </div>
-        </div>
-
-        <!-- Step 3: Budget & Review -->
-        <div v-if="currentStep === 3" class="space-y-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b-4 border-amber-600 inline-block font-cairo">
-            💰 Budget & Review
-          </h2>
 
           <div>
             <label class="block text-gray-700 font-semibold mb-3 font-cairo">
-              Expected Budget
+              Special Requests or Additional Needs
             </label>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <button
-                v-for="option in budgetOptions"
-                :key="option.value"
-                @click="formData.budget = option.value"
-                :class="[
-                  'p-6 rounded-xl border-2 transition-all',
-                  formData.budget === option.value
-                    ? 'bg-amber-600 text-white border-amber-600'
-                    : 'bg-white border-amber-300 text-gray-700 hover:border-amber-500'
-                ]"
-              >
-                <div class="text-4xl mb-2">{{ option.icon }}</div>
-                <div class="font-bold text-lg mb-1 font-cairo">{{ option.label }}</div>
-                <div class="text-sm font-cairo">{{ option.range }}</div>
-              </button>
-            </div>
+            <textarea
+              v-model="formData.otherNeeds"
+              rows="4"
+              placeholder="Tell us about any specific interests, accessibility needs, dietary restrictions, or anything else we should know..."
+              class="w-full p-4 border-2 border-amber-300 rounded-xl focus:border-amber-600 focus:outline-none font-cairo"
+            ></textarea>
           </div>
 
           <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-300">
@@ -250,7 +256,7 @@
             <div class="space-y-3">
               <div class="flex justify-between items-center p-3 bg-white rounded-lg">
                 <span class="text-gray-600 font-cairo">Destination:</span>
-                <span class="font-bold text-gray-800 font-cairo">{{ formData.destination }}</span>
+                <span class="font-bold text-gray-800 font-cairo">{{ formData.headingTo }}</span>
               </div>
               <div class="flex justify-between items-center p-3 bg-white rounded-lg">
                 <span class="text-gray-600 font-cairo">Duration:</span>
@@ -261,12 +267,24 @@
                 <span class="font-bold text-gray-800 font-cairo">{{ formData.travelers }} People</span>
               </div>
               <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                <span class="text-gray-600 font-cairo">Traveling With:</span>
+                <span class="font-bold text-gray-800 font-cairo">{{ getWithWhomLabel() }}</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white rounded-lg">
                 <span class="text-gray-600 font-cairo">Accommodation:</span>
                 <span class="font-bold text-gray-800 font-cairo">{{ getAccommodationLabel() }}</span>
               </div>
               <div class="flex justify-between items-center p-3 bg-white rounded-lg">
-                <span class="text-gray-600 font-cairo">Interests:</span>
-                <span class="font-bold text-gray-800 font-cairo">{{ formData.interests.length }} Selected</span>
+                <span class="text-gray-600 font-cairo">Travel Styles:</span>
+                <span class="font-bold text-gray-800 font-cairo">{{ formData.travelStyle.length }} Selected</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                <span class="text-gray-600 font-cairo">Pace:</span>
+                <span class="font-bold text-gray-800 font-cairo">{{ formData.travelPace }}</span>
+              </div>
+              <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                <span class="text-gray-600 font-cairo">Daily Rhythm:</span>
+                <span class="font-bold text-gray-800 font-cairo">{{ formData.daysRhythm }}</span>
               </div>
             </div>
           </div>
@@ -301,82 +319,121 @@
           <button 
             v-else
             @click="handleSubmit"
-            class="px-8 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-all flex items-center gap-2 text-lg font-cairo"
+            :disabled="isGeneratingPlan"
+            :class="[
+              'px-8 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 text-lg font-cairo',
+              isGeneratingPlan 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-green-600 text-white hover:bg-green-700'
+            ]"
           >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-if="!isGeneratingPlan" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
-            Plan My Trip Now!
+            <svg v-else class="animate-spin w-6 h-6" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isGeneratingPlan ? 'Planning Your Perfect Trip...' : 'Plan My Trip Now!' }}
           </button>
         </div>
       </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t-4 border-amber-500 py-6 mt-12">
-      <div class="max-w-7xl mx-auto px-4 text-center">
-        <p class="text-gray-600 font-cairo">
-          🏛️ Discover the beauty of Egypt with PYRAMIS - Your guide to an unforgettable journey
-        </p>
-      </div>
-    </footer>
   </div>
 </template>
 
 <script>
+import aiPlannerService from '@/Services/aiPlannerService';
+
 export default {
   name: 'TripPlanningForm',
   data() {
     return {
       currentStep: 1,
+      isGeneratingPlan: false,
       formData: {
-        destination: 'Cairo',
-        tripTitle: '',
+        headingTo: '',
         startDate: '',
         endDate: '',
         travelers: 2,
-        budget: 'moderate',
-        interests: [],
-        accommodationType: 'luxury',
-        transportation: 'car-rental'
+        withWhom: 'Couple',
+        travelStyle: [],
+        travelPace: 'Moderate',
+        accommodation: 'Luxury',
+        daysRhythm: 'EarlyStart',
+        otherNeeds: ''
       },
-      egyptianCities: [
-        'Cairo', 'Alexandria', 'Luxor', 'Aswan', 'Sharm El Sheikh', 
-        'Hurghada', 'Dahab', 'Marsa Alam', 'Siwa Oasis'
+      egyptianCities: [],
+      isLoadingDestinations: false,
+      travelStyleOptions: [
+        { id: 'Historical', label: 'Historical Sites', icon: '🏛️' },
+        { id: 'Beach', label: 'Beach & Water', icon: '🏖️' },
+        { id: 'Culinary', label: 'Food & Cuisine', icon: '🍽️' },
+        { id: 'Shopping', label: 'Shopping & Bazaars', icon: '🛍️' },
+        { id: 'Adventure', label: 'Adventure Activities', icon: '🎿' },
+        { id: 'Cultural', label: 'Culture & Arts', icon: '🎭' },
+        { id: 'Relaxation', label: 'Relaxation & Spa', icon: '🧘' },
+        { id: 'Nightlife', label: 'Nightlife', icon: '🌃' },
+        { id: 'Nature', label: 'Nature & Wildlife', icon: '🌿' },
+        { id: 'Cityscape', label: 'Urban Exploration', icon: '🏙️' }
       ],
-      interestOptions: [
-        { id: 'history', label: 'Historical Sites', icon: '🏛️' },
-        { id: 'beach', label: 'Beach & Water', icon: '🏖️' },
-        { id: 'food', label: 'Food & Cuisine', icon: '🍽️' },
-        { id: 'shopping', label: 'Shopping & Bazaars', icon: '🛍️' },
-        { id: 'adventure', label: 'Adventure Activities', icon: '🎿' },
-        { id: 'culture', label: 'Culture & Arts', icon: '🎭' },
-        { id: 'relaxation', label: 'Relaxation & Spa', icon: '🧘' },
-        { id: 'nightlife', label: 'Nightlife', icon: '🌃' }
+      withWhomOptions: [
+        { value: 'Solo', label: 'Solo Travel', icon: '🧳', desc: 'Just me' },
+        { value: 'Couple', label: 'Couple', icon: '💑', desc: 'Romantic trip' },
+        { value: 'Family', label: 'Family', icon: '👨‍👩‍👧‍👦', desc: 'With family' },
+        { value: 'Friends', label: 'Friends', icon: '👥', desc: 'Group of friends' }
       ],
       accommodationOptions: [
-        { value: 'budget', label: 'Budget', icon: '💰', desc: 'Hostels & Simple Hotels' },
-        { value: 'moderate', label: 'Moderate', icon: '🏨', desc: '3-4 Star Hotels' },
-        { value: 'luxury', label: 'Luxury', icon: '⭐', desc: '5 Star Hotels' }
+        { value: 'Budget', label: 'Budget', icon: '💰', desc: 'Hostels & Simple Hotels' },
+        { value: 'Moderate', label: 'Moderate', icon: '🏨', desc: '3-4 Star Hotels' },
+        { value: 'Luxury', label: 'Luxury', icon: '⭐', desc: '5 Star Hotels' }
       ],
-      transportationOptions: [
-        { value: 'car-rental', label: 'Car Rental', icon: '🚗', desc: 'Freedom to Explore' },
-        { value: 'driver', label: 'Private Driver', icon: '👨‍✈️', desc: 'Comfort & Luxury' }
+      travelPaceOptions: [
+        { value: 'Slow', label: 'Slow & Relaxed', icon: '🐢', desc: 'Take it easy' },
+        { value: 'Moderate', label: 'Moderate', icon: '🚶', desc: 'Balanced pace' },
+        { value: 'Fast', label: 'Fast & Packed', icon: '🏃', desc: 'See everything' }
       ],
-      budgetOptions: [
-        { value: 'budget', label: 'Budget', range: '$500-1000', icon: '💵' },
-        { value: 'moderate', label: 'Moderate', range: '$1000-2000', icon: '💸' },
-        { value: 'luxury', label: 'Luxury', range: '$2000+', icon: '💎' }
+      daysRhythmOptions: [
+        { value: 'EarlyStart', label: 'Early Bird', icon: '🌅', desc: 'Start early, end early' },
+        { value: 'Standard', label: 'Standard', icon: '☀️', desc: 'Normal schedule' },
+        { value: 'LateStart', label: 'Night Owl', icon: '🌙', desc: 'Late start, late end' },
+        { value: 'Flexible', label: 'Flexible', icon: '🔄', desc: 'No fixed schedule' }
       ]
     };
   },
+  mounted() {
+    this.loadDestinations();
+  },
   methods: {
-    toggleInterest(interest) {
-      const index = this.formData.interests.indexOf(interest);
+    async loadDestinations() {
+      this.isLoadingDestinations = true;
+      try {
+        const destinations = await aiPlannerService.getDestinations();
+        this.egyptianCities = destinations.length > 0 ? destinations : [
+          'Cairo', 'Alexandria', 'Luxor', 'Aswan', 'Sharm El Sheikh', 
+          'Hurghada', 'Dahab', 'Marsa Alam', 'Siwa Oasis'
+        ];
+        if (this.egyptianCities.length > 0 && !this.formData.headingTo) {
+          // If cities are objects, use the 'name' property; otherwise use the string directly
+          this.formData.headingTo = this.egyptianCities[0].name || this.egyptianCities[0];
+        }
+      } catch (error) {
+        console.error('Error loading destinations:', error);
+        this.egyptianCities = [
+          'Cairo', 'Alexandria', 'Luxor', 'Aswan', 'Sharm El Sheikh', 
+          'Hurghada', 'Dahab', 'Marsa Alam', 'Siwa Oasis'
+        ];
+        this.formData.headingTo = this.egyptianCities[0];
+      } finally {
+        this.isLoadingDestinations = false;
+      }
+    },
+    toggleTravelStyle(style) {
+      const index = this.formData.travelStyle.indexOf(style);
       if (index > -1) {
-        this.formData.interests.splice(index, 1);
+        this.formData.travelStyle.splice(index, 1);
       } else {
-        this.formData.interests.push(interest);
+        this.formData.travelStyle.push(style);
       }
     },
     calculateDays() {
@@ -389,12 +446,48 @@ export default {
       return 0;
     },
     getAccommodationLabel() {
-      const option = this.accommodationOptions.find(opt => opt.value === this.formData.accommodationType);
+      const option = this.accommodationOptions.find(opt => opt.value === this.formData.accommodation);
       return option ? option.label : '';
     },
-    handleSubmit() {
-      console.log('Trip Data:', this.formData);
-      alert('🎉 Your trip is ready! You will be redirected to the trip details page...');
+    getWithWhomLabel() {
+      const option = this.withWhomOptions.find(opt => opt.value === this.formData.withWhom);
+      return option ? option.label : '';
+    },
+    async handleSubmit() {
+      // Format data to match TripSearchCriteria DTO
+      const tripCriteria = {
+        headingTo: this.formData.headingTo,
+        startDate: new Date(this.formData.startDate).toISOString(),
+        endDate: new Date(this.formData.endDate).toISOString(),
+        travelers: this.formData.travelers,
+        withWhom: this.formData.withWhom,
+        travelStyle: this.formData.travelStyle,
+        travelPace: this.formData.travelPace,
+        accommodation: this.formData.accommodation,
+        daysRhythm: this.formData.daysRhythm,
+        otherNeeds: this.formData.otherNeeds
+      };
+      
+      console.log('Trip Criteria JSON:', JSON.stringify(tripCriteria, null, 2));
+      
+      this.isGeneratingPlan = true;
+      
+      try {
+        // Call the AI planner service
+        const result = await aiPlannerService.generateTripPlan(tripCriteria);
+        console.log('AI Trip Plan Result:', result);
+        
+        // Store in sessionStorage for retrieval in result page
+        sessionStorage.setItem('tripPlanData', JSON.stringify(result));
+        
+        // Navigate to results page
+        this.$router.push({ name: 'AiPlannerResult' });
+      } catch (error) {
+        console.error('Error generating trip plan:', error);
+        alert('❌ Failed to generate trip plan. Please try again.');
+      } finally {
+        this.isGeneratingPlan = false;
+      }
     }
   }
 };
