@@ -58,9 +58,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
-import wishlistApi from '@/Services/wishlistApi';
+import { useWishlistStore } from '@/stores/wishlistStore';
 
 // Props
 const props = defineProps({
@@ -110,8 +110,10 @@ const props = defineProps({
 const emit = defineEmits(['viewDetails']);
 
 const authStore = useAuthStore();
-const isWishlisted = ref(!!props.isWishlistedProp);
-const isSaving = ref(false);
+const wishlistStore = useWishlistStore();
+
+const isWishlisted = computed(() => wishlistStore.isWishlisted('Attraction', props.id));
+const isSaving = computed(() => wishlistStore.isLoading);
 
 const toggleWishlist = async () => {
   if (isSaving.value) return;
@@ -120,7 +122,6 @@ const toggleWishlist = async () => {
     return;
   }
 
-  isSaving.value = true;
   try {
     const payload = {
       itemId: props.id,
@@ -132,14 +133,12 @@ const toggleWishlist = async () => {
     };
 
     if (isWishlisted.value) {
-      await wishlistApi.remove('Attraction', props.id);
-      isWishlisted.value = false;
+      await wishlistStore.removeFromWishlist('Attraction', props.id);
     } else {
-      await wishlistApi.add(payload);
-      isWishlisted.value = true;
+      await wishlistStore.addToWishlist(payload);
     }
-  } finally {
-    isSaving.value = false;
+  } catch (error) {
+    console.error('Wishlist toggle error:', error);
   }
 };
 

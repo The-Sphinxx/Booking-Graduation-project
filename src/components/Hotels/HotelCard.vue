@@ -111,9 +111,9 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
-import wishlistApi from '@/Services/wishlistApi';
+import { useWishlistStore } from '@/stores/wishlistStore';
 
 export default {
   name: 'HotelCard',
@@ -134,8 +134,10 @@ export default {
   },
   setup(props) {
     const authStore = useAuthStore();
-    const isWishlisted = ref(!!props.hotel?.isWishlisted);
-    const isSaving = ref(false);
+    const wishlistStore = useWishlistStore();
+
+    const isWishlisted = computed(() => wishlistStore.isWishlisted('Hotel', props.hotel?.id));
+    const isSaving = computed(() => wishlistStore.isLoading);
 
     const toggleWishlist = async () => {
       if (isSaving.value) return;
@@ -144,7 +146,6 @@ export default {
         return;
       }
 
-      isSaving.value = true;
       try {
         const payload = {
           itemId: props.hotel.id,
@@ -156,14 +157,12 @@ export default {
         };
 
         if (isWishlisted.value) {
-          await wishlistApi.remove('Hotel', props.hotel.id);
-          isWishlisted.value = false;
+          await wishlistStore.removeFromWishlist('Hotel', props.hotel.id);
         } else {
-          await wishlistApi.add(payload);
-          isWishlisted.value = true;
+          await wishlistStore.addToWishlist(payload);
         }
-      } finally {
-        isSaving.value = false;
+      } catch (error) {
+        console.error('Wishlist toggle error:', error);
       }
     };
 

@@ -150,10 +150,11 @@ import TicketList from '@/components/Support/TicketList.vue';
 import TicketChat from '@/components/Support/TicketChat.vue';
 
 import api from '@/Services/api';
-import wishlistApi from '@/Services/wishlistApi';
 import { useAuthStore } from '@/stores/authStore';
+import { useWishlistStore } from '@/stores/wishlistStore';
 
 const authStore = useAuthStore();
+const wishlistStore = useWishlistStore();
 const router = useRouter();
 const activeTab = ref('overview');
 
@@ -164,7 +165,7 @@ const user = ref({
   membershipType: 'Member'
 });
 const bookings = ref([]);
-const savedItems = ref([]);
+const savedItems = computed(() => wishlistStore.wishlistItems);
 const recentActivity = ref([]);
 const isEditModalOpen = ref(false);
 
@@ -229,32 +230,16 @@ const handleViewActivity = (id) => {
 };
 
 const handleRemoveWishlist = async (item) => {
-  // Immediately remove from UI for better UX
-  const itemIdToRemove = item.itemId ?? item.id;
-  const itemTypeToRemove = item.itemType;
-  
-  console.log('Removing item:', { itemIdToRemove, itemTypeToRemove, item });
-  
-  // Remove from local array immediately
-  savedItems.value = savedItems.value.filter(
-    (w) => !((w.itemId ?? w.id) === itemIdToRemove && w.itemType === itemTypeToRemove)
-  );
-  
-  console.log('Remaining items:', savedItems.value.length);
-  
   try {
+    const itemIdToRemove = item.itemId ?? item.id;
     const typeValue = item.itemType ?? item.itemtype ?? item.type ?? 'Trip';
     const type = typeof typeValue === 'number'
       ? ['Trip', 'Hotel', 'Car', 'Attraction'][typeValue] || 'Trip'
       : typeValue;
 
-    console.log('Calling API remove with:', { type, itemIdToRemove });
-    await wishlistApi.remove(type, itemIdToRemove);
-    console.log('Successfully removed from backend');
+    await wishlistStore.removeFromWishlist(type, itemIdToRemove);
   } catch (error) {
     console.error('Failed to remove wishlist item', error);
-    // Re-add item if API call fails
-    savedItems.value.push(item);
   }
 };
 
