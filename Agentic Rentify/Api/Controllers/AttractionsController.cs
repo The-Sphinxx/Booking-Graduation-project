@@ -77,6 +77,7 @@ public class AttractionsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result }, result);
     }
 
+
     /// <summary>
     /// Update attraction details or pricing.
     /// </summary>

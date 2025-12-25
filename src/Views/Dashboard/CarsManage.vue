@@ -166,7 +166,7 @@ const fetchCars = async () => {
   try {
     const response = await carsAPI.getAll();
     // Transform API data
-    cars.value = response.data.map(car => ({
+    cars.value = response.data.data.map(car => ({
       ...car,
       // Handle image array
       images: Array.isArray(car.images) ? car.images[0] : car.images,

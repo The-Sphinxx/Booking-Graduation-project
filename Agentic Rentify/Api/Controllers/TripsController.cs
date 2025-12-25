@@ -135,6 +135,7 @@ public class TripsController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result }, result);
     }
 
+
     /// <summary>
     /// Update an existing trip's details, itinerary, or hotel options.
     /// </summary>

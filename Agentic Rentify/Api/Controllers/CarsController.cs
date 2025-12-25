@@ -75,6 +75,7 @@ public class CarsController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result }, result);
     }
 
+
     /// <summary>
     /// Update car details or pricing.
     /// </summary>

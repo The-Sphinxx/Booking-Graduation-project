@@ -7,6 +7,8 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace Agentic_Rentify.Api.Controllers;
 
@@ -21,11 +23,12 @@ namespace Agentic_Rentify.Api.Controllers;
 [Route("api/admin")]
 [Produces("application/json")]
 [ApiExplorerSettings(GroupName = "Admin")]
-public class AdminController(DataSyncService dataSyncService, IUnitOfWork unitOfWork, IPhotoService photoService, IMediator mediator) : ControllerBase
+public class AdminController(DataSyncService dataSyncService, IUnitOfWork unitOfWork, IPhotoService photoService, IMediator mediator, UserManager<ApplicationUser> userManager) : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPhotoService _photoService = photoService;
     private readonly IMediator _mediator = mediator;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
     /// <summary>
     /// Manually trigger vector database synchronization for all entities.
     /// </summary>
@@ -49,6 +52,7 @@ public class AdminController(DataSyncService dataSyncService, IUnitOfWork unitOf
         await dataSyncService.SyncAsync("rentify_memory");
         return Ok(new { status = "ok", message = "Vector database synchronization completed" });
     }
+
 
     /// <summary>
     /// Upload or update the background image for a specific system page.
@@ -141,4 +145,23 @@ public class AdminController(DataSyncService dataSyncService, IUnitOfWork unitOf
         await _unitOfWork.CompleteAsync();
         return Ok(created.Select(s => new { s.Id, s.ImageUrl, s.PublicId, s.Group, s.DisplayOrder }));
     }
+
+    [HttpGet("users")]
+    [ProducesResponseType(typeof(IEnumerable<ApplicationUser>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUsers(int pageNumber = 1, int pageSize = 10000)
+    {
+        var users = _userManager.Users
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return Ok(new {
+            pageNumber,
+            pageSize,
+            totalRecords = _userManager.Users.Count(),
+            totalPages = (int)Math.Ceiling(_userManager.Users.Count() / (double)pageSize),
+            data = users
+        });
+    }
+
 }

@@ -174,7 +174,7 @@ const fetchTrips = async () => {
   try {
     const response = await tripsAPI.getAll();
     // Transform API data
-    trips.value = response.data.map(trip => ({
+    trips.value = response.data.data.map(trip => ({
       ...trip,
       name: trip.title, // Map title to name for DataTable image column
       images: Array.isArray(trip.images) ? trip.images[0] : trip.trip.image || trip.image,

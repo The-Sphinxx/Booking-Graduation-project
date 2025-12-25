@@ -173,7 +173,7 @@ const fetchHotels = async () => {
   try {
     const response = await hotelsAPI.getAll();
     // Transform API data to match table requirements if needed
-    hotels.value = response.data.map(hotel => ({
+    hotels.value = response.data.data.map(hotel => ({
       ...hotel,
       images: Array.isArray(hotel.images) ? hotel.images[0] : hotel.images,
       availability: hotel.availability 

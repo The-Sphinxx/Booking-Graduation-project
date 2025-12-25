@@ -88,7 +88,7 @@ const fetchAdmins = async () => {
   loading.value = true;
   try {
     const response = await usersAPI.getAll();
-    const allUsers = response.data;
+    const allUsers = response.data.data;
     // Filter for admins only
     admins.value = allUsers.filter(user => user.role === 'admin');
   } catch (error) {

@@ -212,7 +212,7 @@ const fetchUsers = async () => {
     const response = await usersAPI.getAll();
     
     // Transform data to match table requirements
-    users.value = response.data.map(user => {
+    users.value = response.data.data.map(user => {
       // Determine name
       let name = 'Unknown';
       if (user.fullName) name = user.fullName;

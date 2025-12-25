@@ -229,7 +229,7 @@ const fetchAttractions = async () => {
     const response = await attractionsAPI.getAll();
     
     // Transform data to match table requirements
-    attractions.value = response.data.map(attraction => ({
+    attractions.value = response.data.data.map(attraction => ({
       id: attraction.id,
       name: attraction.name,
       location: `${attraction.city}, Egypt`,
