@@ -27,6 +27,7 @@ public class GetBookingByIdQueryHandler(IUnitOfWork unitOfWork)
             EndDate = entity.EndDate,
             TotalPrice = entity.TotalPrice,
             Status = entity.Status,
+            PaymentStatus = entity.PaymentStatus,
             IsPaid = entity.IsPaid
         };
     }

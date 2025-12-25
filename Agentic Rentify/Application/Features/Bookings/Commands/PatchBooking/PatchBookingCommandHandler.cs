@@ -1,5 +1,6 @@
 using Agentic_Rentify.Application.Interfaces;
 using Agentic_Rentify.Core.Entities;
+using Agentic_Rentify.Core.Enums;
 using Agentic_Rentify.Core.Exceptions;
 using MediatR;
 
@@ -22,10 +23,20 @@ public class PatchBookingCommandHandler : IRequestHandler<PatchBookingCommand, i
 
         // Update only provided fields
         if (request.Status != null)
-            booking.Status = request.Status;
+        {
+            if (Enum.TryParse<BookingStatus>(request.Status, true, out var status))
+                booking.Status = status;
+        }
 
         if (request.PaymentStatus != null)
-            booking.PaymentStatus = request.PaymentStatus;
+        {
+            if (Enum.TryParse<PaymentStatus>(request.PaymentStatus, true, out var paymentStatus))
+            {
+                booking.PaymentStatus = paymentStatus;
+                // Sync IsPaid field with PaymentStatus for backward compatibility
+                booking.IsPaid = paymentStatus == PaymentStatus.Paid;
+            }
+        }
 
         if (request.StartDate.HasValue)
             booking.StartDate = request.StartDate.Value;
@@ -36,8 +47,11 @@ public class PatchBookingCommandHandler : IRequestHandler<PatchBookingCommand, i
         if (request.TotalPrice.HasValue)
             booking.TotalPrice = request.TotalPrice.Value;
 
-        _unitOfWork.Repository<Booking>().Update(booking);
-        await _unitOfWork.SaveChangesAsync();
+        // Update timestamp
+        booking.UpdatedAt = DateTime.UtcNow;
+
+        await _unitOfWork.Repository<Booking>().UpdateAsync(booking);
+        await _unitOfWork.CompleteAsync();
 
         return booking.Id;
     }

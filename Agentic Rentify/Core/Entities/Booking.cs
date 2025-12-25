@@ -12,6 +12,7 @@ public class Booking : BaseEntity
     public DateTime? EndDate { get; set; }
     public decimal TotalPrice { get; set; }
     public BookingStatus Status { get; set; } = BookingStatus.Pending;
+    public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Unpaid;
     public string StripeSessionId { get; set; } = string.Empty;
     public bool IsPaid { get; set; }
 }

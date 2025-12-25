@@ -77,7 +77,7 @@
 
               <!-- Type -->
               <td class="capitalize font-medium">
-                {{ booking.type || 'N/A' }}
+                {{ booking.bookingType || booking.type || 'N/A' }}
               </td>
 
               <!-- Customer -->
@@ -98,25 +98,25 @@
               <!-- Status -->
               <td>
                 <select
-                  :value="booking.status"
+                  :value="getStatusString(booking.status)"
                   @change="handleStatusChange($event, booking)"
                   class="select select-bordered select-sm font-medium w-full max-w-xs"
-                  :class="getStatusSelectClass(booking.status)"
+                  :class="getStatusSelectClass(getStatusString(booking.status))"
                 >
                   <option value="confirmed">Confirmed</option>
                   <option value="pending">Pending</option>
                   <option value="cancelled">Cancelled</option>
-                  <option value="draft">Draft</option>
+                  <option value="failed">Failed</option>
                 </select>
               </td>
 
               <!-- Payment Status -->
               <td>
                 <select
-                  :value="booking.paymentStatus || 'unpaid'"
+                  :value="getPaymentStatusString(booking.paymentStatus)"
                   @change="handlePaymentStatusChange($event, booking)"
                   class="select select-bordered select-sm font-medium w-full max-w-xs"
-                  :class="getPaymentStatusSelectClass(booking.paymentStatus)"
+                  :class="getPaymentStatusSelectClass(getPaymentStatusString(booking.paymentStatus))"
                 >
                   <option value="paid">Paid</option>
                   <option value="unpaid">Unpaid</option>
@@ -127,7 +127,7 @@
 
               <!-- Amount -->
               <td class="font-semibold text-base-content">
-                {{ formatCurrency(booking.pricing?.total || booking.price || 0) }}
+                {{ formatCurrency(booking.totalPrice || booking.pricing?.total || booking.price || 0) }}
               </td>
 
               <!-- Actions -->
@@ -254,6 +254,21 @@
       @filter-change="applyFilters"
       @close="showFilterModal = false"
     />
+
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteModal" class="modal modal-open">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg text-error">Confirm Delete</h3>
+        <p class="py-4">Are you sure you want to delete booking <span class="font-semibold">{{ formatBookingId(bookingToDelete?.id) }}</span>? This action cannot be undone.</p>
+        <div class="modal-action">
+          <button @click="cancelDelete" class="btn">Cancel</button>
+          <button @click="confirmDelete" class="btn btn-error text-white" :disabled="loading">
+            <span v-if="loading" class="loading loading-spinner loading-sm"></span>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -275,6 +290,8 @@ const activeTab = ref('all');
 const currentPage = ref(1);
 const itemsPerPage = ref(8);
 const showFilterModal = ref(false);
+const showDeleteModal = ref(false);
+const bookingToDelete = ref(null);
 const activeFilters = ref({});
 const { toast } = useToast();
 
@@ -306,7 +323,6 @@ const fetchBookings = async () => {
 // Filtered bookings based on active tab and filters
 const filteredBookings = computed(() => {
   let result = bookings.value;
-
   // Global Search from Sidebar
   if (route.query.q) {
     const search = route.query.q.toLowerCase();
@@ -314,36 +330,38 @@ const filteredBookings = computed(() => {
       (b.id || '').toString().toLowerCase().includes(search) ||
       getCustomerName(b).toLowerCase().includes(search) ||
       (b.guestInfo?.email || '').toLowerCase().includes(search) ||
-      (b.type || '').toLowerCase().includes(search) ||
-      (b.status || '').toLowerCase().includes(search) || // Status text match
-      (b.paymentStatus || '').toLowerCase().includes(search) // Payment Status text match
+      (b.bookingType || '').toLowerCase().includes(search) ||
+      getStatusString(b.status).toLowerCase().includes(search) ||
+      getPaymentStatusString(b.paymentStatus).toLowerCase().includes(search)
     );
   }
 
   // Apply tab filter
   if (activeTab.value !== 'all') {
     result = result.filter(booking => {
-      const bookingType = (booking.type || '').toLowerCase();
+      const bookingType = (booking.bookingType || booking.type || '').toLowerCase();
       return bookingType === activeTab.value || bookingType.includes(activeTab.value);
     });
   }
 
   // Apply additional filters
   if (activeFilters.value.maxPrice && activeFilters.value.maxPrice < filterConfig.priceRange.max) {
-    result = result.filter(b => (b.pricing?.total || b.price || 0) <= activeFilters.value.maxPrice);
+    result = result.filter(b => (b.totalPrice || b.pricing?.total || b.price || 0) <= activeFilters.value.maxPrice);
   }
 
-  if (activeFilters.value.bookingTypeSelected) {
-    const searchType = activeFilters.value.bookingTypeSelected.toLowerCase();
-    result = result.filter(b => (b.type || '').toLowerCase().includes(searchType));
+  if (activeFilters.value.bookingType) {
+    const searchType = activeFilters.value.bookingType.toLowerCase();
+    result = result.filter(b => (b.bookingType || '').toLowerCase().includes(searchType));
   }
 
-  if (activeFilters.value.statusSelected) {
-    result = result.filter(b => (b.status || '').toLowerCase() === activeFilters.value.statusSelected.toLowerCase());
+  if (activeFilters.value.status) {
+    const filterStatus = activeFilters.value.status.toLowerCase();
+    result = result.filter(b => getStatusString(b.status) === filterStatus);
   }
 
-  if (activeFilters.value.paymentStatusSelected) {
-    result = result.filter(b => (b.paymentStatus || 'unpaid').toLowerCase() === activeFilters.value.paymentStatusSelected.toLowerCase());
+  if (activeFilters.value.paymentStatus) {
+    const filterPayment = activeFilters.value.paymentStatus.toLowerCase();
+    result = result.filter(b => getPaymentStatusString(b.paymentStatus) === filterPayment);
   }
 
   if (activeFilters.value.dateFrom) {
@@ -392,45 +410,59 @@ const statsCardData = computed(() => {
   const prevTotal = prevMonthBookings.length;
   
   const pendingAction = bookings.value.filter(b => {
-    const status = (b.status || '').toLowerCase();
-    return status === 'pending' || status === 'draft';
+    const status = getStatusString(b.status);
+    return status === 'pending';
   }).length;
   
   const currentPending = currentMonthBookings.filter(b => {
-    const status = (b.status || '').toLowerCase();
-    return status === 'pending' || status === 'draft';
+    const status = getStatusString(b.status);
+    return status === 'pending';
   }).length;
   
   const prevPending = prevMonthBookings.filter(b => {
-    const status = (b.status || '').toLowerCase();
-    return status === 'pending' || status === 'draft';
+    const status = getStatusString(b.status);
+    return status === 'pending';
   }).length;
   
   const totalRevenue = bookings.value.reduce((sum, b) => {
-    return sum + (b.pricing?.total || b.price || 0);
+    // Only count revenue from paid bookings (PaymentStatus.Paid = 2)
+    if (getPaymentStatusString(b.paymentStatus) === 'paid') {
+      return sum + (b.totalPrice || 0);
+    }
+    return sum;
   }, 0);
   
   const currentRevenue = currentMonthBookings.reduce((sum, b) => {
-    return sum + (b.pricing?.total || b.price || 0);
+    if (getPaymentStatusString(b.paymentStatus) === 'paid') {
+      return sum + (b.totalPrice || 0);
+    }
+    return sum;
   }, 0);
   
   const prevRevenue = prevMonthBookings.reduce((sum, b) => {
-    return sum + (b.pricing?.total || b.price || 0);
+    if (getPaymentStatusString(b.paymentStatus) === 'paid') {
+      return sum + (b.totalPrice || 0);
+    }
+    return sum;
   }, 0);
   
   const resolved = bookings.value.filter(b => {
-    const status = (b.status || '').toLowerCase();
-    return status === 'confirmed' || status === 'completed';
+    const status = getStatusString(b.status);
+    const paymentStatus = getPaymentStatusString(b.paymentStatus);
+    // Only count as resolved if confirmed AND paid
+    return status === 'confirmed' && paymentStatus === 'paid';
   }).length;
   
   const currentResolved = currentMonthBookings.filter(b => {
-    const status = (b.status || '').toLowerCase();
-    return status === 'confirmed' || status === 'completed';
+    const status = getStatusString(b.status);
+    const paymentStatus = getPaymentStatusString(b.paymentStatus);
+    return status === 'confirmed' && paymentStatus === 'paid';
   }).length;
   
   const prevResolved = prevMonthBookings.filter(b => {
-    const status = (b.status || '').toLowerCase();
-    return status === 'confirmed' || status === 'completed';
+    const status = getStatusString(b.status);
+    const paymentStatus = getPaymentStatusString(b.paymentStatus);
+    return status === 'confirmed' && paymentStatus === 'paid';
   }).length;
   
   // Calculate trends (percentage change)
@@ -512,6 +544,53 @@ const displayedPages = computed(() => {
   return pages;
 });
 
+// Enum Mappings (Backend returns numeric enums, frontend uses strings)
+// BookingStatus: 0=Pending, 1=Confirmed, 2=Cancelled, 3=Failed
+const statusEnumMap = {
+  0: 'pending',
+  1: 'confirmed',
+  2: 'cancelled',
+  3: 'failed'
+};
+
+const statusStringMap = {
+  'pending': 0,
+  'confirmed': 1,
+  'cancelled': 2,
+  'failed': 3
+};
+
+// PaymentStatus: 0=Unpaid, 1=Pending, 2=Paid, 3=Refunded
+const paymentStatusEnumMap = {
+  0: 'unpaid',
+  1: 'pending',
+  2: 'paid',
+  3: 'refunded'
+};
+
+const paymentStatusStringMap = {
+  'unpaid': 0,
+  'pending': 1,
+  'paid': 2,
+  'refunded': 3
+};
+
+const getStatusString = (statusEnum) => {
+  return statusEnumMap[statusEnum] || 'pending';
+};
+
+const getStatusEnum = (statusString) => {
+  return statusStringMap[statusString?.toLowerCase()] ?? 0;
+};
+
+const getPaymentStatusString = (paymentEnum) => {
+  return paymentStatusEnumMap[paymentEnum] || 'unpaid';
+};
+
+const getPaymentStatusEnum = (paymentString) => {
+  return paymentStatusStringMap[paymentString?.toLowerCase()] ?? 0;
+};
+
 // Helper functions
 const formatBookingId = (id) => {
   if (!id) return 'N/A';
@@ -521,20 +600,31 @@ const formatBookingId = (id) => {
 };
 
 const getCustomerName = (booking) => {
+  // Check guestInfo first
   if (booking.guestInfo?.firstName && booking.guestInfo?.lastName) {
     return `${booking.guestInfo.firstName} ${booking.guestInfo.lastName}`;
   }
   if (booking.guestInfo?.firstName) {
     return booking.guestInfo.firstName;
   }
+  // Check userName
   if (booking.userName) {
     return booking.userName;
+  }
+  // Fallback to userId if available
+  if (booking.userId) {
+    return `User ${booking.userId.substring(0, 8)}`;
   }
   return 'N/A';
 };
 
 const formatDateRange = (booking) => {
-  // Try different date field combinations
+  // Try direct startDate and endDate first (from backend)
+  if (booking.startDate && booking.endDate) {
+    return `${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`;
+  }
+  
+  // Try different nested date field combinations
   let startDate, endDate;
   
   if (booking.bookingData?.checkIn && booking.bookingData?.checkOut) {
@@ -548,6 +638,8 @@ const formatDateRange = (booking) => {
     endDate = booking.bookingData.endDate;
   } else if (booking.date) {
     return formatDate(booking.date);
+  } else if (booking.createdAt) {
+    return formatDate(booking.createdAt);
   } else {
     return 'N/A';
   }
@@ -639,19 +731,22 @@ const getPaymentStatusSelectClass = (status) => {
 
 // Action handlers
 const handleStatusChange = async (event, booking) => {
-  const newStatus = event.target.value;
-  const oldStatus = booking.status;
+  const newStatusString = event.target.value; // lowercase from dropdown
+  const oldStatusString = getStatusString(booking.status); // convert enum to lowercase
   
-  if (newStatus === oldStatus) return;
+  if (newStatusString === oldStatusString) return;
   
   try {
+    // Backend expects capitalized string (e.g., "Pending", "Confirmed")
+    const capitalizedStatus = newStatusString.charAt(0).toUpperCase() + newStatusString.slice(1);
+    
     // Update booking status via API
-    await bookingsAPI.patch(booking.id, { status: newStatus });
+    await bookingsAPI.patch(booking.id, { status: capitalizedStatus });
     
     // Refresh bookings data
     await fetchBookings();
     
-    toast.success(`Booking status updated to ${newStatus}`);
+    toast.success(`Booking status updated to ${capitalizedStatus}`);
   } catch (error) {
     console.error('Error updating booking status:', error);
     toast.error(error.response?.data?.message || 'Failed to update booking status');
@@ -661,19 +756,22 @@ const handleStatusChange = async (event, booking) => {
 };
 
 const handlePaymentStatusChange = async (event, booking) => {
-  const newPaymentStatus = event.target.value;
-  const oldPaymentStatus = booking.paymentStatus || 'unpaid';
+  const newPaymentStatusString = event.target.value; // lowercase from dropdown
+  const oldPaymentStatusString = getPaymentStatusString(booking.paymentStatus); // convert enum to lowercase
   
-  if (newPaymentStatus === oldPaymentStatus) return;
+  if (newPaymentStatusString === oldPaymentStatusString) return;
   
   try {
+    // Backend expects capitalized string (e.g., "Paid", "Unpaid")
+    const capitalizedPaymentStatus = newPaymentStatusString.charAt(0).toUpperCase() + newPaymentStatusString.slice(1);
+    
     // Update payment status via API
-    await bookingsAPI.patch(booking.id, { paymentStatus: newPaymentStatus });
+    await bookingsAPI.patch(booking.id, { paymentStatus: capitalizedPaymentStatus });
     
     // Refresh bookings data
     await fetchBookings();
     
-    toast.success(`Payment status updated to ${newPaymentStatus}`);
+    toast.success(`Payment status updated to ${capitalizedPaymentStatus}`);
   } catch (error) {
     console.error('Error updating payment status:', error);
     toast.error(error.response?.data?.message || 'Failed to update payment status');
@@ -696,20 +794,32 @@ const handleEditBooking = (booking) => {
   // TODO: Implement edit booking modal
 };
 
-const handleDeleteBooking = async (booking) => {
-  // Show warning toast asking for confirmation
-  toast.warning(`Delete booking ${formatBookingId(booking.id)}? This action cannot be undone.`);
+const handleDeleteBooking = (booking) => {
+  bookingToDelete.value = booking;
+  showDeleteModal.value = true;
+};
+
+const confirmDelete = async () => {
+  if (!bookingToDelete.value) return;
   
-  // Note: For a proper confirmation flow, you would typically use a modal
-  // For now, proceeding with delete after warning
+  loading.value = true;
   try {
-    await bookingsAPI.delete(booking.id);
+    await bookingsAPI.delete(bookingToDelete.value.id);
     await fetchBookings();
     toast.success('Booking deleted successfully');
+    showDeleteModal.value = false;
+    bookingToDelete.value = null;
   } catch (error) {
     console.error('Error deleting booking:', error);
     toast.error(error.response?.data?.message || 'Failed to delete booking');
+  } finally {
+    loading.value = false;
   }
+};
+
+const cancelDelete = () => {
+  showDeleteModal.value = false;
+  bookingToDelete.value = null;
 };
 
 // Filter handler
